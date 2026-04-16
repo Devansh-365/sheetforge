@@ -1,31 +1,25 @@
 # slices/write-queue
 
 ## Purpose
-HEADLINE FEATURE: serialized, idempotent write queue ensuring race-condition-safe writes to Google Sheets.
+HEADLINE FEATURE. The one ingress point for every write in the system. Enforces idempotency dedupe, per-sheet serialisation (via Postgres advisory lock in the consumer), and ledger-tracked status.
 
-## WARNING — CORRECTNESS CRITICAL
-This slice is the product's core correctness guarantee. Every change requires:
-1. A failing concurrency test BEFORE any implementation (TDD, no exceptions).
-2. Review by `test-engineer` and `code-reviewer` agents before merge.
-3. Use `superpowers:test-driven-development` agent for all work here.
-The product dies if this is wrong.
+## Public API (barrel)
+- `submitWrite({ db, redis, sheetId, payload, idempotencyKey?, logger? })` — the ONLY enqueue path. Returns `{ writeId, status: 'enqueued' | 'replayed', messageId? }`. Replay is not an error: callers retrying with the same idempotency key get the original writeId back.
+- `processNext({ db, redis, streamKey, group, consumer, handler, blockMs?, logger? })` — consumer loop step. Pulls one message, acquires a per-sheet advisory lock, runs the handler under it, updates the ledger, acks. Called repeatedly from `apps/worker`.
+- `streamKeyForSheet(sheetId)` — `acid:writes:{sheetId}` convention.
+- Types: `SubmitResult`, `WritePayload`, `WriteLedgerRow`, `WriteLedgerStatus`, `ProcessOutcome`. Zod: `WritePayloadSchema`.
 
-## Public API
-Exported from `index.ts`:
-- `enqueueWrite(sheetId, payload, idempotencyKey)` — add write to Redis Stream
-- `getWriteStatus(idempotencyKey)` — check write result by idempotency key
+## Correctness model
+1. **Ingress idempotency** — on a known idempotency key for the same sheet, return the original writeId without re-enqueueing. Prevents duplicate rows on client retries.
+2. **Per-sheet serialisation** — the worker wraps the handler in a DB transaction; inside the transaction it calls `pg_try_advisory_xact_lock(hashtextextended(streamKey, 0))`. Only one session holds the lock at a time. Postgres releases it on commit/rollback automatically — no hand-rolled fencing tokens.
+3. **Crash safety** — we only ack the Redis stream message AFTER the DB transaction commits. If the worker crashes mid-handler, the transaction rolls back, PEL redelivers the message, and idempotency dedupe (via the ledger) catches the replay.
+4. **No writes bypass this path** — ESLint bans importing `packages/queue/src/producer*` from anywhere except this slice (see `eslint.config.mjs` + `no-restricted-imports`).
 
-## Key Files
-- `service.ts` — enqueue logic, idempotency key deduplication
-- `repo.ts` — Redis Stream + Postgres write-result persistence
-- `types.ts` — Zod schemas: WriteJob, WriteResult, WriteStatus
-
-## Gotchas
-- Idempotency keys must be stored and checked BEFORE enqueuing to Redis.
-- The advisory lock is acquired by `apps/worker`, not here.
-- Duplicate submissions with same key must return the original result, not enqueue again.
+## Runtime assumption
+`processNext` must run on a platform that can hold a long-lived Postgres transaction — i.e. `apps/worker` (Fly.io / Railway / long-lived Node). CF Workers cannot call `processNext` because the Neon serverless driver cannot hold a transaction across a 1–5s Sheets API call. CF Workers call `submitWrite` only.
 
 ## Never Do
-- Don't call Google Sheets API from this slice — that's `apps/worker`'s job.
-- Don't skip the concurrency test requirement for any change.
-- Don't import another slice's internals — only their `index.ts`.
+- Don't call Google Sheets directly from this slice — the handler passed to `processNext` does that (typically wired in `apps/worker` using `shared/google`).
+- Don't ack a message before the ledger update commits.
+- Don't skip the advisory lock — it is the atomic fencing guarantee.
+- Don't import another slice's internals — only barrels.

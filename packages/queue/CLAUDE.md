@@ -1,26 +1,31 @@
 # packages/queue
 
 ## Purpose
-OSS (MIT) write-queue engine — the portable core of ACID-ish Sheets' race-condition-safe write primitive.
+OSS (MIT) write-queue engine — the portable core. Zero SaaS-specific code, zero runtime deps. Redis is injected by the caller.
 
-## WARNING — OSS SAFETY + CORRECTNESS CRITICAL
-- This package ships to npm. No secrets, internal URLs, or SaaS-specific code.
-- No imports from `shared/*`, `slices/*`, or `apps/*`. Only node_modules + other `packages/*`.
-- "private": true until V0-028 acceptance tests pass — do NOT publish before that milestone.
-- All changes require a concurrency test first (TDD). See AGENTS.md write-queue rules.
+## Status
+`"private": true` — do NOT publish to npm until the concurrency acceptance demo passes.
 
-## Public API
-Exported from `src/index.ts` — stable OSS surface:
-- (to be defined during V0 implementation)
+## Public API (barrel)
+- `enqueue({ redis, streamKey, message, maxLen? })` — add a write to a Redis Stream. Fields: writeId, payload (JSON), enqueuedAt, optional idempotencyKey. Approximate MAXLEN trim is fire-and-forget. **Do not import this function outside `slices/write-queue`** — eslint enforces it.
+- `ensureStreamGroup({ redis, streamKey, group })` — idempotent XGROUP CREATE MKSTREAM.
+- `claimNext({ redis, streamKey, group, consumer, blockMs? })` — XREADGROUP, returns at most one `ClaimedMessage<P>` or null on timeout.
+- `ackMessage({ redis, streamKey, group, messageId })` — XACK. Caller must only ack after durable processing.
+- Types: `QueueRedisClient` (the DI contract), `EnqueueMessage<P>`, `ClaimedMessage<P>`.
 
-## Key Files
-- `src/index.ts` — public barrel
+## Redis client contract
+`QueueRedisClient` is the narrow interface both `@upstash/redis` (HTTP — CF Workers) and `ioredis` (TCP — Node workers) can satisfy via a thin adapter. The queue itself has zero Redis-library dependencies.
 
-## Gotchas
-- OSS-safe means no customer data, no internal config, no proprietary logic.
-- API changes here affect external consumers after publish — treat as a public contract.
+Operations the contract requires: xadd (object fields), xreadgroupSingle, xack, xgroupCreateMkstream, xtrimMaxlenApprox, setNxPx, get.
+
+## Design opinions
+- One consumer group per stream.
+- One message per claim — no batching at the queue layer (keep the serialisation semantics clean).
+- No built-in retry loop — Redis Streams PEL redelivery is the retry mechanism. Consumer decides when to ack.
+- Approximate MAXLEN trim only (Redis `~` variant); exact trims are deliberately not exposed.
 
 ## Never Do
-- Don't import from `shared/*`, `slices/*`, or `apps/*`.
-- Don't add secrets, internal URLs, or SaaS-specific logic.
-- Don't publish until V0-028 passes.
+- Don't import from `shared/*`, `slices/*`, or `apps/*` — breaks OSS safety.
+- Don't add runtime deps on `ioredis`, `@upstash/redis`, or any Redis library — the whole point is DI.
+- Don't `console.*` — the engine is pure; logging is the adapter's job.
+- Don't publish to npm before the concurrency demo passes.

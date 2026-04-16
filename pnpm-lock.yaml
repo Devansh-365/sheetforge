@@ -82,7 +82,11 @@ importers:
 
   packages/codegen: {}
 
-  packages/queue: {}
+  packages/queue:
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   packages/sdk-ts: {}
 
@@ -243,7 +247,30 @@ importers:
         specifier: ^22.10.2
         version: 22.19.17
 
-  slices/write-queue: {}
+  slices/write-queue:
+    dependencies:
+      '@acid-sheets/queue':
+        specifier: workspace:^
+        version: link:../../packages/queue
+      '@acid-sheets/shared-db':
+        specifier: workspace:^
+        version: link:../../shared/db
+      '@acid-sheets/shared-logger':
+        specifier: workspace:^
+        version: link:../../shared/logger
+      '@acid-sheets/shared-types':
+        specifier: workspace:^
+        version: link:../../shared/types
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
 packages:
 
@@ -4607,7 +4634,7 @@ snapshots:
 
   '@types/pg@8.20.0':
     dependencies:
-      '@types/node': 22.19.17
+      '@types/node': 24.12.2
       pg-protocol: 1.13.0
       pg-types: 2.2.0
 

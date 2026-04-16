@@ -1,15 +1,22 @@
 {
   "name": "@acid-sheets/queue",
-  "_publishNote": "kept private until V0-028 acceptance tests pass, then set private:false and publish to npm",
+  "_publishNote": "private until the concurrency acceptance demo passes; flip to public and publish to npm after",
   "private": true,
   "version": "0.0.0",
   "license": "MIT",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
-    "test": "vitest run",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
   }
 }
