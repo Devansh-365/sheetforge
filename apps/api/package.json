@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "wrangler deploy --dry-run",
+    "dev": "echo '[apps/api] not implemented yet; backend slices land in a later wave'",
+    "build": "echo '[apps/api] nothing to build yet'",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
   }

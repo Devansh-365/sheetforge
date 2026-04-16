@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "dev": "echo '[apps/worker] not implemented yet; queue consumer lands in a later wave'",
+    "build": "echo '[apps/worker] nothing to build yet'",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
   }

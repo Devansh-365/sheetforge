@@ -3,7 +3,8 @@
   "private": true,
   "packageManager": "pnpm@9.12.3",
   "scripts": {
-    "dev": "turbo run dev",
+    "dev": "pnpm --filter @acid-sheets/web dev",
+    "dev:all": "turbo run dev",
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
