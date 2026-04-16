@@ -1,13 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { CopyButton, pushToast } from "@/components/ui";
+import {
+  CopyButton,
+  DeleteIconButton,
+  confirmAction,
+  pushToast,
+} from "@/components/ui";
 import {
   type LedgerStats,
   type SchemaSnapshot,
   type TestWriteResult,
+  disconnectSheet,
   getLedgerStats,
   getSchema,
   refreshSchema,
@@ -18,6 +24,25 @@ import {
 export default function SheetDetailPage() {
   const params = useParams<{ projectId: string; sheetId: string }>();
   const { projectId, sheetId } = params;
+  const router = useRouter();
+
+  async function onDisconnect() {
+    const ok = await confirmAction({
+      title: "Disconnect this sheet?",
+      body: "The sheet stays in your Google Drive. sheetforge will stop tracking it and existing API keys scoped to this sheet will start 404-ing.",
+      destructive: true,
+      confirmLabel: "disconnect",
+    });
+    if (!ok) return;
+    try {
+      await disconnectSheet(projectId, sheetId);
+      pushToast("sheet disconnected", "success");
+      router.push(`/app/projects/${projectId}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown error";
+      pushToast(`disconnect failed: ${msg}`, "error");
+    }
+  }
 
   const [schema, setSchema] = useState<SchemaSnapshot | null>(null);
   const [ledger, setLedger] = useState<LedgerStats | null>(null);
@@ -96,13 +121,22 @@ export default function SheetDetailPage() {
         >
           ← back to project
         </Link>
-        <div className="flex items-center gap-3">
-          <h1 className="text-[38px] font-bold leading-[57px]">Sheet</h1>
-          <CopyButton value={sheetId} label="copy sheet id" />
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-[38px] font-bold leading-[57px]">Sheet</h1>
+              <CopyButton value={sheetId} label="copy sheet id" />
+            </div>
+            <p style={{ color: "#7f7a7a" }} className="text-sm">
+              id: {sheetId}
+            </p>
+          </div>
+          <DeleteIconButton
+            onClick={onDisconnect}
+            label="disconnect"
+            title="Disconnect this sheet"
+          />
         </div>
-        <p style={{ color: "#7f7a7a" }} className="text-sm">
-          id: {sheetId}
-        </p>
       </div>
 
       {error && (

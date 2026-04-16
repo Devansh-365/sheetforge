@@ -2,7 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { type Project, listProjects } from "@/lib/api-client";
+import { DeleteIconButton, confirmAction, pushToast } from "@/components/ui";
+import {
+  type Project,
+  deleteProject,
+  listProjects,
+} from "@/lib/api-client";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[] | null>(null);
@@ -13,6 +18,25 @@ export default function ProjectsPage() {
       .then((res) => setProjects(res.projects))
       .catch((err) => setError(err.message));
   }, []);
+
+  async function onDelete(p: Project) {
+    const ok = await confirmAction({
+      title: `Delete project "${p.name}"?`,
+      body: "This also deletes the project's API keys, connected sheets, and write-ledger history. Your Google Sheets aren't touched — they stay in your Drive. This action cannot be undone.",
+      destructive: true,
+    });
+    if (!ok) return;
+    try {
+      await deleteProject(p.id);
+      setProjects((prev) =>
+        prev ? prev.filter((x) => x.id !== p.id) : prev,
+      );
+      pushToast("project deleted", "success");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown error";
+      pushToast(`delete failed: ${msg}`, "error");
+    }
+  }
 
   return (
     <div>
@@ -58,11 +82,14 @@ export default function ProjectsPage() {
       {projects !== null && projects.length > 0 && (
         <ul className="space-y-2">
           {projects.map((p) => (
-            <li key={p.id}>
+            <li
+              key={p.id}
+              className="flex items-center gap-2 border rounded px-6 py-4"
+              style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+            >
               <Link
                 href={`/app/projects/${p.id}`}
-                className="flex items-center justify-between border rounded px-6 py-4 transition-colors hover:opacity-90"
-                style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+                className="flex-1 flex items-center justify-between transition-colors hover:opacity-90"
               >
                 <span>
                   <span style={{ color: "#716b6a" }}>[*]</span>{" "}
@@ -72,6 +99,11 @@ export default function ProjectsPage() {
                   {new Date(p.createdAt).toLocaleDateString()}
                 </span>
               </Link>
+              <DeleteIconButton
+                onClick={() => onDelete(p)}
+                label="delete"
+                title="Delete project"
+              />
             </li>
           ))}
         </ul>

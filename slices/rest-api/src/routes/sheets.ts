@@ -6,6 +6,7 @@ import { getLatestSchema, inferSchema, saveSchemaSnapshot } from '@acid-sheets/s
 import {
   attachSchemaSnapshot,
   connectSheet,
+  disconnectSheet,
   getSheet,
   listSheets,
 } from '@acid-sheets/slice-sheets';
@@ -122,6 +123,17 @@ export function createSheetRoutes(deps: RouterDeps): Hono<{ Variables: AppVariab
     await getSheet({ db: deps.db, sheetId, projectId });
     const snapshot = await getLatestSchema({ db: deps.db, sheetId });
     return c.json({ schema: snapshot });
+  });
+
+  app.delete('/projects/:projectId/sheets/:sheetId', async (c) => {
+    const user = c.get('user');
+    const projectId = c.req.param('projectId');
+    const sheetId = c.req.param('sheetId');
+    // Ownership: project must belong to the user.
+    await getProject({ db: deps.db, userId: user.userId, projectId });
+    // Ownership: sheet must belong to the project; disconnectSheet re-checks.
+    await disconnectSheet({ db: deps.db, sheetId, projectId });
+    return c.body(null, 204);
   });
 
   app.get('/projects/:projectId/sheets/:sheetId/ledger-stats', async (c) => {

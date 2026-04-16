@@ -170,3 +170,20 @@ export const logout = () =>
     method: 'POST',
     body: JSON.stringify({}),
   });
+
+// ---------------------------------------------------------------------------
+// Delete / revoke / disconnect
+// ---------------------------------------------------------------------------
+
+export const deleteProject = (projectId: string) =>
+  api<undefined>(`/v1/projects/${projectId}`, { method: 'DELETE' });
+
+export const revokeApiKey = (projectId: string, apiKeyId: string) =>
+  api<undefined>(`/v1/projects/${projectId}/api-keys/${apiKeyId}`, {
+    method: 'DELETE',
+  });
+
+export const disconnectSheet = (projectId: string, sheetId: string) =>
+  api<undefined>(`/v1/projects/${projectId}/sheets/${sheetId}`, {
+    method: 'DELETE',
+  });
