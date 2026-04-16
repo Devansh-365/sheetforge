@@ -258,24 +258,6 @@ function HeroSection({ authStatus }: { authStatus: AuthStatus }) {
   );
 }
 
-function VideoSection() {
-  return (
-    <section className="border-b" style={{ borderColor: "#3d3838" }}>
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster="/images/sheetforge-poster.png"
-        className="w-full"
-      >
-        <source src="/videos/sheetforge-demo.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-    </section>
-  );
-}
-
 function FeaturesSection() {
   return (
     <section className="px-[80px] py-[64px] border-b" style={{ borderColor: "#3d3838" }}>
@@ -394,31 +376,6 @@ function ZenSection() {
   );
 }
 
-function NewsletterSection() {
-  return (
-    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: "#3d3838" }}>
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">
-        Join the waitlist for the HN launch
-      </h3>
-      <p className="text-[#b8b2b2] mb-6 leading-[24px]">Get notified when we go live — early access, no spam.</p>
-      <div className="flex gap-3">
-        <input
-          type="email"
-          placeholder="Email"
-          className="border rounded px-4 py-2 bg-transparent text-[#f2eded] placeholder-[#7f7a7a] flex-1 max-w-sm focus:outline-none focus:border-[#7f7a7a] transition-colors"
-          style={{ borderColor: "#3d3838" }}
-        />
-        <button
-          className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#f2eded", color: "#131010" }}
-        >
-          Subscribe
-        </button>
-      </div>
-    </section>
-  );
-}
-
 function Footer() {
   return (
     <footer className="px-[80px] py-4 flex items-center justify-between text-sm text-[#4a4545]">
@@ -449,13 +406,11 @@ export default function Home() {
       >
         <Header authStatus={authStatus} />
         <HeroSection authStatus={authStatus} />
-        <VideoSection />
         <FeaturesSection />
         <StatsSection />
         <PrivacySection />
         <FAQSection />
         <ZenSection />
-        <NewsletterSection />
       </div>
       <div className="mx-auto" style={{ maxWidth: "1080px" }}>
         <Footer />

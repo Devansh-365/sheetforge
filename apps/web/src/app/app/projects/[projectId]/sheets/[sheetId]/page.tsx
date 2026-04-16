@@ -11,11 +11,13 @@ import {
 } from "@/components/ui";
 import {
   type LedgerStats,
+  type PreviewResult,
   type SchemaSnapshot,
   type TestWriteResult,
   disconnectSheet,
   getLedgerStats,
   getSchema,
+  previewSheet,
   refreshSchema,
   sdkUrl,
   testWrite,
@@ -46,6 +48,9 @@ export default function SheetDetailPage() {
 
   const [schema, setSchema] = useState<SchemaSnapshot | null>(null);
   const [ledger, setLedger] = useState<LedgerStats | null>(null);
+  const [preview, setPreview] = useState<PreviewResult | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -108,6 +113,27 @@ export default function SheetDetailPage() {
       setSubmitting(false);
     }
   }
+
+  async function loadPreview() {
+    setPreviewLoading(true);
+    setPreviewError(null);
+    try {
+      const result = await previewSheet(projectId, sheetId, 10);
+      setPreview(result);
+    } catch (err) {
+      setPreviewError(err instanceof Error ? err.message : "unknown error");
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
+
+  // Auto-load preview once the schema is available so the row grid shows up
+  // without an extra click.
+  useEffect(() => {
+    if (schema === null) return;
+    loadPreview();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schema === null ? null : schema.id]);
 
   const downloadUrl = sdkUrl(projectId, sheetId);
 
@@ -344,6 +370,93 @@ export default function SheetDetailPage() {
               </div>
             )}
           </>
+        )}
+      </section>
+
+      {/* ── Row preview ────────────────────────────────────── */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-[16px] font-bold">Row preview</h2>
+          <button
+            type="button"
+            onClick={loadPreview}
+            disabled={previewLoading || schema === null}
+            className="rounded px-4 py-2 font-medium border transition-colors disabled:opacity-50"
+            style={{ borderColor: "#3d3838", color: "#b8b2b2" }}
+          >
+            {previewLoading ? "Loading…" : "refresh preview"}
+          </button>
+        </div>
+        <p style={{ color: "#b8b2b2" }} className="text-sm mb-4">
+          First 10 rows read through the API — the same path an API-key client
+          hits. Verifies the whole read loop end-to-end without curl.
+        </p>
+
+        {previewError && (
+          <p style={{ color: "#b8b2b2" }} className="text-sm mb-4">
+            [!] {previewError}
+          </p>
+        )}
+
+        {preview === null && !previewError && (
+          <p style={{ color: "#7f7a7a" }} className="text-sm">
+            [*] loading preview…
+          </p>
+        )}
+
+        {preview !== null && preview.rows.length === 0 && (
+          <p style={{ color: "#7f7a7a" }} className="text-sm">
+            sheet has no data rows yet — use the Test write button above
+          </p>
+        )}
+
+        {preview !== null && preview.rows.length > 0 && (
+          <div
+            className="border rounded overflow-x-auto"
+            style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+          >
+            <table className="w-full text-xs">
+              <thead>
+                <tr
+                  className="border-b"
+                  style={{ borderColor: "#3d3838" }}
+                >
+                  {preview.columns.map((col) => (
+                    <th
+                      key={col.name}
+                      className="text-left px-4 py-2 font-medium"
+                      style={{ color: "#7f7a7a" }}
+                    >
+                      {col.name}{" "}
+                      <span style={{ color: "#4a4545" }}>: {col.type}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {preview.rows.map((row, i) => (
+                  <tr
+                    key={i}
+                    className="border-b last:border-b-0"
+                    style={{ borderColor: "#3d3838" }}
+                  >
+                    {preview.columns.map((col) => {
+                      const v = row[col.name];
+                      return (
+                        <td
+                          key={col.name}
+                          className="px-4 py-2"
+                          style={{ color: v == null ? "#4a4545" : "#b8b2b2" }}
+                        >
+                          {v == null ? "—" : String(v)}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
 

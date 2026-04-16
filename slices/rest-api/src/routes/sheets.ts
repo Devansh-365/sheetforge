@@ -15,6 +15,19 @@ import { Hono } from 'hono';
 import { requireSession } from '../middleware.js';
 import type { AppVariables, RouterDeps } from '../types.js';
 
+function coerceCell(
+  raw: string,
+  type: 'string' | 'number' | 'boolean' | 'datetime',
+): unknown {
+  if (raw === '') return null;
+  if (type === 'number') {
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : raw;
+  }
+  if (type === 'boolean') return raw.toLowerCase() === 'true';
+  return raw;
+}
+
 function buildDemoRow(
   columns: Array<{ name: string; type: 'string' | 'number' | 'boolean' | 'datetime' }>,
 ): Record<string, unknown> {
@@ -162,6 +175,36 @@ export function createSheetRoutes(deps: RouterDeps): Hono<{ Variables: AppVariab
       idempotencyKey: `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     });
     return c.json({ ...result, submittedRow: row }, 202);
+  });
+
+  app.get('/projects/:projectId/sheets/:sheetId/preview', async (c) => {
+    const user = c.get('user');
+    const projectId = c.req.param('projectId');
+    const sheetId = c.req.param('sheetId');
+    const limit = Math.min(Number(c.req.query('limit') ?? '10') || 10, 100);
+    await getProject({ db: deps.db, userId: user.userId, projectId });
+    const sheet = await getSheet({ db: deps.db, sheetId, projectId });
+    const snapshot = await getLatestSchema({ db: deps.db, sheetId });
+    const accessToken = await getAccessTokenForUser({
+      db: deps.db,
+      env: deps.env,
+      userId: user.userId,
+    });
+    const sheetsClient = createSheetsClient({ accessToken });
+    const range = `${sheet.tabName}!A1:ZZ${limit + 1}`;
+    const result = await sheetsClient.getValues({
+      spreadsheetId: sheet.googleSheetId,
+      range,
+    });
+    const [, ...dataRows] = result.values ?? [];
+    const rows = dataRows.map((raw) => {
+      const row: Record<string, unknown> = {};
+      snapshot.columns.forEach((col, i) => {
+        row[col.name] = coerceCell(String(raw[i] ?? ''), col.type);
+      });
+      return row;
+    });
+    return c.json({ rows, columns: snapshot.columns });
   });
 
   app.get('/projects/:projectId/sheets/:sheetId/sdk.ts', async (c) => {

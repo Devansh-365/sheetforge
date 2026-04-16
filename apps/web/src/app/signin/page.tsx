@@ -7,9 +7,26 @@ import { ApiError, getMe, loginUrl } from "@/lib/api-client";
 
 export default function SignInPage() {
   const [checking, setChecking] = useState(true);
+  const [reconnect, setReconnect] = useState(false);
 
-  // If you already have a live session, bounce straight to the dashboard.
   useEffect(() => {
+    // Reading window.location on mount avoids the useSearchParams Suspense
+    // requirement introduced in Next 15+.
+    setReconnect(
+      new URL(window.location.href).searchParams.get("reconnect") === "1",
+    );
+  }, []);
+
+  // If you already have a live session, bounce straight to the dashboard —
+  // unless we're explicitly in reconnect mode (stale Google grant), in which
+  // case the user needs to re-authorize even with a valid session cookie.
+  useEffect(() => {
+    const isReconnect =
+      new URL(window.location.href).searchParams.get("reconnect") === "1";
+    if (isReconnect) {
+      setChecking(false);
+      return;
+    }
     getMe()
       .then(() => {
         window.location.href = "/app";
@@ -19,7 +36,6 @@ export default function SignInPage() {
           setChecking(false);
           return;
         }
-        // API unreachable or unknown error — let them try the button anyway.
         setChecking(false);
       });
   }, []);
@@ -58,15 +74,28 @@ export default function SignInPage() {
               }}
             >
               <h1 className="text-[28px] font-bold leading-[36px] mb-2">
-                Sign in to sheetforge
+                {reconnect
+                  ? "Re-authorize Google"
+                  : "Sign in to sheetforge"}
               </h1>
-              <p
-                style={{ color: "#b8b2b2" }}
-                className="text-sm mb-8 leading-[20px]"
-              >
-                Connect your Google account to turn any Sheet into a
-                race-condition-safe API.
-              </p>
+              {reconnect ? (
+                <p
+                  style={{ color: "#b8b2b2" }}
+                  className="text-sm mb-8 leading-[20px]"
+                >
+                  [!] Your Google connection expired or was revoked.
+                  Re-authorize below to get your projects back online — nothing
+                  in your sheetforge account is lost.
+                </p>
+              ) : (
+                <p
+                  style={{ color: "#b8b2b2" }}
+                  className="text-sm mb-8 leading-[20px]"
+                >
+                  Connect your Google account to turn any Sheet into a
+                  race-condition-safe API.
+                </p>
+              )}
 
               <a
                 href={loginUrl()}
@@ -74,7 +103,11 @@ export default function SignInPage() {
                 style={{ backgroundColor: "#f2eded", color: "#131010" }}
               >
                 <GoogleGlyph />
-                {checking ? "Checking session…" : "Sign in with Google"}
+                {checking
+                  ? "Checking session…"
+                  : reconnect
+                    ? "Reconnect Google"
+                    : "Sign in with Google"}
               </a>
 
               <div

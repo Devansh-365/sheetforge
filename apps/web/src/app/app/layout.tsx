@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ToastHost, pushToast } from "@/components/ui";
+import { ConfirmHost, ToastHost, pushToast } from "@/components/ui";
 import { ApiError, getMe, logout } from "@/lib/api-client";
 
 interface User {
@@ -151,6 +151,7 @@ export default function DashboardLayout({
         <div className="px-[80px] py-[48px]">{children}</div>
       </div>
       <ToastHost />
+      <ConfirmHost />
     </main>
   );
 }

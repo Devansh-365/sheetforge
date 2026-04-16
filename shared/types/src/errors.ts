@@ -107,6 +107,24 @@ export class SchemaVersionMismatchError extends DomainError {
   }
 }
 
+/**
+ * The user's Google OAuth grant is gone — either they revoked access from
+ * their Google account settings or the refresh token expired (6-month idle).
+ * Clients should send them through /signin?reconnect=1 instead of silently
+ * treating the 401 like a normal missing-session case.
+ */
+export class GoogleReconnectRequiredError extends DomainError {
+  readonly code = 'GOOGLE_RECONNECT_REQUIRED' as const;
+  readonly statusCode = 401;
+
+  constructor(
+    message = 'Google connection expired — user must re-authenticate',
+    details?: Record<string, unknown>,
+  ) {
+    super(message, details);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Type guard
 // ---------------------------------------------------------------------------

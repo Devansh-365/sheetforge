@@ -1,6 +1,10 @@
 import type { Db } from '@sheetforge/shared-db';
 import { type Logger, createLogger } from '@sheetforge/shared-logger';
-import { InternalError, UnauthorizedError } from '@sheetforge/shared-types';
+import {
+  GoogleReconnectRequiredError,
+  InternalError,
+  UnauthorizedError,
+} from '@sheetforge/shared-types';
 import { SignJWT, jwtVerify } from 'jose';
 import { findRefreshTokenByUserId, upsertUserByEmail } from './repo.js';
 import {
@@ -171,7 +175,13 @@ export async function refreshGoogleAccessToken({
   });
   if (!res.ok) {
     if (res.status === 400 || res.status === 401) {
-      throw new UnauthorizedError('Google rejected the refresh token; user must re-authenticate');
+      // Google revoked the grant or the refresh token expired.
+      // Signal the reconnect flow specifically so the client can show the
+      // right copy instead of a generic missing-session redirect.
+      throw new GoogleReconnectRequiredError(
+        'Google rejected the refresh token; re-authorize to continue',
+        { status: res.status },
+      );
     }
     throw new InternalError('Google refresh token exchange failed', {
       status: res.status,
@@ -206,7 +216,9 @@ export async function getAccessTokenForUser({
 }): Promise<string> {
   const refreshToken = await findRefreshTokenByUserId({ db, userId });
   if (!refreshToken) {
-    throw new UnauthorizedError('User must re-authenticate with Google');
+    throw new GoogleReconnectRequiredError(
+      'No Google refresh token on file — reconnect to continue',
+    );
   }
   const { accessToken } = await refreshGoogleAccessToken({ refreshToken, env });
   return accessToken;

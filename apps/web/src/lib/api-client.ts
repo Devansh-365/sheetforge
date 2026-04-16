@@ -1,14 +1,55 @@
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
+function extractMessage(body: unknown): string | null {
+  if (typeof body === 'object' && body !== null && 'error' in body) {
+    const err = (body as { error: unknown }).error;
+    if (typeof err === 'object' && err !== null && 'message' in err) {
+      const msg = (err as { message: unknown }).message;
+      if (typeof msg === 'string' && msg.length > 0) return msg;
+    }
+  }
+  return null;
+}
+
+function extractCode(body: unknown): string | null {
+  if (typeof body === 'object' && body !== null && 'error' in body) {
+    const err = (body as { error: unknown }).error;
+    if (typeof err === 'object' && err !== null && 'code' in err) {
+      const code = (err as { code: unknown }).code;
+      if (typeof code === 'string') return code;
+    }
+  }
+  return null;
+}
+
 export class ApiError extends Error {
+  readonly code: string | null;
+
   constructor(
     public status: number,
     public body: unknown,
   ) {
-    super(`API ${status}`);
+    const msg = extractMessage(body);
+    super(msg ? `${msg} (API ${status})` : `API ${status}`);
     this.name = 'ApiError';
+    this.code = extractCode(body);
   }
+}
+
+/**
+ * Dashboard-wide auth auto-redirect. A 401 with GOOGLE_RECONNECT_REQUIRED
+ * means the user's Google grant is gone (revoked or expired); send them to
+ * /signin?reconnect=1 so we can show the right copy instead of a generic
+ * sign-in page. Guarded by `typeof window !== 'undefined'` so SSR bundles
+ * never trip it.
+ */
+function maybeAutoRedirect(err: ApiError): void {
+  if (typeof window === 'undefined') return;
+  if (err.status !== 401) return;
+  if (err.code !== 'GOOGLE_RECONNECT_REQUIRED') return;
+  if (window.location.pathname === '/signin') return;
+  window.location.href = '/signin?reconnect=1';
 }
 
 export async function api<T = unknown>(
@@ -25,7 +66,9 @@ export async function api<T = unknown>(
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new ApiError(res.status, body);
+    const err = new ApiError(res.status, body);
+    maybeAutoRedirect(err);
+    throw err;
   }
   if (res.status === 204) return undefined as T;
   const contentType = res.headers.get('Content-Type') ?? '';
@@ -123,6 +166,19 @@ export const refreshSchema = (projectId: string, sheetId: string) =>
   api<{ schema: SchemaSnapshot }>(
     `/v1/projects/${projectId}/sheets/${sheetId}/schema/refresh`,
     { method: 'POST', body: JSON.stringify({}) },
+  );
+
+export interface PreviewResult {
+  rows: Array<Record<string, unknown>>;
+  columns: SchemaSnapshot['columns'];
+}
+export const previewSheet = (
+  projectId: string,
+  sheetId: string,
+  limit = 10,
+) =>
+  api<PreviewResult>(
+    `/v1/projects/${projectId}/sheets/${sheetId}/preview?limit=${limit}`,
   );
 
 export type WriteLedgerStatus =
