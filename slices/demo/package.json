@@ -1,5 +1,5 @@
 {
-  "name": "@sheetforge/slice-rest-api",
+  "name": "@sheetforge/slice-demo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,19 +15,12 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "hono": "^4.6.13",
+    "drizzle-orm": "^0.40.0",
     "zod": "^3.24.2",
-    "@sheetforge/codegen": "workspace:^",
     "@sheetforge/queue": "workspace:^",
     "@sheetforge/shared-db": "workspace:^",
-    "@sheetforge/shared-google": "workspace:^",
     "@sheetforge/shared-logger": "workspace:^",
     "@sheetforge/shared-types": "workspace:^",
-    "@sheetforge/slice-auth": "workspace:^",
-    "@sheetforge/slice-demo": "workspace:^",
-    "@sheetforge/slice-projects": "workspace:^",
-    "@sheetforge/slice-schema": "workspace:^",
-    "@sheetforge/slice-sheets": "workspace:^",
     "@sheetforge/slice-write-queue": "workspace:^"
   },
   "devDependencies": {

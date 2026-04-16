@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { HammerDemo } from "@/components/HammerDemo";
 import { ChevronDownIcon, CopyIcon, OpenCodeLogo } from "@/components/icons";
 import { getMe } from "@/lib/api-client";
 
@@ -406,6 +407,7 @@ export default function Home() {
       >
         <Header authStatus={authStatus} />
         <HeroSection authStatus={authStatus} />
+        <HammerDemo />
         <FeaturesSection />
         <StatsSection />
         <PrivacySection />

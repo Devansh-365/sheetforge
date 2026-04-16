@@ -3,6 +3,7 @@ import { createLogger } from '@sheetforge/shared-logger';
 import { createIoredisQueueClient } from '@sheetforge/shared-redis';
 import { createRouter } from '@sheetforge/slice-rest-api';
 import { serve } from '@hono/node-server';
+import { demoProcessorTick } from './demo-processor.js';
 import { loadEnv } from './env.js';
 import { processorTick } from './processor.js';
 
@@ -42,6 +43,23 @@ if (env.PROCESSOR_ENABLED) {
         );
       }
       await new Promise((res) => setTimeout(res, env.PROCESSOR_TICK_MS));
+    }
+  })();
+
+  // Dedicated drain for the public hammer demo stream. Runs on its own loop
+  // so the demo doesn't get starved (or starve) the real processor.
+  (async () => {
+    log.info({}, 'demo-processor-starting');
+    while (true) {
+      try {
+        await demoProcessorTick({ db, redis });
+      } catch (err) {
+        log.error(
+          { err: err instanceof Error ? err.message : String(err) },
+          'demo-processor-tick-failed',
+        );
+      }
+      // No sleep — processNext blocks on BLOCK 100ms when idle anyway.
     }
   })();
 }

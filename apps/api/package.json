@@ -21,6 +21,7 @@
     "@sheetforge/shared-redis": "workspace:^",
     "@sheetforge/shared-types": "workspace:^",
     "@sheetforge/slice-auth": "workspace:^",
+    "@sheetforge/slice-demo": "workspace:^",
     "@sheetforge/slice-projects": "workspace:^",
     "@sheetforge/slice-rest-api": "workspace:^",
     "@sheetforge/slice-schema": "workspace:^",

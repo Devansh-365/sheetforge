@@ -221,6 +221,45 @@ export const testWrite = (projectId: string, sheetId: string) =>
     { method: 'POST', body: JSON.stringify({}) },
   );
 
+// ---------------------------------------------------------------------------
+// Public hammer demo (anonymous, rate-limited)
+// ---------------------------------------------------------------------------
+
+export interface HammerRunResult {
+  runId: string;
+  n: number;
+  dispatchedAt: string;
+}
+
+export interface HammerWrite {
+  writeId: string;
+  ordinal: number;
+  idempotencyKey: string;
+  enqueuedAt: string;
+  completedAt: string | null;
+  status:
+    | 'pending'
+    | 'processing'
+    | 'completed'
+    | 'failed'
+    | 'dead_lettered';
+}
+
+export interface HammerStatus {
+  runId: string;
+  writes: HammerWrite[];
+  done: boolean;
+}
+
+export const hammerRun = (n: number) =>
+  api<HammerRunResult>('/v1/demo/hammer', {
+    method: 'POST',
+    body: JSON.stringify({ n }),
+  });
+
+export const getHammerStatus = (runId: string) =>
+  api<HammerStatus>(`/v1/demo/hammer/${runId}`);
+
 export const logout = () =>
   api<{ ok: true }>('/v1/auth/logout', {
     method: 'POST',
