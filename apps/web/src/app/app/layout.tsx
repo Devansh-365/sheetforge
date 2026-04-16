@@ -109,7 +109,7 @@ export default function DashboardLayout({
           style={{ backgroundColor: "#131010", borderColor: "#3d3838" }}
         >
           <Link href="/app" style={{ color: "#f2eded", fontWeight: 700 }}>
-            [acid] <span style={{ color: "#7f7a7a" }}>dashboard</span>
+            [sheetforge] <span style={{ color: "#7f7a7a" }}>dashboard</span>
           </Link>
           <nav className="flex items-center gap-8 text-sm">
             <Link

@@ -1,9 +1,9 @@
 export function OpenCodeLogo({ className }: { className?: string }) {
   return (
     <svg
-      width="120"
+      width="156"
       height="28"
-      viewBox="0 0 120 28"
+      viewBox="0 0 156 28"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
@@ -26,10 +26,10 @@ export function OpenCodeLogo({ className }: { className?: string }) {
         fontWeight="700"
         fill="#f2eded"
       >
-        acid
+        sheetforge
       </text>
       <text
-        x="60"
+        x="144"
         y="21"
         fontFamily="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
         fontSize="20"

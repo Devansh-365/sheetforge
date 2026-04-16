@@ -4,11 +4,11 @@ import { useState } from "react";
 import { OpenCodeLogo, CopyIcon, ChevronDownIcon } from "@/components/icons";
 
 const installCommands: Record<string, string> = {
-  curl: "curl -fsSL https://acid-sheets.dev/install | bash",
-  npm: "npm i @acid-sheets/sdk",
-  pnpm: "pnpm add @acid-sheets/sdk",
-  bun: "bun add @acid-sheets/sdk",
-  pip: "pip install acid-sheets",
+  curl: "curl -fsSL https://sheetforge.dev/install | bash",
+  npm: "npm i @sheetforge/sdk",
+  pnpm: "pnpm add @sheetforge/sdk",
+  bun: "bun add @sheetforge/sdk",
+  pip: "pip install sheetforge",
 };
 
 const features = [
@@ -23,12 +23,12 @@ const features = [
 
 const faqItems = [
   {
-    q: "What is ACID-ish Sheets?",
-    a: "ACID-ish Sheets is a developer-first Google Sheets backend that adds race-condition-safe writes and auto-generated TypeScript/Python SDKs to any spreadsheet. It sits between your app and the Sheets API, serializing writes through a per-sheet queue so you never lose a row.",
+    q: "What is sheetforge?",
+    a: "sheetforge is a developer-first Google Sheets backend that adds race-condition-safe writes and auto-generated TypeScript/Python SDKs to any spreadsheet. It sits between your app and the Sheets API, serializing writes through a per-sheet queue so you never lose a row.",
   },
   {
     q: "How is this different from SheetDB, Sheety, or Sheet2API?",
-    a: "Every competitor wraps the Sheets API and forwards your writes directly — which means concurrent POSTs collide and rows go missing. ACID-ish Sheets routes all writes through a serialized queue backed by Upstash Redis, so 1000 concurrent writes produce exactly 1000 rows. None of the incumbents offer typed SDKs generated from your live schema either.",
+    a: "Every competitor wraps the Sheets API and forwards your writes directly — which means concurrent POSTs collide and rows go missing. sheetforge routes all writes through a serialized queue backed by Upstash Redis, so 1000 concurrent writes produce exactly 1000 rows. None of the incumbents offer typed SDKs generated from your live schema either.",
   },
   {
     q: "Do I have to give you OAuth access to my whole Drive?",
@@ -44,11 +44,11 @@ const faqItems = [
   },
   {
     q: "How does the typed SDK generation work?",
-    a: "When you connect a sheet, we read your header row and sample the first 50 rows to infer column types (string, number, boolean, ISODate, or enum from dropdown). We emit a TypeScript package with strict types (no any) and a Python package with TypedDicts. Run acid-sheets regen in the CLI to regenerate after a schema change.",
+    a: "When you connect a sheet, we read your header row and sample the first 50 rows to infer column types (string, number, boolean, ISODate, or enum from dropdown). We emit a TypeScript package with strict types (no any) and a Python package with TypedDicts. Run sheetforge regen in the CLI to regenerate after a schema change.",
   },
   {
     q: "Is my data safe — where do you store it?",
-    a: "Your spreadsheet data never leaves Google's infrastructure. ACID-ish Sheets stores only OAuth refresh tokens and tenant metadata (project names, API key hashes, schema snapshots) in our Postgres database, encrypted at rest. Write payloads pass through our Redis queue transiently and are deleted after acknowledgment.",
+    a: "Your spreadsheet data never leaves Google's infrastructure. sheetforge stores only OAuth refresh tokens and tenant metadata (project names, API key hashes, schema snapshots) in our Postgres database, encrypted at rest. Write payloads pass through our Redis queue transiently and are deleted after acknowledgment.",
   },
   {
     q: "How much does it cost?",
@@ -62,22 +62,22 @@ function Header() {
       className="sticky top-0 z-10 flex items-center justify-between min-h-[80px] px-[80px] border-b"
       style={{ backgroundColor: "#131010" }}
     >
-      <a href="/" aria-label="ACID-ish Sheets home">
+      <a href="/" aria-label="sheetforge home">
         <OpenCodeLogo />
       </a>
       <nav className="flex items-center gap-8">
         <a
-          href="https://github.com/acid-sheets/acid-sheets"
+          href="https://github.com/Devansh-365/sheetforge"
           className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors"
           target="_blank"
           rel="noopener noreferrer"
         >
           GitHub <span className="text-[#7f7a7a]">[★]</span>
         </a>
-        <a href="https://acid-sheets.dev/docs" className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors">
+        <a href="https://sheetforge.dev/docs" className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors">
           Docs
         </a>
-        <a href="https://acid-sheets.dev/pricing" className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors">
+        <a href="https://sheetforge.dev/pricing" className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors">
           Pricing
         </a>
         <a
@@ -114,7 +114,7 @@ function HeroSection() {
         </span>
         <p className="text-[#b8b2b2]">
           TypeScript and Python SDKs generated live from your sheet schema.{" "}
-          <a href="https://acid-sheets.dev/docs/sdk" className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors">
+          <a href="https://sheetforge.dev/docs/sdk" className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors">
             See the codegen
           </a>
         </p>
@@ -175,12 +175,12 @@ function HeroSection() {
         </div>
         <div className="flex items-center justify-between px-6 py-4">
           <code className="text-[#b8b2b2]">
-            {installCommands[activeTab].split(activeTab === "curl" ? "acid-sheets.dev" : "").map((part, i, arr) => {
+            {installCommands[activeTab].split(activeTab === "curl" ? "sheetforge.dev" : "").map((part, i, arr) => {
               if (activeTab === "curl" && i === 0) {
                 return (
                   <span key={i}>
                     {part}
-                    <span className="text-[#f2eded] font-bold">acid-sheets.dev</span>
+                    <span className="text-[#f2eded] font-bold">sheetforge.dev</span>
                   </span>
                 );
               }
@@ -211,10 +211,10 @@ function VideoSection() {
         loop
         muted
         playsInline
-        poster="/images/acid-sheets-poster.png"
+        poster="/images/sheetforge-poster.png"
         className="w-full"
       >
-        <source src="/videos/acid-sheets-demo.mp4" type="video/mp4" />
+        <source src="/videos/sheetforge-demo.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </section>
@@ -224,7 +224,7 @@ function VideoSection() {
 function FeaturesSection() {
   return (
     <section className="px-[80px] py-[64px] border-b" style={{ borderColor: "#3d3838" }}>
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">What is ACID-ish Sheets?</h3>
+      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">What is sheetforge?</h3>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
         A race-condition-safe REST API layer for Google Sheets with auto-generated TypeScript and Python SDKs — the backend your indie project can actually trust in production.
       </p>
@@ -277,7 +277,7 @@ function PrivacySection() {
       <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">Your data never leaves Google Sheets</h3>
       <p className="text-[#b8b2b2] leading-[24px]">
         <span className="text-[#716b6a]">[*]</span> Your data never leaves Google Sheets. We store only OAuth tokens and tenant metadata in our database, encrypted at rest.{" "}
-        <a href="https://acid-sheets.dev/privacy" className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors underline">
+        <a href="https://sheetforge.dev/privacy" className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors underline">
           Learn more about privacy
         </a>
         .
@@ -328,7 +328,7 @@ function ZenSection() {
         Either way, the same write-queue guarantees apply.
       </p>
       <a
-        href="https://acid-sheets.dev/docs/self-host"
+        href="https://sheetforge.dev/docs/self-host"
         className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors underline"
       >
         Read the self-host guide
@@ -365,12 +365,12 @@ function NewsletterSection() {
 function Footer() {
   return (
     <footer className="px-[80px] py-4 flex items-center justify-between text-sm text-[#4a4545]">
-      <span>&copy;2026 ACID-ish Sheets</span>
+      <span>&copy;2026 sheetforge</span>
       <div className="flex items-center gap-6">
-        <a href="https://acid-sheets.dev/privacy" className="hover:text-[#7f7a7a] transition-colors">
+        <a href="https://sheetforge.dev/privacy" className="hover:text-[#7f7a7a] transition-colors">
           Privacy
         </a>
-        <a href="https://acid-sheets.dev/terms" className="hover:text-[#7f7a7a] transition-colors">
+        <a href="https://sheetforge.dev/terms" className="hover:text-[#7f7a7a] transition-colors">
           Terms
         </a>
         <span>English</span>

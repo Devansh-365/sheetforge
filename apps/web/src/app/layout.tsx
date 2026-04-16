@@ -9,7 +9,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ACID-ish Sheets | Google Sheets that behaves like a real database",
+  title: "sheetforge | Google Sheets that behaves like a real database",
   description:
     "Race-condition-safe writes, typed SDKs, no polling. The Sheets backend your designer can set up and your CTO can trust.",
 };
