@@ -1,23 +1,32 @@
 # shared/types
 
 ## Purpose
-Shared Zod schemas, inferred TypeScript types, and DomainError base classes used across all slices.
+Typed `DomainError` hierarchy and HTTP-boundary helpers used across all apps and slices.
 
 ## Public API
-Exported from `src/index.ts`:
-- `DomainError` — base error class; all typed errors extend this
-- Common Zod schemas: pagination, ID types, timestamps
-- (Domain-specific schemas live in their respective slice `types.ts`)
+Exported from `src/index.ts` (re-exports `src/errors.ts`):
 
-## Key Files
-- `src/index.ts` — all exports
+### Error classes
+| Class | `code` | `statusCode` |
+|---|---|---|
+| `UnauthorizedError` | `AUTH_REQUIRED` | 401 |
+| `ForbiddenError` | `FORBIDDEN` | 403 |
+| `NotFoundError` | `NOT_FOUND` | 404 |
+| `ValidationError` | `VALIDATION_FAILED` | 400 |
+| `ConflictError` | `CONFLICT` | 409 |
+| `RateLimitedError` | `RATE_LIMITED` | 429 |
+| `InternalError` | `INTERNAL` | 500 |
+| `IdempotencyReplayError` | `IDEMPOTENCY_REPLAY` | 409 |
+| `SchemaVersionMismatchError` | `SCHEMA_VERSION_MISMATCH` | 409 |
 
-## Gotchas
-- Zod schemas are the source of truth — never hand-write duplicate TS types.
-- `DomainError` subclasses are caught at the HTTP boundary in `apps/api`.
-- This is a leaf node: only imports node_modules.
+All extend `DomainError` which provides `toJSON()` → `{ code, message, statusCode, details? }`.
 
-## Never Do
-- Don't put domain-specific types here — they belong in the owning slice's `types.ts`.
-- Don't import from `slices/*`, `apps/*`, or other `shared/*` packages.
-- Don't hand-write TS types that duplicate a Zod schema.
+### Helpers
+- `isDomainError(err): err is DomainError` — type guard
+- `toHttpResponse(err: unknown): { status, body: { error: { code, message, details? } } }` — wraps unknown errors as `InternalError` shape
+
+## Rules
+- **Never `console.log`** — log via `shared/logger`.
+- Throw `DomainError` subclasses everywhere; catch at the HTTP boundary using `toHttpResponse`.
+- This is a leaf node: only imports `node_modules` (no `shared/*`, `slices/*`, `apps/*`).
+- Do not add domain-specific error types here — they belong in the owning slice's `types.ts`.
