@@ -18,17 +18,18 @@ Every `values.append` on the Google Sheets API can drop rows under concurrent wr
 
 ### env
 
-Create `.env` at the repo root with:
+Copy `.env.example` to `.env` and fill in the secrets:
 
 ```
 PORT=3001
-PUBLIC_BASE_URL=http://localhost:3001
-DATABASE_URL=postgres://postgres:postgres@localhost:5432/sheetforge
+PUBLIC_BASE_URL=http://localhost:3001       # API base — where the SDK POSTs
+WEB_BASE_URL=http://localhost:3000          # browser base — CORS + post-OAuth redirect
+DATABASE_URL=postgres://…                   # local Postgres or a Neon connection string
 REDIS_URL=redis://localhost:6379
 GOOGLE_OAUTH_CLIENT_ID=
 GOOGLE_OAUTH_CLIENT_SECRET=
 GOOGLE_OAUTH_REDIRECT_URL=http://localhost:3001/v1/oauth/callback
-SESSION_JWT_SECRET=   # openssl rand -hex 32
+SESSION_JWT_SECRET=                         # openssl rand -hex 32
 PROCESSOR_ENABLED=true
 PROCESSOR_TICK_MS=1000
 ```
@@ -37,10 +38,11 @@ PROCESSOR_TICK_MS=1000
 
 ```bash
 pnpm install
-createdb sheetforge
-psql sheetforge -f shared/db/migrations/0000_unknown_spyke.sql
 
-# marketing site → http://localhost:3000
+# push the initial schema (works with local Postgres or Neon — no psql needed)
+node --env-file=.env shared/db/scripts/push-migration.mjs
+
+# marketing + dashboard → http://localhost:3000
 pnpm dev
 
 # api + inline write-queue processor → http://localhost:3001
@@ -49,11 +51,11 @@ pnpm --filter @acid-sheets/api dev
 
 ### end-to-end flow
 
-1. `open http://localhost:3001/v1/oauth/login` — sign in with Google (Sheets scope).
-2. `curl -X POST http://localhost:3001/v1/projects -H 'Cookie: session=...' -d '{"name":"demo"}'` — project id comes back.
-3. `curl -X POST http://localhost:3001/v1/projects/:id/api-keys` — returns plaintext `sk_live_...` **once**; copy it.
-4. `curl -X POST http://localhost:3001/v1/projects/:id/sheets -d '{"googleSheetId":"<id>","tabName":"Sheet1"}'` — share the sheet with your Google account first; first row must be headers.
-5. `curl http://localhost:3001/v1/projects/:id/sheets/:sheetId/sdk.ts > client.ts` — typed TypeScript client.
+1. Open `http://localhost:3000` → click **Dashboard** → redirects to Google OAuth (Sheets scope).
+2. After consent you land at `http://localhost:3000/app` — click **+ new project**.
+3. On the project page, click **+ create key** and copy the plaintext `sk_live_…` value (shown once).
+4. Click **+ connect sheet**, paste a Google Sheets URL, pick a tab — the sheet must be shared with your Google account and the first row must be headers. The schema is inferred automatically.
+5. Open the sheet detail page and click **↓ download client.ts** — that's your typed SDK, ready to commit to your repo.
 6. ```bash
    curl -X POST http://localhost:3001/v1/sheets/:sheetId/rows \
      -H 'Authorization: Bearer sk_live_...' \
@@ -61,6 +63,8 @@ pnpm --filter @acid-sheets/api dev
      -d '{"email":"hi@example.com"}'
    ```
    Row lands in the sheet ~1s later (processor tick). Same `Idempotency-Key` never duplicates.
+
+Prefer raw HTTP? The same flow works via `curl` against the REST endpoints — see `slices/rest-api/CLAUDE.md` for the route map.
 
 ## architecture
 
