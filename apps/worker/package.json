@@ -1,0 +1,11 @@
+{
+  "name": "@acid-sheets/worker",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  }
+}

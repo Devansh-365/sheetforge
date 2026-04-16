@@ -1,0 +1,11 @@
+{
+  "name": "@acid-sheets/slice-rest-api",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  }
+}

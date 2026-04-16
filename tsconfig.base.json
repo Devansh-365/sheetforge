@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2022"],
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@acid-sheets/queue": ["./packages/queue/src/index.ts"],
+      "@acid-sheets/codegen": ["./packages/codegen/src/index.ts"],
+      "@acid-sheets/client-ts": ["./packages/sdk-ts/src/index.ts"],
+      "@acid-sheets/shared-db": ["./shared/db/src/index.ts"],
+      "@acid-sheets/shared-redis": ["./shared/redis/src/index.ts"],
+      "@acid-sheets/shared-google": ["./shared/google/src/index.ts"],
+      "@acid-sheets/shared-types": ["./shared/types/src/index.ts"],
+      "@acid-sheets/shared-logger": ["./shared/logger/src/index.ts"]
+    }
+  }
+}

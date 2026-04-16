@@ -1,0 +1,11 @@
+{
+  "name": "@acid-sheets/api",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  }
+}

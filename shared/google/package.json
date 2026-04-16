@@ -1,0 +1,10 @@
+{
+  "name": "@acid-sheets/shared-google",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "build": "tsc",
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit"
+  }
+}
