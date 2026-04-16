@@ -4,7 +4,7 @@ import { Hono } from 'hono';
 import type { AppVariables, RouterDeps } from '../types.js';
 
 const RUNS_PER_HOUR = 5;
-const WINDOW_SECONDS = 60 * 60;
+const WINDOW_MS = 60 * 60 * 1000;
 const MAX_N = 50;
 
 function clientIp(headers: Headers): string {
@@ -13,26 +13,33 @@ function clientIp(headers: Headers): string {
   return headers.get('x-real-ip') ?? 'unknown';
 }
 
+/**
+ * In-memory sliding-window rate limit per IP. Fine for a single-node demo —
+ * Redis would be nicer but `QueueRedisClient` is intentionally narrow
+ * (stream ops only) and the demo traffic on a landing page does not justify
+ * broadening that contract. State resets on process restart; acceptable.
+ */
+const hits = new Map<string, number[]>();
+
+function rateLimit(ip: string): void {
+  const now = Date.now();
+  const cutoff = now - WINDOW_MS;
+  const recent = (hits.get(ip) ?? []).filter((t) => t > cutoff);
+  if (recent.length >= RUNS_PER_HOUR) {
+    throw new RateLimitedError(
+      `demo limit reached (${RUNS_PER_HOUR} runs/hour)`,
+      WINDOW_MS,
+    );
+  }
+  recent.push(now);
+  hits.set(ip, recent);
+}
+
 export function createDemoRoutes(deps: RouterDeps): Hono<{ Variables: AppVariables }> {
   const app = new Hono<{ Variables: AppVariables }>();
 
   app.post('/demo/hammer', async (c) => {
-    const ip = clientIp(c.req.raw.headers);
-    const key = `demo:rl:${ip}`;
-    const redis = deps.redis as unknown as {
-      incr: (key: string) => Promise<number>;
-      expire: (key: string, seconds: number) => Promise<number>;
-    };
-    const count = await redis.incr(key);
-    if (count === 1) {
-      await redis.expire(key, WINDOW_SECONDS);
-    }
-    if (count > RUNS_PER_HOUR) {
-      throw new RateLimitedError(
-        `demo limit reached (${RUNS_PER_HOUR} runs/hour)`,
-        WINDOW_SECONDS * 1000,
-      );
-    }
+    rateLimit(clientIp(c.req.raw.headers));
 
     const body: { n?: number } = await c.req
       .json<{ n?: number }>()
