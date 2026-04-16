@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { OpenCodeLogo, DownloadIcon, CopyIcon, ChevronDownIcon } from "@/components/icons";
+import { OpenCodeLogo, CopyIcon, ChevronDownIcon } from "@/components/icons";
 
 const installCommands: Record<string, string> = {
   curl: "curl -fsSL https://acid-sheets.dev/install | bash",
@@ -81,12 +81,11 @@ function Header() {
           Pricing
         </a>
         <a
-          href="https://acid-sheets.dev/install"
-          className="flex items-center gap-2 rounded px-4 py-2 text-[#131010] font-medium transition-opacity hover:opacity-90"
+          href="/app"
+          className="rounded px-4 py-2 text-[#131010] font-medium transition-opacity hover:opacity-90"
           style={{ backgroundColor: "#f2eded" }}
         >
-          <DownloadIcon className="w-[18px] h-[18px]" />
-          Install
+          Dashboard →
         </a>
       </nav>
     </header>
@@ -130,6 +129,26 @@ function HeroSection() {
         <br />
         Built for indie devs shipping MVPs.
       </p>
+
+      {/* Primary CTAs */}
+      <div className="flex items-center gap-3 mb-8">
+        <a
+          href="/app"
+          className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#f2eded", color: "#131010" }}
+        >
+          Open dashboard →
+        </a>
+        <a
+          href="https://github.com/Devansh-365/sheetforge"
+          className="rounded px-6 py-2 border transition-colors"
+          style={{ borderColor: "#3d3838", color: "#b8b2b2" }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View on GitHub
+        </a>
+      </div>
 
       {/* Install tabs */}
       <div className="border rounded" style={{ borderColor: "#3d3838", backgroundColor: "#131010" }}>
