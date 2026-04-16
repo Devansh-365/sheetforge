@@ -122,11 +122,11 @@ export default function DashboardLayout({
               Projects
             </Link>
             <Link
-              href="/"
+              href="/welcome"
               className="transition-colors"
               style={{ color: "#b8b2b2" }}
             >
-              ← Marketing
+              ← About
             </Link>
             <span style={{ color: "#7f7a7a" }}>{user.email}</span>
           </nav>

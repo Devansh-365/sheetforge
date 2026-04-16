@@ -39,11 +39,11 @@ export default function SignInPage() {
             <OpenCodeLogo />
           </Link>
           <Link
-            href="/"
+            href="/welcome"
             className="text-sm transition-colors"
             style={{ color: "#b8b2b2" }}
           >
-            ← Back to marketing
+            ← What is sheetforge?
           </Link>
         </header>
 
