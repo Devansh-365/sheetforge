@@ -14,6 +14,11 @@ export function createProjectRoutes(deps: RouterDeps): Hono<{ Variables: AppVari
   const app = new Hono<{ Variables: AppVariables }>();
   app.use('*', requireSession(deps));
 
+  app.get('/me', (c) => {
+    const user = c.get('user');
+    return c.json({ user });
+  });
+
   app.get('/projects', async (c) => {
     const user = c.get('user');
     const projects = await listProjects({ db: deps.db, userId: user.userId });

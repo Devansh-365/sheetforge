@@ -9,6 +9,7 @@ export const ApiEnvSchema = z.object({
   GOOGLE_OAUTH_REDIRECT_URL: z.string().url(),
   SESSION_JWT_SECRET: z.string().min(32),
   PUBLIC_BASE_URL: z.string().url(),
+  WEB_BASE_URL: z.string().url(),
   PROCESSOR_ENABLED: z
     .union([z.literal('true'), z.literal('false')])
     .default('true')

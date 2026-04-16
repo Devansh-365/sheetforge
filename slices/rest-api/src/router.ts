@@ -13,7 +13,7 @@ export function createRouter(deps: RouterDeps): Hono<{ Variables: AppVariables }
   app.use(
     '*',
     cors({
-      origin: deps.env.PUBLIC_BASE_URL,
+      origin: deps.env.WEB_BASE_URL,
       credentials: true,
     }),
   );

@@ -49,7 +49,7 @@ export function createAuthRoutes(deps: RouterDeps): Hono {
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     });
-    return c.redirect(`${deps.env.PUBLIC_BASE_URL}/?welcome=1`);
+    return c.redirect(`${deps.env.WEB_BASE_URL}/app`);
   });
 
   app.post('/auth/logout', (c) => {

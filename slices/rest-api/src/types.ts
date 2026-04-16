@@ -6,7 +6,10 @@ export interface RouterEnv {
   GOOGLE_OAUTH_CLIENT_SECRET: string;
   GOOGLE_OAUTH_REDIRECT_URL: string;
   SESSION_JWT_SECRET: string;
+  /** API base — where the SDK generator points clients. */
   PUBLIC_BASE_URL: string;
+  /** Browser app origin — used for CORS and post-OAuth redirect. */
+  WEB_BASE_URL: string;
 }
 
 export interface RouterDeps {
