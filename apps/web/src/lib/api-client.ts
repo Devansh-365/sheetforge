@@ -124,3 +124,49 @@ export const refreshSchema = (projectId: string, sheetId: string) =>
     `/v1/projects/${projectId}/sheets/${sheetId}/schema/refresh`,
     { method: 'POST', body: JSON.stringify({}) },
   );
+
+export type WriteLedgerStatus =
+  | 'pending'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  | 'dead_lettered';
+
+export interface LedgerRow {
+  id: string;
+  sheetId: string;
+  writeId: string;
+  idempotencyKey: string | null;
+  status: WriteLedgerStatus;
+  enqueuedAt: string;
+  completedAt: string | null;
+}
+
+export interface LedgerStats {
+  stats: Record<WriteLedgerStatus, number>;
+  recent: LedgerRow[];
+}
+
+export const getLedgerStats = (projectId: string, sheetId: string) =>
+  api<LedgerStats>(
+    `/v1/projects/${projectId}/sheets/${sheetId}/ledger-stats`,
+  );
+
+export interface TestWriteResult {
+  writeId: string;
+  status: 'enqueued' | 'replayed';
+  messageId?: string;
+  submittedRow: Record<string, unknown>;
+}
+
+export const testWrite = (projectId: string, sheetId: string) =>
+  api<TestWriteResult>(
+    `/v1/projects/${projectId}/sheets/${sheetId}/test-write`,
+    { method: 'POST', body: JSON.stringify({}) },
+  );
+
+export const logout = () =>
+  api<{ ok: true }>('/v1/auth/logout', {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });

@@ -11,11 +11,14 @@ import type { Db } from '@acid-sheets/shared-db';
 import { type Logger, createLogger } from '@acid-sheets/shared-logger';
 import { InternalError } from '@acid-sheets/shared-types';
 import {
+  countLedgerByStatus,
   findLedgerByIdempotencyKey,
+  findRecentLedger,
   insertLedger,
   tryAdvisoryXactLock,
   updateLedgerStatus,
 } from './repo.js';
+import type { WriteLedgerRow, WriteLedgerStatus } from './types.js';
 import { type SubmitResult, type WritePayload, streamKeyForSheet } from './types.js';
 
 /**
@@ -189,3 +192,34 @@ export async function processNext<P extends WritePayload>({
 // Helper re-export so consumers of the slice barrel can sidestep the
 // producer/consumer import dance.
 export { streamKeyForSheet } from './types.js';
+
+export interface LedgerStats {
+  stats: Record<WriteLedgerStatus, number>;
+  recent: WriteLedgerRow[];
+}
+
+const EMPTY_STATS: Record<WriteLedgerStatus, number> = {
+  pending: 0,
+  processing: 0,
+  completed: 0,
+  failed: 0,
+  dead_lettered: 0,
+};
+
+export async function getLedgerStats({
+  db,
+  sheetId,
+  recentLimit = 20,
+}: {
+  db: Db;
+  sheetId: string;
+  recentLimit?: number;
+}): Promise<LedgerStats> {
+  const [counts, recent] = await Promise.all([
+    countLedgerByStatus({ db, sheetId }),
+    findRecentLedger({ db, sheetId, limit: recentLimit }),
+  ]);
+  const stats = { ...EMPTY_STATS };
+  for (const c of counts) stats[c.status] = c.count;
+  return { stats, recent };
+}

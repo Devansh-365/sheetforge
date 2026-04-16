@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { CopyButton, pushToast } from "@/components/ui";
 import {
   type ApiKeyHandle,
   type SheetRecord,
@@ -37,8 +38,11 @@ export default function ProjectDetailPage() {
       const { handle, plaintextKey } = await createApiKey(projectId);
       setRevealedKey(plaintextKey);
       setApiKeys((prev) => (prev ? [...prev, handle] : [handle]));
+      pushToast("api key created", "success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "unknown error");
+      const msg = err instanceof Error ? err.message : "unknown error";
+      setError(msg);
+      pushToast(`create key failed: ${msg}`, "error");
     } finally {
       setCreatingKey(false);
     }
@@ -133,9 +137,12 @@ export default function ProjectDetailPage() {
             className="border rounded p-6 mb-4"
             style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
           >
-            <p style={{ color: "#b8b2b2" }} className="text-sm mb-2">
-              [!] copy this key now — it will not be shown again
-            </p>
+            <div className="flex items-center justify-between mb-3">
+              <p style={{ color: "#b8b2b2" }} className="text-sm">
+                [!] copy this key now — it will not be shown again
+              </p>
+              <CopyButton value={revealedKey} label="copy key" />
+            </div>
             <code
               className="block font-bold break-all"
               style={{ color: "#f2eded" }}

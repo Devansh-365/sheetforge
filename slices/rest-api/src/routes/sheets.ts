@@ -9,9 +9,32 @@ import {
   getSheet,
   listSheets,
 } from '@acid-sheets/slice-sheets';
+import { getLedgerStats, submitWrite } from '@acid-sheets/slice-write-queue';
 import { Hono } from 'hono';
 import { requireSession } from '../middleware.js';
 import type { AppVariables, RouterDeps } from '../types.js';
+
+function buildDemoRow(
+  columns: Array<{ name: string; type: 'string' | 'number' | 'boolean' | 'datetime' }>,
+): Record<string, unknown> {
+  const row: Record<string, unknown> = {};
+  for (const col of columns) {
+    switch (col.type) {
+      case 'number':
+        row[col.name] = Math.floor(Math.random() * 1000);
+        break;
+      case 'boolean':
+        row[col.name] = Math.random() > 0.5;
+        break;
+      case 'datetime':
+        row[col.name] = new Date().toISOString();
+        break;
+      default:
+        row[col.name] = `demo-${Math.random().toString(36).slice(2, 8)}`;
+    }
+  }
+  return row;
+}
 
 export function createSheetRoutes(deps: RouterDeps): Hono<{ Variables: AppVariables }> {
   const app = new Hono<{ Variables: AppVariables }>();
@@ -99,6 +122,34 @@ export function createSheetRoutes(deps: RouterDeps): Hono<{ Variables: AppVariab
     await getSheet({ db: deps.db, sheetId, projectId });
     const snapshot = await getLatestSchema({ db: deps.db, sheetId });
     return c.json({ schema: snapshot });
+  });
+
+  app.get('/projects/:projectId/sheets/:sheetId/ledger-stats', async (c) => {
+    const user = c.get('user');
+    const projectId = c.req.param('projectId');
+    const sheetId = c.req.param('sheetId');
+    await getProject({ db: deps.db, userId: user.userId, projectId });
+    await getSheet({ db: deps.db, sheetId, projectId });
+    const ledger = await getLedgerStats({ db: deps.db, sheetId });
+    return c.json(ledger);
+  });
+
+  app.post('/projects/:projectId/sheets/:sheetId/test-write', async (c) => {
+    const user = c.get('user');
+    const projectId = c.req.param('projectId');
+    const sheetId = c.req.param('sheetId');
+    await getProject({ db: deps.db, userId: user.userId, projectId });
+    await getSheet({ db: deps.db, sheetId, projectId });
+    const snapshot = await getLatestSchema({ db: deps.db, sheetId });
+    const row = buildDemoRow(snapshot.columns);
+    const result = await submitWrite({
+      db: deps.db,
+      redis: deps.redis,
+      sheetId,
+      payload: { op: 'append', data: row },
+      idempotencyKey: `demo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    });
+    return c.json({ ...result, submittedRow: row }, 202);
   });
 
   app.get('/projects/:projectId/sheets/:sheetId/sdk.ts', async (c) => {

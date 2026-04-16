@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { CopyButton, pushToast } from "@/components/ui";
 import {
+  type LedgerStats,
   type SchemaSnapshot,
+  type TestWriteResult,
+  getLedgerStats,
   getSchema,
   refreshSchema,
   sdkUrl,
+  testWrite,
 } from "@/lib/api-client";
 
 export default function SheetDetailPage() {
@@ -15,13 +20,35 @@ export default function SheetDetailPage() {
   const { projectId, sheetId } = params;
 
   const [schema, setSchema] = useState<SchemaSnapshot | null>(null);
+  const [ledger, setLedger] = useState<LedgerStats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [lastWrite, setLastWrite] = useState<TestWriteResult | null>(null);
 
   useEffect(() => {
     getSchema(projectId, sheetId)
       .then((res) => setSchema(res.schema))
       .catch((err) => setError(err.message));
+  }, [projectId, sheetId]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const tick = () => {
+      getLedgerStats(projectId, sheetId)
+        .then((res) => {
+          if (!cancelled) setLedger(res);
+        })
+        .catch(() => {
+          /* panel stays stale; the schema-load path surfaces real failures */
+        });
+    };
+    tick();
+    const id = setInterval(tick, 2000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
   }, [projectId, sheetId]);
 
   async function onRefresh() {
@@ -30,10 +57,30 @@ export default function SheetDetailPage() {
     try {
       const { schema: updated } = await refreshSchema(projectId, sheetId);
       setSchema(updated);
+      pushToast("schema re-inferred", "success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "unknown error");
+      const msg = err instanceof Error ? err.message : "unknown error";
+      setError(msg);
+      pushToast(msg, "error");
     } finally {
       setRefreshing(false);
+    }
+  }
+
+  async function onTestWrite() {
+    setSubmitting(true);
+    try {
+      const result = await testWrite(projectId, sheetId);
+      setLastWrite(result);
+      pushToast(
+        `submitted writeId ${result.writeId.slice(0, 8)}… — watch the ledger`,
+        "success",
+      );
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "unknown error";
+      pushToast(msg, "error");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -49,7 +96,13 @@ export default function SheetDetailPage() {
         >
           ← back to project
         </Link>
-        <h1 className="text-[38px] font-bold leading-[57px]">Sheet</h1>
+        <div className="flex items-center gap-3">
+          <h1 className="text-[38px] font-bold leading-[57px]">Sheet</h1>
+          <CopyButton value={sheetId} label="copy sheet id" />
+        </div>
+        <p style={{ color: "#7f7a7a" }} className="text-sm">
+          id: {sheetId}
+        </p>
       </div>
 
       {error && (
@@ -111,6 +164,152 @@ export default function SheetDetailPage() {
               ))}
             </ul>
           </div>
+        )}
+      </section>
+
+      {/* ── Test write ─────────────────────────────────────── */}
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-[16px] font-bold">Test write</h2>
+          <button
+            type="button"
+            onClick={onTestWrite}
+            disabled={submitting || schema === null}
+            className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
+            style={{ backgroundColor: "#f2eded", color: "#131010" }}
+          >
+            {submitting ? "Submitting…" : "+ submit demo row"}
+          </button>
+        </div>
+        <p style={{ color: "#b8b2b2" }} className="text-sm mb-4">
+          Generates a row matching the schema and enqueues it through
+          <code> submitWrite()</code>. Watch the ledger below flip from
+          pending → completed in ~1s.
+        </p>
+        {lastWrite && (
+          <div
+            className="border rounded p-4 text-sm"
+            style={{ borderColor: "#3d3838", backgroundColor: "#131010" }}
+          >
+            <p style={{ color: "#7f7a7a" }} className="mb-2">
+              last submitted writeId{" "}
+              <code style={{ color: "#f2eded" }}>{lastWrite.writeId}</code>{" "}
+              <span style={{ color: "#b8b2b2" }}>
+                ({lastWrite.status})
+              </span>
+            </p>
+            <pre style={{ color: "#b8b2b2" }} className="overflow-x-auto">
+              {JSON.stringify(lastWrite.submittedRow, null, 2)}
+            </pre>
+          </div>
+        )}
+      </section>
+
+      {/* ── Ledger panel ───────────────────────────────────── */}
+      <section>
+        <h2 className="text-[16px] font-bold mb-4">Write ledger</h2>
+        {ledger === null ? (
+          <p style={{ color: "#7f7a7a" }}>[*] loading ledger…</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-5 gap-3 mb-4">
+              {(
+                [
+                  ["pending", ledger.stats.pending],
+                  ["processing", ledger.stats.processing],
+                  ["completed", ledger.stats.completed],
+                  ["failed", ledger.stats.failed],
+                  ["dead_lettered", ledger.stats.dead_lettered],
+                ] as const
+              ).map(([label, count]) => (
+                <div
+                  key={label}
+                  className="border rounded p-3"
+                  style={{
+                    borderColor: "#3d3838",
+                    backgroundColor: "#1b1818",
+                  }}
+                >
+                  <p
+                    style={{ color: "#7f7a7a" }}
+                    className="text-xs mb-1 lowercase"
+                  >
+                    {label}
+                  </p>
+                  <p
+                    style={{ color: "#f2eded" }}
+                    className="text-2xl font-bold"
+                  >
+                    {count}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {ledger.recent.length === 0 ? (
+              <p style={{ color: "#7f7a7a" }} className="text-sm">
+                no writes yet — use the Test write button above
+              </p>
+            ) : (
+              <div
+                className="border rounded overflow-hidden"
+                style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+              >
+                <div
+                  className="grid grid-cols-12 gap-2 px-4 py-2 text-xs border-b"
+                  style={{ borderColor: "#3d3838", color: "#7f7a7a" }}
+                >
+                  <span className="col-span-5">writeId</span>
+                  <span className="col-span-3">status</span>
+                  <span className="col-span-2">enqueued</span>
+                  <span className="col-span-2 text-right">completed</span>
+                </div>
+                <ul>
+                  {ledger.recent.map((r) => (
+                    <li
+                      key={r.id}
+                      className="grid grid-cols-12 gap-2 px-4 py-2 text-xs border-b last:border-b-0"
+                      style={{ borderColor: "#3d3838" }}
+                    >
+                      <code
+                        className="col-span-5"
+                        style={{ color: "#b8b2b2" }}
+                      >
+                        {r.writeId.slice(0, 12)}…
+                      </code>
+                      <span
+                        className="col-span-3"
+                        style={{
+                          color:
+                            r.status === "completed"
+                              ? "#f2eded"
+                              : r.status === "failed"
+                                ? "#f2eded"
+                                : "#b8b2b2",
+                        }}
+                      >
+                        {r.status}
+                      </span>
+                      <span
+                        className="col-span-2"
+                        style={{ color: "#7f7a7a" }}
+                      >
+                        {new Date(r.enqueuedAt).toLocaleTimeString()}
+                      </span>
+                      <span
+                        className="col-span-2 text-right"
+                        style={{ color: "#7f7a7a" }}
+                      >
+                        {r.completedAt
+                          ? new Date(r.completedAt).toLocaleTimeString()
+                          : "—"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </>
         )}
       </section>
 

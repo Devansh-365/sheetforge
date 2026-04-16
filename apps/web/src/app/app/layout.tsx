@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ApiError, getMe } from "@/lib/api-client";
+import { ToastHost, pushToast } from "@/components/ui";
+import { ApiError, getMe, logout } from "@/lib/api-client";
 
 interface User {
   userId: string;
@@ -129,10 +130,27 @@ export default function DashboardLayout({
               ← About
             </Link>
             <span style={{ color: "#7f7a7a" }}>{user.email}</span>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await logout();
+                  pushToast("signed out", "success");
+                  window.location.href = "/signin";
+                } catch {
+                  pushToast("logout failed", "error");
+                }
+              }}
+              className="rounded px-3 py-1 border text-xs transition-colors"
+              style={{ borderColor: "#3d3838", color: "#b8b2b2" }}
+            >
+              sign out
+            </button>
           </nav>
         </header>
         <div className="px-[80px] py-[48px]">{children}</div>
       </div>
+      <ToastHost />
     </main>
   );
 }

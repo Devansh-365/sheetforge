@@ -83,6 +83,50 @@ export async function tryAdvisoryXactLock({
   return Boolean(first?.acquired);
 }
 
+export interface LedgerStatusCount {
+  status: WriteLedgerStatus;
+  count: number;
+}
+
+export async function countLedgerByStatus({
+  db,
+  sheetId,
+}: {
+  db: Db;
+  sheetId: string;
+}): Promise<LedgerStatusCount[]> {
+  const rows = await db
+    .select({
+      status: schema.writeLedger.status,
+      count: sql<number>`count(*)::int`,
+    })
+    .from(schema.writeLedger)
+    .where(eq(schema.writeLedger.sheetId, sheetId))
+    .groupBy(schema.writeLedger.status);
+  return rows.map((r) => ({
+    status: r.status as WriteLedgerStatus,
+    count: r.count,
+  }));
+}
+
+export async function findRecentLedger({
+  db,
+  sheetId,
+  limit = 20,
+}: {
+  db: Db;
+  sheetId: string;
+  limit?: number;
+}): Promise<WriteLedgerRow[]> {
+  const rows = await db
+    .select()
+    .from(schema.writeLedger)
+    .where(eq(schema.writeLedger.sheetId, sheetId))
+    .orderBy(sql`${schema.writeLedger.enqueuedAt} desc`)
+    .limit(limit);
+  return rows.map(toLedgerRow);
+}
+
 function toLedgerRow(row: typeof schema.writeLedger.$inferSelect): WriteLedgerRow {
   return {
     id: row.id,
