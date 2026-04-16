@@ -3,12 +3,36 @@
 import { useState } from "react";
 import { OpenCodeLogo, CopyIcon, ChevronDownIcon } from "@/components/icons";
 
-const installCommands: Record<string, string> = {
-  curl: "curl -fsSL https://sheetforge.dev/install | bash",
-  npm: "npm i @sheetforge/sdk",
-  pnpm: "pnpm add @sheetforge/sdk",
-  bun: "bun add @sheetforge/sdk",
-  pip: "pip install sheetforge",
+// Real SDK usage — this is what devs actually write after connecting a sheet,
+// not "install a CLI" (sheetforge is a hosted API, not a package).
+const usageSnippets: Record<string, string> = {
+  typescript: `// 1. download client.ts from your sheet page (typed from your headers)
+// 2. write the POST:
+import { createWaitlistClient } from './client';
+
+const waitlist = createWaitlistClient({ apiKey: 'sk_live_…' });
+
+await waitlist.create(
+  { email: 'hi@example.com', source: 'hn' },
+  { idempotencyKey: crypto.randomUUID() },
+);
+// → { writeId, status: 'enqueued' | 'replayed' }`,
+  python: `# pip install sheetforge  (generated client — coming soon)
+from sheetforge import WaitlistClient
+from uuid import uuid4
+
+waitlist = WaitlistClient(api_key='sk_live_…')
+
+waitlist.create(
+    {'email': 'hi@example.com', 'source': 'hn'},
+    idempotency_key=str(uuid4()),
+)
+# → { writeId, status: 'enqueued' | 'replayed' }`,
+  curl: `curl -X POST https://sheetforge.dev/v1/sheets/<sheetId>/rows \\
+  -H 'Authorization: Bearer sk_live_…' \\
+  -H 'Idempotency-Key: abc-123' \\
+  -d '{"email":"hi@example.com","source":"hn"}'
+# → HTTP 202 { writeId, status: 'enqueued' }`,
 };
 
 const features = [
@@ -93,11 +117,12 @@ function Header() {
 }
 
 function HeroSection() {
-  const [activeTab, setActiveTab] = useState("curl");
+  const tabs = Object.keys(usageSnippets) as Array<keyof typeof usageSnippets>;
+  const [activeTab, setActiveTab] = useState<keyof typeof usageSnippets>("typescript");
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(installCommands[activeTab]);
+    navigator.clipboard.writeText(usageSnippets[activeTab]);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -113,9 +138,9 @@ function HeroSection() {
           New
         </span>
         <p className="text-[#b8b2b2]">
-          TypeScript and Python SDKs generated live from your sheet schema.{" "}
-          <a href="https://sheetforge.dev/docs/sdk" className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors">
-            See the codegen
+          TypeScript SDKs generated live from your sheet headers.{" "}
+          <a href="/signin" className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors">
+            Connect a sheet →
           </a>
         </p>
       </div>
@@ -150,54 +175,44 @@ function HeroSection() {
         </a>
       </div>
 
-      {/* Install tabs */}
+      {/* Usage snippets — real product calls, not install commands */}
+      <p style={{ color: "#7f7a7a" }} className="text-sm mb-3">
+        Once you connect a sheet, your write path looks like this:
+      </p>
       <div className="border rounded" style={{ borderColor: "#3d3838", backgroundColor: "#131010" }}>
-        <div className="flex border-b" style={{ borderColor: "#3d3838" }}>
-          {Object.keys(installCommands).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className="px-6 py-3 text-sm transition-colors relative"
-              style={{
-                color: activeTab === tab ? "#f2eded" : "#7f7a7a",
-                fontWeight: activeTab === tab ? 700 : 400,
-              }}
-            >
-              {tab}
-              {activeTab === tab && (
-                <span
-                  className="absolute bottom-0 left-0 right-0 h-[2px]"
-                  style={{ backgroundColor: "#f2eded" }}
-                />
-              )}
-            </button>
-          ))}
-        </div>
-        <div className="flex items-center justify-between px-6 py-4">
-          <code className="text-[#b8b2b2]">
-            {installCommands[activeTab].split(activeTab === "curl" ? "sheetforge.dev" : "").map((part, i, arr) => {
-              if (activeTab === "curl" && i === 0) {
-                return (
-                  <span key={i}>
-                    {part}
-                    <span className="text-[#f2eded] font-bold">sheetforge.dev</span>
-                  </span>
-                );
-              }
-              if (activeTab === "curl" && i === 1) {
-                return <span key={i}>{part}</span>;
-              }
-              return <span key={i}>{installCommands[activeTab]}</span>;
-            })}
-          </code>
+        <div className="flex items-center justify-between border-b" style={{ borderColor: "#3d3838" }}>
+          <div className="flex">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className="px-6 py-3 text-sm transition-colors relative"
+                style={{
+                  color: activeTab === tab ? "#f2eded" : "#7f7a7a",
+                  fontWeight: activeTab === tab ? 700 : 400,
+                }}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <span
+                    className="absolute bottom-0 left-0 right-0 h-[2px]"
+                    style={{ backgroundColor: "#f2eded" }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
           <button
             onClick={handleCopy}
-            className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors ml-4"
+            className="text-[#7f7a7a] hover:text-[#b8b2b2] transition-colors px-6 text-xs"
             title="Copy to clipboard"
           >
             {copied ? "Copied!" : <CopyIcon />}
           </button>
         </div>
+        <pre className="px-6 py-4 text-sm overflow-x-auto leading-[22px]" style={{ color: "#b8b2b2" }}>
+          <code>{usageSnippets[activeTab]}</code>
+        </pre>
       </div>
     </section>
   );
