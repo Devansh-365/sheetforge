@@ -1,12 +1,12 @@
-import type { QueueRedisClient } from '@acid-sheets/queue';
-import type { Db } from '@acid-sheets/shared-db';
-import { type AppendSafeRow, createSheetsClient } from '@acid-sheets/shared-google';
-import { createLogger } from '@acid-sheets/shared-logger';
-import { getAccessTokenForUser } from '@acid-sheets/slice-auth';
-import { getProjectUnscoped } from '@acid-sheets/slice-projects';
-import { getLatestSchema } from '@acid-sheets/slice-schema';
-import { listAllSheetsForProcessor } from '@acid-sheets/slice-sheets';
-import { processNext, streamKeyForSheet } from '@acid-sheets/slice-write-queue';
+import type { QueueRedisClient } from '@sheetforge/queue';
+import type { Db } from '@sheetforge/shared-db';
+import { type AppendSafeRow, createSheetsClient } from '@sheetforge/shared-google';
+import { createLogger } from '@sheetforge/shared-logger';
+import { getAccessTokenForUser } from '@sheetforge/slice-auth';
+import { getProjectUnscoped } from '@sheetforge/slice-projects';
+import { getLatestSchema } from '@sheetforge/slice-schema';
+import { listAllSheetsForProcessor } from '@sheetforge/slice-sheets';
+import { processNext, streamKeyForSheet } from '@sheetforge/slice-write-queue';
 import type { ApiEnv } from './env.js';
 
 const log = createLogger({ service: 'processor' });

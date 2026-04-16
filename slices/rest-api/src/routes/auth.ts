@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { generateAuthorizeUrl, handleCallback, issueSessionJwt } from '@acid-sheets/slice-auth';
+import { generateAuthorizeUrl, handleCallback, issueSessionJwt } from '@sheetforge/slice-auth';
 import { Hono } from 'hono';
 import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
 import type { RouterDeps } from '../types.js';

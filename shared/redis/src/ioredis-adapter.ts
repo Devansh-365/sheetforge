@@ -1,4 +1,4 @@
-import type { QueueRedisClient } from '@acid-sheets/queue';
+import type { QueueRedisClient } from '@sheetforge/queue';
 import { Redis, type RedisOptions } from 'ioredis';
 
 /**

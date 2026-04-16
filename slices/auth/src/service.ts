@@ -1,6 +1,6 @@
-import type { Db } from '@acid-sheets/shared-db';
-import { type Logger, createLogger } from '@acid-sheets/shared-logger';
-import { InternalError, UnauthorizedError } from '@acid-sheets/shared-types';
+import type { Db } from '@sheetforge/shared-db';
+import { type Logger, createLogger } from '@sheetforge/shared-logger';
+import { InternalError, UnauthorizedError } from '@sheetforge/shared-types';
 import { SignJWT, jwtVerify } from 'jose';
 import { findRefreshTokenByUserId, upsertUserByEmail } from './repo.js';
 import {

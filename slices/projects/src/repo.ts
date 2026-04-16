@@ -1,5 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto';
-import { type Db, schema } from '@acid-sheets/shared-db';
+import { type Db, schema } from '@sheetforge/shared-db';
 import { and, eq } from 'drizzle-orm';
 import type { ApiKeyHandle, Project } from './types.js';
 

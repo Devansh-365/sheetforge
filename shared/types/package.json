@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/shared-types",
+  "name": "@sheetforge/shared-types",
   "private": true,
   "version": "0.0.0",
   "type": "module",

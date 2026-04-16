@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/codegen",
+  "name": "@sheetforge/codegen",
   "_publishNote": "private until concurrency acceptance demo passes; then flip and publish to npm",
   "private": true,
   "version": "0.0.0",

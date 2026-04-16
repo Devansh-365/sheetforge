@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/worker",
+  "name": "@sheetforge/worker",
   "private": true,
   "version": "0.0.0",
   "scripts": {

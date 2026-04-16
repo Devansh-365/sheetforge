@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/slice-write-queue",
+  "name": "@sheetforge/slice-write-queue",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,10 +17,10 @@
   "dependencies": {
     "drizzle-orm": "^0.40.0",
     "zod": "^3.24.2",
-    "@acid-sheets/queue": "workspace:^",
-    "@acid-sheets/shared-db": "workspace:^",
-    "@acid-sheets/shared-logger": "workspace:^",
-    "@acid-sheets/shared-types": "workspace:^"
+    "@sheetforge/queue": "workspace:^",
+    "@sheetforge/shared-db": "workspace:^",
+    "@sheetforge/shared-logger": "workspace:^",
+    "@sheetforge/shared-types": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.10.2"

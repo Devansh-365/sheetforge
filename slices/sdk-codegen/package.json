@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/slice-sdk-codegen",
+  "name": "@sheetforge/slice-sdk-codegen",
   "private": true,
   "version": "0.0.0",
   "scripts": {

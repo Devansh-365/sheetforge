@@ -1,2 +1,2 @@
 export { createIoredisQueueClient } from './ioredis-adapter.js';
-export type { QueueRedisClient } from '@acid-sheets/queue';
+export type { QueueRedisClient } from '@sheetforge/queue';

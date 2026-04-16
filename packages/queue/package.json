@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/queue",
+  "name": "@sheetforge/queue",
   "_publishNote": "private until the concurrency acceptance demo passes; flip to public and publish to npm after",
   "private": true,
   "version": "0.0.0",

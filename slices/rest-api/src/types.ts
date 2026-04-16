@@ -1,5 +1,5 @@
-import type { QueueRedisClient } from '@acid-sheets/queue';
-import type { Db } from '@acid-sheets/shared-db';
+import type { QueueRedisClient } from '@sheetforge/queue';
+import type { Db } from '@sheetforge/shared-db';
 
 export interface RouterEnv {
   GOOGLE_OAUTH_CLIENT_ID: string;

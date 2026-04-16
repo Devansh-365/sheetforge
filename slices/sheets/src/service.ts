@@ -1,6 +1,6 @@
-import type { Db } from '@acid-sheets/shared-db';
-import type { SheetsClient } from '@acid-sheets/shared-google';
-import { ForbiddenError, NotFoundError } from '@acid-sheets/shared-types';
+import type { Db } from '@sheetforge/shared-db';
+import type { SheetsClient } from '@sheetforge/shared-google';
+import { ForbiddenError, NotFoundError } from '@sheetforge/shared-types';
 import {
   deleteSheetById,
   findAllSheets,

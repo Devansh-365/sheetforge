@@ -1,16 +1,16 @@
-import { emitTypeScriptSdk } from '@acid-sheets/codegen';
-import { createSheetsClient } from '@acid-sheets/shared-google';
-import { getAccessTokenForUser } from '@acid-sheets/slice-auth';
-import { getProject } from '@acid-sheets/slice-projects';
-import { getLatestSchema, inferSchema, saveSchemaSnapshot } from '@acid-sheets/slice-schema';
+import { emitTypeScriptSdk } from '@sheetforge/codegen';
+import { createSheetsClient } from '@sheetforge/shared-google';
+import { getAccessTokenForUser } from '@sheetforge/slice-auth';
+import { getProject } from '@sheetforge/slice-projects';
+import { getLatestSchema, inferSchema, saveSchemaSnapshot } from '@sheetforge/slice-schema';
 import {
   attachSchemaSnapshot,
   connectSheet,
   disconnectSheet,
   getSheet,
   listSheets,
-} from '@acid-sheets/slice-sheets';
-import { getLedgerStats, submitWrite } from '@acid-sheets/slice-write-queue';
+} from '@sheetforge/slice-sheets';
+import { getLedgerStats, submitWrite } from '@sheetforge/slice-write-queue';
 import { Hono } from 'hono';
 import { requireSession } from '../middleware.js';
 import type { AppVariables, RouterDeps } from '../types.js';

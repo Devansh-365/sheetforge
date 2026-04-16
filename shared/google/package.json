@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/shared-google",
+  "name": "@sheetforge/shared-google",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "zod": "^3.24.2",
-    "@acid-sheets/shared-logger": "workspace:^",
-    "@acid-sheets/shared-types": "workspace:^"
+    "@sheetforge/shared-logger": "workspace:^",
+    "@sheetforge/shared-types": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.10.2"

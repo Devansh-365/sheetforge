@@ -26,40 +26,40 @@ importers:
 
   apps/api:
     dependencies:
-      '@acid-sheets/queue':
+      '@sheetforge/queue':
         specifier: workspace:^
         version: link:../../packages/queue
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-google':
+      '@sheetforge/shared-google':
         specifier: workspace:^
         version: link:../../shared/google
-      '@acid-sheets/shared-logger':
+      '@sheetforge/shared-logger':
         specifier: workspace:^
         version: link:../../shared/logger
-      '@acid-sheets/shared-redis':
+      '@sheetforge/shared-redis':
         specifier: workspace:^
         version: link:../../shared/redis
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
-      '@acid-sheets/slice-auth':
+      '@sheetforge/slice-auth':
         specifier: workspace:^
         version: link:../../slices/auth
-      '@acid-sheets/slice-projects':
+      '@sheetforge/slice-projects':
         specifier: workspace:^
         version: link:../../slices/projects
-      '@acid-sheets/slice-rest-api':
+      '@sheetforge/slice-rest-api':
         specifier: workspace:^
         version: link:../../slices/rest-api
-      '@acid-sheets/slice-schema':
+      '@sheetforge/slice-schema':
         specifier: workspace:^
         version: link:../../slices/schema
-      '@acid-sheets/slice-sheets':
+      '@sheetforge/slice-sheets':
         specifier: workspace:^
         version: link:../../slices/sheets
-      '@acid-sheets/slice-write-queue':
+      '@sheetforge/slice-write-queue':
         specifier: workspace:^
         version: link:../../slices/write-queue
       '@hono/node-server':
@@ -171,10 +171,10 @@ importers:
 
   shared/google:
     dependencies:
-      '@acid-sheets/shared-logger':
+      '@sheetforge/shared-logger':
         specifier: workspace:^
         version: link:../logger
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../types
       zod:
@@ -203,7 +203,7 @@ importers:
 
   shared/redis:
     dependencies:
-      '@acid-sheets/queue':
+      '@sheetforge/queue':
         specifier: workspace:^
         version: link:../../packages/queue
       ioredis:
@@ -225,13 +225,13 @@ importers:
 
   slices/auth:
     dependencies:
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-logger':
+      '@sheetforge/shared-logger':
         specifier: workspace:^
         version: link:../../shared/logger
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
       drizzle-orm:
@@ -250,10 +250,10 @@ importers:
 
   slices/projects:
     dependencies:
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
       drizzle-orm:
@@ -269,37 +269,37 @@ importers:
 
   slices/rest-api:
     dependencies:
-      '@acid-sheets/codegen':
+      '@sheetforge/codegen':
         specifier: workspace:^
         version: link:../../packages/codegen
-      '@acid-sheets/queue':
+      '@sheetforge/queue':
         specifier: workspace:^
         version: link:../../packages/queue
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-google':
+      '@sheetforge/shared-google':
         specifier: workspace:^
         version: link:../../shared/google
-      '@acid-sheets/shared-logger':
+      '@sheetforge/shared-logger':
         specifier: workspace:^
         version: link:../../shared/logger
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
-      '@acid-sheets/slice-auth':
+      '@sheetforge/slice-auth':
         specifier: workspace:^
         version: link:../auth
-      '@acid-sheets/slice-projects':
+      '@sheetforge/slice-projects':
         specifier: workspace:^
         version: link:../projects
-      '@acid-sheets/slice-schema':
+      '@sheetforge/slice-schema':
         specifier: workspace:^
         version: link:../schema
-      '@acid-sheets/slice-sheets':
+      '@sheetforge/slice-sheets':
         specifier: workspace:^
         version: link:../sheets
-      '@acid-sheets/slice-write-queue':
+      '@sheetforge/slice-write-queue':
         specifier: workspace:^
         version: link:../write-queue
       hono:
@@ -315,13 +315,13 @@ importers:
 
   slices/schema:
     dependencies:
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-google':
+      '@sheetforge/shared-google':
         specifier: workspace:^
         version: link:../../shared/google
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
       drizzle-orm:
@@ -339,13 +339,13 @@ importers:
 
   slices/sheets:
     dependencies:
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-google':
+      '@sheetforge/shared-google':
         specifier: workspace:^
         version: link:../../shared/google
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
       drizzle-orm:
@@ -361,16 +361,16 @@ importers:
 
   slices/write-queue:
     dependencies:
-      '@acid-sheets/queue':
+      '@sheetforge/queue':
         specifier: workspace:^
         version: link:../../packages/queue
-      '@acid-sheets/shared-db':
+      '@sheetforge/shared-db':
         specifier: workspace:^
         version: link:../../shared/db
-      '@acid-sheets/shared-logger':
+      '@sheetforge/shared-logger':
         specifier: workspace:^
         version: link:../../shared/logger
-      '@acid-sheets/shared-types':
+      '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
       drizzle-orm:

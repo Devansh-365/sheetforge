@@ -20,7 +20,7 @@ Thin, typed, runtime-agnostic Google Sheets v4 HTTP client. Accepts an OAuth acc
 The native Google `values.append` endpoint has a documented race — concurrent appends can drop rows (e.g. 4 parallel appends → 3 rows). We intentionally do not expose it. Use `appendSafe`, which wraps `batchUpdate` with `insertDimension` + `updateCells` in a single call for atomicity. See `.omc/plans/reference-queue-impl.md` §6.
 
 ## Error mapping
-All non-2xx responses are converted to typed `DomainError` subclasses from `@acid-sheets/shared-types`:
+All non-2xx responses are converted to typed `DomainError` subclasses from `@sheetforge/shared-types`:
 - 401 → `UnauthorizedError` (caller should refresh token and retry)
 - 403 → `ForbiddenError` (user lacks access to the sheet)
 - 404 → `NotFoundError`

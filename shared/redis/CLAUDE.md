@@ -1,11 +1,11 @@
 # shared/redis
 
 ## Purpose
-Runtime-specific Redis adapters that implement `@acid-sheets/queue`'s `QueueRedisClient` contract. The queue engine is DI — this package is where the actual ioredis / @upstash/redis wiring lives.
+Runtime-specific Redis adapters that implement `@sheetforge/queue`'s `QueueRedisClient` contract. The queue engine is DI — this package is where the actual ioredis / @upstash/redis wiring lives.
 
 ## Public API (barrel)
 - `createIoredisQueueClient({ url, options? })` — TCP-based Node adapter. Returns a `QueueRedisClient` + `disconnect()`. Used by long-lived Node processes.
-- `QueueRedisClient` type — re-exported from `@acid-sheets/queue` for convenience.
+- `QueueRedisClient` type — re-exported from `@sheetforge/queue` for convenience.
 
 ## Runtime mapping
 - **Node (apps/worker, apps/api in Node mode):** `createIoredisQueueClient`

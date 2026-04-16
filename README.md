@@ -46,7 +46,7 @@ node --env-file=.env shared/db/scripts/push-migration.mjs
 pnpm dev
 
 # api + inline write-queue processor → http://localhost:3001
-pnpm --filter @acid-sheets/api dev
+pnpm --filter @sheetforge/api dev
 ```
 
 ### end-to-end flow

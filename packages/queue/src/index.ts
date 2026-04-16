@@ -1,4 +1,4 @@
-// @acid-sheets/queue — OSS (MIT) write-queue engine.
+// @sheetforge/queue — OSS (MIT) write-queue engine.
 //
 // The public surface is deliberately narrow: the Redis client is DI, the
 // stream layout is opinionated (one consumer group, one message at a time),

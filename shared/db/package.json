@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/shared-db",
+  "name": "@sheetforge/shared-db",
   "private": true,
   "version": "0.0.0",
   "type": "module",

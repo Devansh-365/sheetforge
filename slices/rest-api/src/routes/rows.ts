@@ -1,10 +1,10 @@
-import { createSheetsClient } from '@acid-sheets/shared-google';
-import { ForbiddenError } from '@acid-sheets/shared-types';
-import { getAccessTokenForUser } from '@acid-sheets/slice-auth';
-import { getProjectUnscoped } from '@acid-sheets/slice-projects';
-import { getLatestSchema } from '@acid-sheets/slice-schema';
-import { getSheet } from '@acid-sheets/slice-sheets';
-import { submitWrite } from '@acid-sheets/slice-write-queue';
+import { createSheetsClient } from '@sheetforge/shared-google';
+import { ForbiddenError } from '@sheetforge/shared-types';
+import { getAccessTokenForUser } from '@sheetforge/slice-auth';
+import { getProjectUnscoped } from '@sheetforge/slice-projects';
+import { getLatestSchema } from '@sheetforge/slice-schema';
+import { getSheet } from '@sheetforge/slice-sheets';
+import { submitWrite } from '@sheetforge/slice-write-queue';
 import { Hono } from 'hono';
 import { requireApiKey } from '../middleware.js';
 import type { AppVariables, RouterDeps } from '../types.js';

@@ -27,7 +27,7 @@ Fix forward: generate a new migration, never edit an existing SQL file.
 
 ### How to generate a new migration
 ```bash
-pnpm --filter @acid-sheets/shared-db db:generate
+pnpm --filter @sheetforge/shared-db db:generate
 # Review the generated SQL in migrations/ before committing
 ```
 

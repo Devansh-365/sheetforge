@@ -1,11 +1,11 @@
-import { type Logger, createLogger } from '@acid-sheets/shared-logger';
+import { type Logger, createLogger } from '@sheetforge/shared-logger';
 import {
   ForbiddenError,
   InternalError,
   NotFoundError,
   RateLimitedError,
   UnauthorizedError,
-} from '@acid-sheets/shared-types';
+} from '@sheetforge/shared-types';
 import {
   type AppendSafeRow,
   type BatchUpdateRequest,

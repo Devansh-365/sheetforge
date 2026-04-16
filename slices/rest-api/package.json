@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/slice-rest-api",
+  "name": "@sheetforge/slice-rest-api",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,17 +17,17 @@
   "dependencies": {
     "hono": "^4.6.13",
     "zod": "^3.24.2",
-    "@acid-sheets/codegen": "workspace:^",
-    "@acid-sheets/queue": "workspace:^",
-    "@acid-sheets/shared-db": "workspace:^",
-    "@acid-sheets/shared-google": "workspace:^",
-    "@acid-sheets/shared-logger": "workspace:^",
-    "@acid-sheets/shared-types": "workspace:^",
-    "@acid-sheets/slice-auth": "workspace:^",
-    "@acid-sheets/slice-projects": "workspace:^",
-    "@acid-sheets/slice-schema": "workspace:^",
-    "@acid-sheets/slice-sheets": "workspace:^",
-    "@acid-sheets/slice-write-queue": "workspace:^"
+    "@sheetforge/codegen": "workspace:^",
+    "@sheetforge/queue": "workspace:^",
+    "@sheetforge/shared-db": "workspace:^",
+    "@sheetforge/shared-google": "workspace:^",
+    "@sheetforge/shared-logger": "workspace:^",
+    "@sheetforge/shared-types": "workspace:^",
+    "@sheetforge/slice-auth": "workspace:^",
+    "@sheetforge/slice-projects": "workspace:^",
+    "@sheetforge/slice-schema": "workspace:^",
+    "@sheetforge/slice-sheets": "workspace:^",
+    "@sheetforge/slice-write-queue": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.10.2"

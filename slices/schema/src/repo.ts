@@ -1,4 +1,4 @@
-import { type Db, schema } from '@acid-sheets/shared-db';
+import { type Db, schema } from '@sheetforge/shared-db';
 import { desc, eq } from 'drizzle-orm';
 import type { ColumnDescriptor, SchemaSnapshot } from './types.js';
 

@@ -85,7 +85,7 @@ export default function DashboardLayout({
               Start the API in another terminal:
             </p>
             <code style={{ color: "#f2eded" }}>
-              pnpm --filter @acid-sheets/api dev
+              pnpm --filter @sheetforge/api dev
             </code>
           </div>
           <button

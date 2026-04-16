@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/shared-redis",
+  "name": "@sheetforge/shared-redis",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "ioredis": "^5.4.1",
-    "@acid-sheets/queue": "workspace:^"
+    "@sheetforge/queue": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.10.2"

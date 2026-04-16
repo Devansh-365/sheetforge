@@ -1,5 +1,5 @@
 {
-  "name": "@acid-sheets/shared-logger",
+  "name": "@sheetforge/shared-logger",
   "private": true,
   "version": "0.0.0",
   "type": "module",

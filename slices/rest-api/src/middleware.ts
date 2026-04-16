@@ -1,6 +1,6 @@
-import { UnauthorizedError } from '@acid-sheets/shared-types';
-import { verifySessionJwt } from '@acid-sheets/slice-auth';
-import { validateApiKey } from '@acid-sheets/slice-projects';
+import { UnauthorizedError } from '@sheetforge/shared-types';
+import { verifySessionJwt } from '@sheetforge/slice-auth';
+import { validateApiKey } from '@sheetforge/slice-projects';
 import type { MiddlewareHandler } from 'hono';
 import { getCookie } from 'hono/cookie';
 import type { AppVariables, RouterDeps } from './types.js';

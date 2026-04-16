@@ -1,5 +1,5 @@
-import type { Db } from '@acid-sheets/shared-db';
-import { ForbiddenError, NotFoundError, UnauthorizedError } from '@acid-sheets/shared-types';
+import type { Db } from '@sheetforge/shared-db';
+import { ForbiddenError, NotFoundError, UnauthorizedError } from '@sheetforge/shared-types';
 import {
   apiKeyLooksValid,
   deleteApiKeyById,

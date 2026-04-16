@@ -5,7 +5,7 @@ import {
   listApiKeys,
   listProjects,
   revokeApiKey,
-} from '@acid-sheets/slice-projects';
+} from '@sheetforge/slice-projects';
 import { Hono } from 'hono';
 import { requireSession } from '../middleware.js';
 import type { AppVariables, RouterDeps } from '../types.js';

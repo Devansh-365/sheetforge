@@ -72,7 +72,7 @@ const config = [
               group: [
                 '**/packages/queue/src/producer*',
                 '**/queue/src/producer*',
-                '@acid-sheets/queue/src/producer*',
+                '@sheetforge/queue/src/producer*',
               ],
               message:
                 'Direct producer access is forbidden. Writes must go through slices/write-queue/submitWrite(). (CLAUDE.md principle 3)',
@@ -81,7 +81,7 @@ const config = [
               group: [
                 '**/packages/queue/src/internal/**',
                 '**/queue/src/internal/**',
-                '@acid-sheets/queue/src/internal/**',
+                '@sheetforge/queue/src/internal/**',
               ],
               message:
                 'Importing queue internals is forbidden. Use slices/write-queue/submitWrite().',

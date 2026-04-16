@@ -3,9 +3,9 @@
   "private": true,
   "packageManager": "pnpm@9.12.3",
   "scripts": {
-    "dev": "turbo run dev --filter=@acid-sheets/web --filter=@acid-sheets/api",
-    "dev:web": "pnpm --filter @acid-sheets/web dev",
-    "dev:api": "pnpm --filter @acid-sheets/api dev",
+    "dev": "turbo run dev --filter=@sheetforge/web --filter=@sheetforge/api",
+    "dev:web": "pnpm --filter @sheetforge/web dev",
+    "dev:api": "pnpm --filter @sheetforge/api dev",
     "db:push": "node --env-file=.env shared/db/scripts/push-migration.mjs",
     "build": "turbo run build",
     "lint": "turbo run lint",
