@@ -81,11 +81,11 @@ function Header() {
           Pricing
         </a>
         <a
-          href="/app"
+          href="/signin"
           className="rounded px-4 py-2 text-[#131010] font-medium transition-opacity hover:opacity-90"
           style={{ backgroundColor: "#f2eded" }}
         >
-          Dashboard →
+          Sign in →
         </a>
       </nav>
     </header>
@@ -133,11 +133,11 @@ function HeroSection() {
       {/* Primary CTAs */}
       <div className="flex items-center gap-3 mb-8">
         <a
-          href="/app"
+          href="/signin"
           className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90"
           style={{ backgroundColor: "#f2eded", color: "#131010" }}
         >
-          Open dashboard →
+          Sign in with Google →
         </a>
         <a
           href="https://github.com/Devansh-365/sheetforge"

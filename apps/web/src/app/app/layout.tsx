@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ApiError, getMe, loginUrl } from "@/lib/api-client";
+import { ApiError, getMe } from "@/lib/api-client";
 
 interface User {
   userId: string;
@@ -29,7 +29,9 @@ export default function DashboardLayout({
       })
       .catch((err) => {
         if (err instanceof ApiError && err.status === 401) {
-          window.location.href = loginUrl();
+          // Send users to the proper sign-in landing, not straight to
+          // Google — they get a chance to read what they're consenting to.
+          window.location.href = "/signin";
           return;
         }
         // Network / CORS / API-down → show a real message, don't go blank.
