@@ -2,10 +2,26 @@
   "name": "@acid-sheets/slice-sheets",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
-    "test": "vitest run",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.40.0",
+    "zod": "^3.24.2",
+    "@acid-sheets/shared-db": "workspace:^",
+    "@acid-sheets/shared-google": "workspace:^",
+    "@acid-sheets/shared-types": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
   }
 }

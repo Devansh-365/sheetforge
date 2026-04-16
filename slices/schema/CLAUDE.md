@@ -1,24 +1,32 @@
 # slices/schema
 
 ## Purpose
-Type inference from sheet headers and column-level validation rule management.
+Type inference from a live Google Sheet's header + sample rows, plus monotonic-versioned snapshot persistence. Produces the typed column descriptors the SDK codegen slice turns into TypeScript types.
 
-## Public API
-Exported from `index.ts`:
-- `inferSchema(columns)` — infer Zod schema from sheet column metadata
-- `getSchemaForSheet(sheetId)` — fetch persisted schema for a sheet
-- `validateRow(schema, row)` — validate a data row against a sheet schema
+## Public API (barrel)
+- `inferSchema({ sheetsClient, spreadsheetId, tabName, sampleSize? })` — reads the first `N + 1` rows (default 50 + header) and returns `ColumnDescriptor[]`. Stateless; does not touch the DB.
+- `saveSchemaSnapshot({ db, sheetId, columns })` — persists a new row in `schemas`, bumps `version` from the previous latest.
+- `getLatestSchema({ db, sheetId })` — newest snapshot, or throws `NotFoundError`.
+- Types: `ColumnType` (`'string'|'number'|'boolean'|'datetime'`), `ColumnDescriptor`, `SchemaSnapshot`. Zod: `ColumnTypeSchema`, `ColumnDescriptorSchema`, `SchemaSnapshotSchema`.
 
-## Key Files
-- `service.ts` — schema inference logic, validation rule application
-- `repo.ts` — Postgres CRUD for persisted schema rules
-- `types.ts` — Zod schemas: ColumnSchema, SheetSchema, ValidationRule
+## Type detection rules
+Order-sensitive. Falls through to `string` on ambiguity:
+1. `boolean` — every non-empty sample matches `/^(true|false)$/i`.
+2. `number` — every sample parses as a finite `Number`.
+3. `datetime` — every sample matches `\d{4}-\d{2}-\d{2}` prefix AND `Date.parse` succeeds.
+4. `string` — default.
 
-## Gotchas
-- Schema inference is best-effort; types default to `string` when ambiguous.
-- Zod schemas are the source of truth — never hand-write duplicate TS types.
+`nullable` is set when any data row has an empty value in the column.
+
+Headers with an empty name throw `ValidationError`. Empty sheets throw `ValidationError`.
+
+## Non-goals (V0)
+- No enum detection from Sheets data validation (would require a second `getSpreadsheet` call).
+- No user-editable override of detected types (V1 dashboard feature).
+- No handling of locale-specific number formats (`1.000,00`).
+- No inference from >50 rows — the sample window is a tradeoff between accuracy and Google quota burn.
 
 ## Never Do
-- Don't hardcode type mappings for specific sheet structures.
-- Don't store inferred schemas without user confirmation (V1 behavior TBD).
-- Don't import another slice's internals — only their `index.ts`.
+- Don't import another slice's internals — only barrels.
+- Don't hand-write Zod types that duplicate `ColumnDescriptorSchema`.
+- Don't persist a snapshot with the same `(sheetId, version)` — let `saveSchemaSnapshot` own the version bump.

@@ -1,24 +1,21 @@
 # slices/sheets
 
 ## Purpose
-Connect a Google Sheet to a project, introspect its headers, and store sheet metadata.
+Connect a Google Sheet (by ID + tab name) to a project, validate it exists via the Sheets API, and persist the row. Ownership-scoped reads, writes, and disconnect.
 
-## Public API
-Exported from `index.ts`:
-- `createSheetsRouter()` — Hono router for sheet connect/list endpoints
-- `getSheetById(id)` — fetch sheet metadata
-- `introspectSheet(spreadsheetId)` — read headers from Google Sheets API
+## Public API (barrel)
+- `connectSheet({ db, sheetsClient, projectId, googleSheetId, tabName })` — verifies the spreadsheet + tab via the injected Sheets client, then inserts the sheets row.
+- `listSheets({ db, projectId })` — project-scoped list.
+- `getSheet({ db, sheetId, projectId })` — ownership-enforced single fetch.
+- `disconnectSheet({ db, sheetId, projectId })` — cascade-safe delete (DB cascades to schemas and write_ledger).
+- `attachSchemaSnapshot({ db, sheetId, schemaSnapshotId })` — used by the schema slice after it persists a new snapshot.
+- Types: `SheetRecord`, `ConnectSheetInput`. Zod schemas: `SheetRecordSchema`, `ConnectSheetInputSchema`.
 
-## Key Files
-- `service.ts` — connect flow, introspection, metadata refresh
-- `repo.ts` — Postgres CRUD for sheet records
-- `types.ts` — Zod schemas: Sheet, SheetColumn, IntrospectionResult
-
-## Gotchas
-- Introspection calls Google Sheets API — subject to quota limits.
-- Sheet metadata must be refreshed when columns change.
+## Dependency injection
+- `sheetsClient` is passed in so the slice is testable without live Google credentials. Production callers pass a fresh `createSheetsClient({ accessToken })` per request, refreshing the access token beforehand via `slices/auth`.
 
 ## Never Do
-- Don't write to Google Sheets from this slice — that goes through `slices/write-queue`.
-- Don't cache introspection results in-memory; use Redis via `shared/redis`.
-- Don't import another slice's internals — only their `index.ts`.
+- Don't write data rows here — that's the write-queue slice's job.
+- Don't cache the full `metadata` response — only what's persisted in the row.
+- Don't call Google Sheets for listings — the DB is the source of truth for connected sheets.
+- Don't import another slice's internals — only barrels.

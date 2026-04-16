@@ -176,15 +176,72 @@ importers:
         specifier: ^22.10.2
         version: 22.19.17
 
-  slices/projects: {}
+  slices/projects:
+    dependencies:
+      '@acid-sheets/shared-db':
+        specifier: workspace:^
+        version: link:../../shared/db
+      '@acid-sheets/shared-types':
+        specifier: workspace:^
+        version: link:../../shared/types
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   slices/rest-api: {}
 
-  slices/schema: {}
+  slices/schema:
+    dependencies:
+      '@acid-sheets/shared-db':
+        specifier: workspace:^
+        version: link:../../shared/db
+      '@acid-sheets/shared-google':
+        specifier: workspace:^
+        version: link:../../shared/google
+      '@acid-sheets/shared-types':
+        specifier: workspace:^
+        version: link:../../shared/types
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   slices/sdk-codegen: {}
 
-  slices/sheets: {}
+  slices/sheets:
+    dependencies:
+      '@acid-sheets/shared-db':
+        specifier: workspace:^
+        version: link:../../shared/db
+      '@acid-sheets/shared-google':
+        specifier: workspace:^
+        version: link:../../shared/google
+      '@acid-sheets/shared-types':
+        specifier: workspace:^
+        version: link:../../shared/types
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   slices/write-queue: {}
 
