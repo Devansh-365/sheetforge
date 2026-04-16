@@ -108,7 +108,21 @@ importers:
         specifier: ^0.30.4
         version: 0.30.6
 
-  shared/google: {}
+  shared/google:
+    dependencies:
+      '@acid-sheets/shared-logger':
+        specifier: workspace:^
+        version: link:../logger
+      '@acid-sheets/shared-types':
+        specifier: workspace:^
+        version: link:../types
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   shared/logger:
     dependencies:
@@ -137,7 +151,30 @@ importers:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@22.19.17)(lightningcss@1.32.0)(msw@2.13.3(@types/node@22.19.17)(typescript@5.9.3))
 
-  slices/auth: {}
+  slices/auth:
+    dependencies:
+      '@acid-sheets/shared-db':
+        specifier: workspace:^
+        version: link:../../shared/db
+      '@acid-sheets/shared-logger':
+        specifier: workspace:^
+        version: link:../../shared/logger
+      '@acid-sheets/shared-types':
+        specifier: workspace:^
+        version: link:../../shared/types
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
+      jose:
+        specifier: ^5.9.6
+        version: 5.10.0
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
 
   slices/projects: {}
 
@@ -2431,6 +2468,9 @@ packages:
   jiti@2.6.1:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
+
+  jose@5.10.0:
+    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
 
   jose@6.2.2:
     resolution: {integrity: sha512-d7kPDd34KO/YnzaDOlikGpOurfF0ByC2sEV4cANCtdqLlTfBlw2p14O/5d/zv40gJPbIQxfES3nSx1/oYNyuZQ==}
@@ -5436,6 +5476,8 @@ snapshots:
   isexe@3.1.5: {}
 
   jiti@2.6.1: {}
+
+  jose@5.10.0: {}
 
   jose@6.2.2: {}
 

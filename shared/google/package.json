@@ -2,9 +2,24 @@
   "name": "@acid-sheets/shared-google",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.2",
+    "@acid-sheets/shared-logger": "workspace:^",
+    "@acid-sheets/shared-types": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2"
   }
 }
