@@ -1,9 +1,6 @@
 # Planning artifacts — local only, never commit
 .omc/
 
-# Marketing site (template copy, local-only working tree)
-marketing/
-
 # Dependencies
 node_modules/
 .pnpm-store/
