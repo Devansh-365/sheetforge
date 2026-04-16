@@ -1,0 +1,52 @@
+# Planning artifacts — local only, never commit
+.omc/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.next/
+.turbo/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test + coverage
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Cache
+.cache/
+.eslintcache
+.turbo/
+
+# TypeScript
+*.tsbuildinfo
+
+# Generated SDKs (output of codegen, regenerable)
+packages/sdk-ts/generated/
+packages/sdk-py/generated/
