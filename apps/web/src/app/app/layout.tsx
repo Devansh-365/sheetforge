@@ -123,11 +123,11 @@ export default function DashboardLayout({
               Projects
             </Link>
             <Link
-              href="/welcome"
+              href="/"
               className="transition-colors"
               style={{ color: "#b8b2b2" }}
             >
-              ← About
+              ← Home
             </Link>
             <span style={{ color: "#7f7a7a" }}>{user.email}</span>
             <button

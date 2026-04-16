@@ -39,7 +39,7 @@ export default function SignInPage() {
             <OpenCodeLogo />
           </Link>
           <Link
-            href="/welcome"
+            href="/"
             className="text-sm transition-colors"
             style={{ color: "#b8b2b2" }}
           >
