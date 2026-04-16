@@ -9,6 +9,9 @@ interface User {
   email: string;
 }
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+
 export default function DashboardLayout({
   children,
 }: {
@@ -16,6 +19,7 @@ export default function DashboardLayout({
 }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getMe()
@@ -28,6 +32,12 @@ export default function DashboardLayout({
           window.location.href = loginUrl();
           return;
         }
+        // Network / CORS / API-down → show a real message, don't go blank.
+        setError(
+          err instanceof Error
+            ? err.message
+            : "could not reach the API",
+        );
         setLoading(false);
       });
   }, []);
@@ -45,7 +55,48 @@ export default function DashboardLayout({
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <main>
+        <div
+          className="mx-auto border-l border-r min-h-screen px-[80px] py-[64px]"
+          style={{ maxWidth: "1080px", borderColor: "#3d3838" }}
+        >
+          <h1 className="text-[38px] font-bold leading-[57px] mb-4">
+            API unreachable
+          </h1>
+          <p style={{ color: "#b8b2b2" }} className="mb-2">
+            [!] The dashboard couldn&apos;t reach the sheetforge API at{" "}
+            <code style={{ color: "#f2eded" }}>{API_URL}</code>.
+          </p>
+          {error && (
+            <p style={{ color: "#7f7a7a" }} className="text-sm mb-6">
+              {error}
+            </p>
+          )}
+          <div
+            className="border rounded p-6 mb-6"
+            style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+          >
+            <p style={{ color: "#b8b2b2" }} className="text-sm mb-3">
+              Start the API in another terminal:
+            </p>
+            <code style={{ color: "#f2eded" }}>
+              pnpm --filter @acid-sheets/api dev
+            </code>
+          </div>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="rounded px-6 py-2 font-medium"
+            style={{ backgroundColor: "#f2eded", color: "#131010" }}
+          >
+            Retry
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main>
