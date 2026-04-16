@@ -55,6 +55,23 @@ export async function getProject({
   return project;
 }
 
+/**
+ * Used by the processor and by API-key authed routes where ownership is
+ * already established transitively (via the API key → project mapping).
+ * Does NOT check user ownership — callers must have already authorised.
+ */
+export async function getProjectUnscoped({
+  db,
+  projectId,
+}: {
+  db: Db;
+  projectId: string;
+}): Promise<Project> {
+  const project = await findProjectById({ db, projectId });
+  if (!project) throw new NotFoundError('Project not found');
+  return project;
+}
+
 export async function deleteProject({
   db,
   projectId,

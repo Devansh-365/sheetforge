@@ -1,21 +1,23 @@
 # shared/redis
 
 ## Purpose
-Redis client abstraction supporting both Upstash Redis (HTTP) and ioredis (TCP) via dependency injection.
+Runtime-specific Redis adapters that implement `@acid-sheets/queue`'s `QueueRedisClient` contract. The queue engine is DI — this package is where the actual ioredis / @upstash/redis wiring lives.
 
-## Public API
-Exported from `src/index.ts`:
-- `createRedisClient(config)` — returns a unified Redis client interface
+## Public API (barrel)
+- `createIoredisQueueClient({ url, options? })` — TCP-based Node adapter. Returns a `QueueRedisClient` + `disconnect()`. Used by long-lived Node processes.
+- `QueueRedisClient` type — re-exported from `@acid-sheets/queue` for convenience.
 
-## Key Files
-- `src/index.ts` — DI factory, unified client interface
+## Runtime mapping
+- **Node (apps/worker, apps/api in Node mode):** `createIoredisQueueClient`
+- **Cloudflare Workers (apps/api in Workers mode):** `@upstash/redis` adapter — to be added when the API moves to CF Workers.
+
+Both adapters implement the SAME surface so the queue engine and the write-queue slice stay runtime-agnostic.
 
 ## Gotchas
-- Upstash HTTP client is used in Cloudflare Workers (no TCP). ioredis used in Node.js worker.
-- The client interface must be identical regardless of the underlying adapter.
-- This is a leaf node: only imports node_modules.
+- `ioredis` requires a long-lived TCP connection. Do not use in Cloudflare Workers; `@upstash/redis` HTTP is the Workers-compatible alternative.
+- ioredis' `call('XADD', ...)` / `call('XREADGROUP', ...)` escape hatch lets us avoid ioredis' stricter stream typings while keeping the QueueRedisClient contract clean.
+- `BUSYGROUP` is swallowed on group creation — that's the expected "group already exists" case.
 
 ## Never Do
-- Don't hardcode which adapter to use — inject via config.
-- Don't import from `slices/*`, `apps/*`, or other `shared/*` packages.
-- Don't expose adapter-specific APIs through the shared interface.
+- Don't expose adapter-specific APIs through the barrel — only the `QueueRedisClient` contract methods.
+- Don't import from `slices/*`, `apps/*`, or other `shared/*`.

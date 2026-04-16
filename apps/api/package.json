@@ -2,10 +2,33 @@
   "name": "@acid-sheets/api",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "echo '[apps/api] not implemented yet; backend slices land in a later wave'",
-    "build": "echo '[apps/api] nothing to build yet'",
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "build": "tsc",
     "lint": "biome check .",
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.6.13",
+    "@hono/node-server": "^1.13.7",
+    "zod": "^3.24.2",
+    "@acid-sheets/queue": "workspace:^",
+    "@acid-sheets/shared-db": "workspace:^",
+    "@acid-sheets/shared-google": "workspace:^",
+    "@acid-sheets/shared-logger": "workspace:^",
+    "@acid-sheets/shared-redis": "workspace:^",
+    "@acid-sheets/shared-types": "workspace:^",
+    "@acid-sheets/slice-auth": "workspace:^",
+    "@acid-sheets/slice-projects": "workspace:^",
+    "@acid-sheets/slice-rest-api": "workspace:^",
+    "@acid-sheets/slice-schema": "workspace:^",
+    "@acid-sheets/slice-sheets": "workspace:^",
+    "@acid-sheets/slice-write-queue": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2"
   }
 }

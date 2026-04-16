@@ -1,0 +1,61 @@
+import { randomUUID } from 'node:crypto';
+import { generateAuthorizeUrl, handleCallback, issueSessionJwt } from '@acid-sheets/slice-auth';
+import { Hono } from 'hono';
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie';
+import type { RouterDeps } from '../types.js';
+
+export function createAuthRoutes(deps: RouterDeps): Hono {
+  const app = new Hono();
+
+  app.get('/oauth/login', (c) => {
+    const state = randomUUID();
+    setCookie(c, 'oauth_state', state, {
+      httpOnly: true,
+      sameSite: 'Lax',
+      path: '/',
+      maxAge: 600,
+    });
+    return c.redirect(generateAuthorizeUrl({ env: deps.env, state }));
+  });
+
+  app.get('/oauth/callback', async (c) => {
+    const code = c.req.query('code');
+    const state = c.req.query('state');
+    const cookieState = getCookie(c, 'oauth_state');
+    if (!code || !state || state !== cookieState) {
+      return c.json(
+        {
+          error: {
+            code: 'STATE_MISMATCH',
+            message: 'OAuth state mismatch',
+          },
+        },
+        400,
+      );
+    }
+    deleteCookie(c, 'oauth_state', { path: '/' });
+    const { userId, email } = await handleCallback({
+      code,
+      env: deps.env,
+      db: deps.db,
+    });
+    const token = await issueSessionJwt({
+      claims: { userId, email },
+      env: deps.env,
+    });
+    setCookie(c, 'session', token, {
+      httpOnly: true,
+      sameSite: 'Lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    return c.redirect(`${deps.env.PUBLIC_BASE_URL}/?welcome=1`);
+  });
+
+  app.post('/auth/logout', (c) => {
+    deleteCookie(c, 'session', { path: '/' });
+    return c.json({ ok: true });
+  });
+
+  return app;
+}

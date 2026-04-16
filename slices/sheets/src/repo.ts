@@ -46,6 +46,18 @@ export async function findSheetsByProjectId({
   }));
 }
 
+export async function findAllSheets({ db }: { db: Db }): Promise<SheetRecord[]> {
+  const rows = await db.select().from(schema.sheets);
+  return rows.map((r) => ({
+    id: r.id,
+    projectId: r.projectId,
+    googleSheetId: r.googleSheetId,
+    tabName: r.tabName,
+    schemaSnapshotId: r.schemaSnapshotId,
+    createdAt: r.createdAt,
+  }));
+}
+
 export async function findSheetById({
   db,
   sheetId,

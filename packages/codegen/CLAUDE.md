@@ -1,25 +1,28 @@
 # packages/codegen
 
 ## Purpose
-OSS (MIT) SDK generator library — takes a sheet schema and emits TypeScript (V0) or Python (V1) SDK source.
+OSS (MIT) SDK generator — takes a sheet schema and emits a self-contained TypeScript module. Users commit the generated file; no runtime dep on a published client.
 
-## WARNING — OSS SAFETY
-- This package ships to npm. No secrets, internal URLs, or SaaS-specific code.
-- No imports from `shared/*`, `slices/*`, or `apps/*`. Only node_modules + other `packages/*`.
-- "private": true until V0-028 acceptance tests pass — do NOT publish before that milestone.
+## Status
+`"private": true` — do NOT publish until the concurrency acceptance demo passes.
 
-## Public API
-Exported from `src/index.ts`:
-- (to be defined during V0 implementation)
+## Public API (barrel)
+- `emitTypeScriptSdk({ sheetId, tabName, columns, apiBaseUrl })` — returns the generated TypeScript source as a string. The file exports:
+  - a typed row interface named after `tabName` (e.g. `Waitlist`)
+  - a `create<Type>Client({ apiKey, baseUrl?, fetch? })` factory with `list()` + `create(row, { idempotencyKey? })`
+- Types: `CodegenColumn`, `CodegenColumnType`, `EmitTypescriptSdkInput`.
 
-## Key Files
-- `src/index.ts` — public barrel
+## Design
+- Zero dependencies — generator is a pure string builder; consumer code uses only `fetch`.
+- Output is self-documenting: header comment names the source sheet + regenerate command.
+- Headers that are not valid JS identifiers are emitted as quoted object keys.
 
-## Gotchas
-- Python codegen is V1 only. Don't add it in V0.
-- Generated code quality directly affects developer trust — test generated output.
+## Non-goals (V0)
+- No Python codegen (deferred).
+- No enum detection (would require Sheets data-validation metadata).
+- No runtime schema validation in the generated SDK — trust the types, the server enforces the write-ledger.
 
 ## Never Do
-- Don't import from `shared/*`, `slices/*`, or `apps/*`.
-- Don't implement Python codegen in V0.
-- Don't publish until V0-028 passes.
+- Don't import from `shared/*`, `slices/*`, or `apps/*` — OSS safety.
+- Don't add runtime deps — keep the generator zero-dep.
+- Don't publish until the acceptance demo passes.

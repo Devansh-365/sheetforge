@@ -47,6 +47,12 @@ test-results/
 # TypeScript
 *.tsbuildinfo
 
+# Compiled TypeScript output (ambient — should not be committed)
+**/src/**/*.js
+**/src/**/*.js.map
+**/src/**/*.d.ts
+**/src/**/*.d.ts.map
+
 # Generated SDKs (output of codegen, regenerable)
 packages/sdk-ts/generated/
 packages/sdk-py/generated/

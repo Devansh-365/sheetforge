@@ -2,6 +2,7 @@ export {
   createProject,
   listProjects,
   getProject,
+  getProjectUnscoped,
   deleteProject,
   createApiKey,
   listApiKeys,

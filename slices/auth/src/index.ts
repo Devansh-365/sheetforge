@@ -4,6 +4,7 @@ export {
   issueSessionJwt,
   verifySessionJwt,
   refreshGoogleAccessToken,
+  getAccessTokenForUser,
 } from './service.js';
 export {
   AuthEnvSchema,

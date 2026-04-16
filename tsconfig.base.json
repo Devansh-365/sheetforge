@@ -23,7 +23,13 @@
       "@acid-sheets/shared-redis": ["./shared/redis/src/index.ts"],
       "@acid-sheets/shared-google": ["./shared/google/src/index.ts"],
       "@acid-sheets/shared-types": ["./shared/types/src/index.ts"],
-      "@acid-sheets/shared-logger": ["./shared/logger/src/index.ts"]
+      "@acid-sheets/shared-logger": ["./shared/logger/src/index.ts"],
+      "@acid-sheets/slice-auth": ["./slices/auth/src/index.ts"],
+      "@acid-sheets/slice-projects": ["./slices/projects/src/index.ts"],
+      "@acid-sheets/slice-sheets": ["./slices/sheets/src/index.ts"],
+      "@acid-sheets/slice-schema": ["./slices/schema/src/index.ts"],
+      "@acid-sheets/slice-write-queue": ["./slices/write-queue/src/index.ts"],
+      "@acid-sheets/slice-rest-api": ["./slices/rest-api/src/index.ts"]
     }
   }
 }

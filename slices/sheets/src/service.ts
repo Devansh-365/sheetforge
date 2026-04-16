@@ -3,6 +3,7 @@ import type { SheetsClient } from '@acid-sheets/shared-google';
 import { ForbiddenError, NotFoundError } from '@acid-sheets/shared-types';
 import {
   deleteSheetById,
+  findAllSheets,
   findSheetById,
   findSheetsByProjectId,
   insertSheet,
@@ -46,6 +47,18 @@ export async function listSheets({
   projectId: string;
 }): Promise<SheetRecord[]> {
   return findSheetsByProjectId({ db, projectId });
+}
+
+/**
+ * Unscoped list — used by the processor to discover every connected sheet
+ * across projects. Do NOT call from user-facing routes: no ownership check.
+ */
+export async function listAllSheetsForProcessor({
+  db,
+}: {
+  db: Db;
+}): Promise<SheetRecord[]> {
+  return findAllSheets({ db });
 }
 
 export async function getSheet({

@@ -77,3 +77,18 @@ export async function getUserById({
     .limit(1);
   return rows[0] ?? null;
 }
+
+export async function findRefreshTokenByUserId({
+  db,
+  userId,
+}: {
+  db: Db;
+  userId: string;
+}): Promise<string | null> {
+  const rows = await db
+    .select({ googleRefreshToken: schema.users.googleRefreshToken })
+    .from(schema.users)
+    .where(eq(schema.users.id, userId))
+    .limit(1);
+  return rows[0]?.googleRefreshToken ?? null;
+}

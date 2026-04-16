@@ -1,6 +1,7 @@
 export {
   connectSheet,
   listSheets,
+  listAllSheetsForProcessor,
   getSheet,
   disconnectSheet,
   attachSchemaSnapshot,

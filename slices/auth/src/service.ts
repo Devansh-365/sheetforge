@@ -2,7 +2,7 @@ import type { Db } from '@acid-sheets/shared-db';
 import { type Logger, createLogger } from '@acid-sheets/shared-logger';
 import { InternalError, UnauthorizedError } from '@acid-sheets/shared-types';
 import { SignJWT, jwtVerify } from 'jose';
-import { upsertUserByEmail } from './repo.js';
+import { findRefreshTokenByUserId, upsertUserByEmail } from './repo.js';
 import {
   type AuthEnv,
   GoogleTokenResponseSchema,
@@ -188,4 +188,26 @@ export async function refreshGoogleAccessToken({
     accessToken: parsed.data.access_token,
     expiresIn: parsed.data.expires_in,
   };
+}
+
+/**
+ * Resolve a user's stored refresh token and trade it for a fresh Google access
+ * token in one step. Throws UnauthorizedError if the user has not connected
+ * Google (or their refresh token was revoked).
+ */
+export async function getAccessTokenForUser({
+  db,
+  env,
+  userId,
+}: {
+  db: Db;
+  env: AuthEnv;
+  userId: string;
+}): Promise<string> {
+  const refreshToken = await findRefreshTokenByUserId({ db, userId });
+  if (!refreshToken) {
+    throw new UnauthorizedError('User must re-authenticate with Google');
+  }
+  const { accessToken } = await refreshGoogleAccessToken({ refreshToken, env });
+  return accessToken;
 }
