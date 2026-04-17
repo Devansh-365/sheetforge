@@ -3,6 +3,7 @@ import type { Db } from '@sheetforge/shared-db';
 import { type AppendSafeRow, createSheetsClient } from '@sheetforge/shared-google';
 import { createLogger } from '@sheetforge/shared-logger';
 import { getAccessTokenForUser } from '@sheetforge/slice-auth';
+import { DEMO_SHEET_ID } from '@sheetforge/slice-demo';
 import { getProjectUnscoped } from '@sheetforge/slice-projects';
 import { getLatestSchema } from '@sheetforge/slice-schema';
 import { listAllSheetsForProcessor } from '@sheetforge/slice-sheets';
@@ -29,6 +30,8 @@ export async function processorTick({
 }): Promise<void> {
   const sheets = await listAllSheetsForProcessor({ db });
   for (const sheet of sheets) {
+    // The demo sheet is drained by demo-processor.ts with a noop sink.
+    if (sheet.id === DEMO_SHEET_ID) continue;
     try {
       await processOneSheet({ db, redis, env, sheet });
     } catch (err) {

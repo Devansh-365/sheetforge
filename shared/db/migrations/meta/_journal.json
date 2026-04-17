@@ -8,6 +8,13 @@
       "when": 1776313657872,
       "tag": "0000_unknown_spyke",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776383000000,
+      "tag": "0001_demo_seed",
+      "breakpoints": true
     }
   ]
 }

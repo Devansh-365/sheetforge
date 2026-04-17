@@ -1,21 +1,36 @@
 import { z } from 'zod';
 
-export const ApiEnvSchema = z.object({
-  PORT: z.coerce.number().int().default(3001),
-  DATABASE_URL: z.string().url(),
-  REDIS_URL: z.string().min(1),
-  GOOGLE_OAUTH_CLIENT_ID: z.string().min(1),
-  GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1),
-  GOOGLE_OAUTH_REDIRECT_URL: z.string().url(),
-  SESSION_JWT_SECRET: z.string().min(32),
-  PUBLIC_BASE_URL: z.string().url().default('http://localhost:3001'),
-  WEB_BASE_URL: z.string().url().default('http://localhost:3000'),
-  PROCESSOR_ENABLED: z
-    .union([z.literal('true'), z.literal('false')])
-    .default('true')
-    .transform((v) => v === 'true'),
-  PROCESSOR_TICK_MS: z.coerce.number().int().positive().default(1000),
-});
+export const ApiEnvSchema = z
+  .object({
+    PORT: z.coerce.number().int().default(3001),
+    DATABASE_URL: z.string().url(),
+    // One of the Redis bindings must be present; validated in the refinement
+    // below. Upstash REST takes precedence when both are set.
+    REDIS_URL: z.string().min(1).optional(),
+    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
+    UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
+    GOOGLE_OAUTH_CLIENT_ID: z.string().min(1),
+    GOOGLE_OAUTH_CLIENT_SECRET: z.string().min(1),
+    GOOGLE_OAUTH_REDIRECT_URL: z.string().url(),
+    SESSION_JWT_SECRET: z.string().min(32),
+    PUBLIC_BASE_URL: z.string().url().default('http://localhost:3001'),
+    WEB_BASE_URL: z.string().url().default('http://localhost:3000'),
+    PROCESSOR_ENABLED: z
+      .union([z.literal('true'), z.literal('false')])
+      .default('true')
+      .transform((v) => v === 'true'),
+    PROCESSOR_TICK_MS: z.coerce.number().int().positive().default(1000),
+  })
+  .refine(
+    (v) =>
+      (v.UPSTASH_REDIS_REST_URL && v.UPSTASH_REDIS_REST_TOKEN) ||
+      (v.REDIS_URL && v.REDIS_URL.length > 0),
+    {
+      message:
+        'Redis not configured — set UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN, or REDIS_URL',
+      path: ['REDIS_URL'],
+    },
+  );
 
 export type ApiEnv = z.infer<typeof ApiEnvSchema>;
 

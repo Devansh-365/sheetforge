@@ -1,6 +1,9 @@
 import { createDb } from '@sheetforge/shared-db';
 import { createLogger } from '@sheetforge/shared-logger';
-import { createIoredisQueueClient } from '@sheetforge/shared-redis';
+import {
+  createIoredisQueueClient,
+  createUpstashQueueClient,
+} from '@sheetforge/shared-redis';
 import { createRouter } from '@sheetforge/slice-rest-api';
 import { serve } from '@hono/node-server';
 import { demoProcessorTick } from './demo-processor.js';
@@ -11,7 +14,26 @@ const env = loadEnv();
 const log = createLogger({ service: 'api' });
 
 const db = createDb(env.DATABASE_URL);
-const redis = createIoredisQueueClient({ url: env.REDIS_URL });
+
+// Prefer Upstash REST when configured — works over HTTPS so the same code
+// runs on CF Workers later. Fall back to ioredis for local dev without
+// Upstash creds.
+const redis =
+  env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
+    ? createUpstashQueueClient({
+        url: env.UPSTASH_REDIS_REST_URL,
+        token: env.UPSTASH_REDIS_REST_TOKEN,
+      })
+    : createIoredisQueueClient({ url: env.REDIS_URL! });
+log.info(
+  {
+    driver:
+      env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
+        ? 'upstash-rest'
+        : 'ioredis',
+  },
+  'redis-driver-selected',
+);
 
 const app = createRouter({
   db,
