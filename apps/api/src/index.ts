@@ -1,11 +1,8 @@
+import { serve } from '@hono/node-server';
 import { createDb } from '@sheetforge/shared-db';
 import { createLogger } from '@sheetforge/shared-logger';
-import {
-  createIoredisQueueClient,
-  createUpstashQueueClient,
-} from '@sheetforge/shared-redis';
+import { createIoredisQueueClient, createUpstashQueueClient } from '@sheetforge/shared-redis';
 import { createRouter } from '@sheetforge/slice-rest-api';
-import { serve } from '@hono/node-server';
 import { demoProcessorTick } from './demo-processor.js';
 import { loadEnv } from './env.js';
 import { processorTick } from './processor.js';
@@ -17,20 +14,23 @@ const db = createDb(env.DATABASE_URL);
 
 // Prefer Upstash REST when configured — works over HTTPS so the same code
 // runs on CF Workers later. Fall back to ioredis for local dev without
-// Upstash creds.
-const redis =
-  env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
-    ? createUpstashQueueClient({
-        url: env.UPSTASH_REDIS_REST_URL,
-        token: env.UPSTASH_REDIS_REST_TOKEN,
-      })
-    : createIoredisQueueClient({ url: env.REDIS_URL! });
+// Upstash creds. The env refinement guarantees one of these branches.
+function selectRedis() {
+  if (env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN) {
+    return createUpstashQueueClient({
+      url: env.UPSTASH_REDIS_REST_URL,
+      token: env.UPSTASH_REDIS_REST_TOKEN,
+    });
+  }
+  if (env.REDIS_URL) {
+    return createIoredisQueueClient({ url: env.REDIS_URL });
+  }
+  throw new Error('redis config missing — env refinement should have caught this');
+}
+const redis = selectRedis();
 log.info(
   {
-    driver:
-      env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN
-        ? 'upstash-rest'
-        : 'ioredis',
+    driver: env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN ? 'upstash-rest' : 'ioredis',
   },
   'redis-driver-selected',
 );
@@ -45,9 +45,7 @@ const app = createRouter({
     SESSION_JWT_SECRET: env.SESSION_JWT_SECRET,
     PUBLIC_BASE_URL: env.PUBLIC_BASE_URL,
     WEB_BASE_URL: env.WEB_BASE_URL,
-    ...(env.ALLOWED_WEB_ORIGINS
-      ? { ALLOWED_WEB_ORIGINS: env.ALLOWED_WEB_ORIGINS }
-      : {}),
+    ...(env.ALLOWED_WEB_ORIGINS ? { ALLOWED_WEB_ORIGINS: env.ALLOWED_WEB_ORIGINS } : {}),
   },
 });
 

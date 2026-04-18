@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { OpenCodeLogo } from "@/components/icons";
-import { ApiError, getMe, loginUrl } from "@/lib/api-client";
+import { OpenCodeLogo } from '@/components/icons';
+import { ApiError, getMe, loginUrl } from '@/lib/api-client';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function SignInPage() {
   const [checking, setChecking] = useState(true);
@@ -12,24 +12,21 @@ export default function SignInPage() {
   useEffect(() => {
     // Reading window.location on mount avoids the useSearchParams Suspense
     // requirement introduced in Next 15+.
-    setReconnect(
-      new URL(window.location.href).searchParams.get("reconnect") === "1",
-    );
+    setReconnect(new URL(window.location.href).searchParams.get('reconnect') === '1');
   }, []);
 
   // If you already have a live session, bounce straight to the dashboard —
   // unless we're explicitly in reconnect mode (stale Google grant), in which
   // case the user needs to re-authorize even with a valid session cookie.
   useEffect(() => {
-    const isReconnect =
-      new URL(window.location.href).searchParams.get("reconnect") === "1";
+    const isReconnect = new URL(window.location.href).searchParams.get('reconnect') === '1';
     if (isReconnect) {
       setChecking(false);
       return;
     }
     getMe()
       .then(() => {
-        window.location.href = "/app";
+        window.location.href = '/app';
       })
       .catch((err) => {
         if (err instanceof ApiError && err.status === 401) {
@@ -44,21 +41,17 @@ export default function SignInPage() {
     <main>
       <div
         className="mx-auto border-l border-r min-h-screen flex flex-col"
-        style={{ maxWidth: "1080px", borderColor: "#3d3838" }}
+        style={{ maxWidth: '1080px', borderColor: '#3d3838' }}
       >
         {/* Header */}
         <header
           className="flex items-center justify-between min-h-[80px] px-[80px] border-b"
-          style={{ backgroundColor: "#131010", borderColor: "#3d3838" }}
+          style={{ backgroundColor: '#131010', borderColor: '#3d3838' }}
         >
           <Link href="/" aria-label="sheetforge home">
             <OpenCodeLogo />
           </Link>
-          <Link
-            href="/"
-            className="text-sm transition-colors"
-            style={{ color: "#b8b2b2" }}
-          >
+          <Link href="/" className="text-sm transition-colors" style={{ color: '#b8b2b2' }}>
             ← What is sheetforge?
           </Link>
         </header>
@@ -69,84 +62,66 @@ export default function SignInPage() {
             <div
               className="border rounded p-8"
               style={{
-                borderColor: "#3d3838",
-                backgroundColor: "#1b1818",
+                borderColor: '#3d3838',
+                backgroundColor: '#1b1818',
               }}
             >
               <h1 className="text-[28px] font-bold leading-[36px] mb-2">
-                {reconnect
-                  ? "Re-authorize Google"
-                  : "Sign in to sheetforge"}
+                {reconnect ? 'Re-authorize Google' : 'Sign in to sheetforge'}
               </h1>
               {reconnect ? (
-                <p
-                  style={{ color: "#b8b2b2" }}
-                  className="text-sm mb-8 leading-[20px]"
-                >
-                  [!] Your Google connection expired or was revoked.
-                  Re-authorize below to get your projects back online — nothing
-                  in your sheetforge account is lost.
+                <p style={{ color: '#b8b2b2' }} className="text-sm mb-8 leading-[20px]">
+                  [!] Your Google connection expired or was revoked. Re-authorize below to get your
+                  projects back online — nothing in your sheetforge account is lost.
                 </p>
               ) : (
-                <p
-                  style={{ color: "#b8b2b2" }}
-                  className="text-sm mb-8 leading-[20px]"
-                >
-                  Connect your Google account to turn any Sheet into a
-                  race-condition-safe API.
+                <p style={{ color: '#b8b2b2' }} className="text-sm mb-8 leading-[20px]">
+                  Connect your Google account to turn any Sheet into a race-condition-safe API.
                 </p>
               )}
 
               <a
                 href={loginUrl()}
                 className="flex items-center justify-center gap-3 w-full rounded px-6 py-3 font-medium transition-opacity hover:opacity-90"
-                style={{ backgroundColor: "#f2eded", color: "#131010" }}
+                style={{ backgroundColor: '#f2eded', color: '#131010' }}
               >
                 <GoogleGlyph />
                 {checking
-                  ? "Checking session…"
+                  ? 'Checking session…'
                   : reconnect
-                    ? "Reconnect Google"
-                    : "Sign in with Google"}
+                    ? 'Reconnect Google'
+                    : 'Sign in with Google'}
               </a>
 
-              <div
-                className="mt-6 pt-6 border-t text-sm"
-                style={{ borderColor: "#3d3838" }}
-              >
-                <p style={{ color: "#b8b2b2" }} className="mb-3 font-medium">
+              <div className="mt-6 pt-6 border-t text-sm" style={{ borderColor: '#3d3838' }}>
+                <p style={{ color: '#b8b2b2' }} className="mb-3 font-medium">
                   What we ask Google for:
                 </p>
                 <ul className="space-y-2 text-sm">
                   <li className="flex gap-2">
-                    <span style={{ color: "#716b6a" }}>[*]</span>
-                    <span style={{ color: "#b8b2b2" }}>
+                    <span style={{ color: '#716b6a' }}>[*]</span>
+                    <span style={{ color: '#b8b2b2' }}>
                       your email and profile — to identify your account
                     </span>
                   </li>
                   <li className="flex gap-2">
-                    <span style={{ color: "#716b6a" }}>[*]</span>
-                    <span style={{ color: "#b8b2b2" }}>
-                      access to the spreadsheets you connect — nothing
-                      else in your Drive
+                    <span style={{ color: '#716b6a' }}>[*]</span>
+                    <span style={{ color: '#b8b2b2' }}>
+                      access to the spreadsheets you connect — nothing else in your Drive
                     </span>
                   </li>
                   <li className="flex gap-2">
-                    <span style={{ color: "#716b6a" }}>[*]</span>
-                    <span style={{ color: "#b8b2b2" }}>
-                      offline access — so writes can process while you&apos;re
-                      away
+                    <span style={{ color: '#716b6a' }}>[*]</span>
+                    <span style={{ color: '#b8b2b2' }}>
+                      offline access — so writes can process while you&apos;re away
                     </span>
                   </li>
                 </ul>
               </div>
             </div>
 
-            <p
-              style={{ color: "#7f7a7a" }}
-              className="text-xs text-center mt-6 leading-[18px]"
-            >
-              You can revoke access at any time from your{" "}
+            <p style={{ color: '#7f7a7a' }} className="text-xs text-center mt-6 leading-[18px]">
+              You can revoke access at any time from your{' '}
               <a
                 href="https://myaccount.google.com/permissions"
                 target="_blank"

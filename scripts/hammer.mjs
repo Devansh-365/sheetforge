@@ -20,9 +20,7 @@ const apiKey = process.argv[3];
 const n = Number(process.argv[4] ?? 1000);
 
 if (!sheetId || !apiKey) {
-  console.error(
-    'usage: node --env-file=.env scripts/hammer.mjs <sheetId> <apiKey> [n=1000]',
-  );
+  console.error('usage: node --env-file=.env scripts/hammer.mjs <sheetId> <apiKey> [n=1000]');
   process.exit(1);
 }
 
@@ -62,9 +60,7 @@ async function main() {
   const accepted = results.filter((r) => r.status === 202).length;
   const failed = results.filter((r) => r.status !== 202);
   const submitMs = Date.now() - t0;
-  console.log(
-    `✓ accepted: ${accepted}/${n} (${submitMs}ms)  ·  rejected: ${failed.length}`,
-  );
+  console.log(`✓ accepted: ${accepted}/${n} (${submitMs}ms)  ·  rejected: ${failed.length}`);
   if (failed.length && failed.length <= 5) {
     for (const f of failed) {
       console.log(`  - [${f.i}] status=${f.status} ${f.err ?? ''}`);
@@ -72,9 +68,7 @@ async function main() {
   }
 
   if (!dbUrl) {
-    console.log(
-      '\n(set DATABASE_URL in .env to poll the ledger for final row count)',
-    );
+    console.log('\n(set DATABASE_URL in .env to poll the ledger for final row count)');
     return;
   }
 

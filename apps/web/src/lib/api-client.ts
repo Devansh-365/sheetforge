@@ -1,5 +1,4 @@
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
 
 function extractMessage(body: unknown): string | null {
   if (typeof body === 'object' && body !== null && 'error' in body) {
@@ -52,10 +51,7 @@ function maybeAutoRedirect(err: ApiError): void {
   window.location.href = '/signin?reconnect=1';
 }
 
-export async function api<T = unknown>(
-  path: string,
-  opts: RequestInit = {},
-): Promise<T> {
+export async function api<T = unknown>(path: string, opts: RequestInit = {}): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     credentials: 'include',
     ...opts,
@@ -101,8 +97,7 @@ export interface Project {
   name: string;
   createdAt: string;
 }
-export const listProjects = () =>
-  api<{ projects: Project[] }>('/v1/projects');
+export const listProjects = () => api<{ projects: Project[] }>('/v1/projects');
 export const createProject = (name: string) =>
   api<{ project: Project }>('/v1/projects', {
     method: 'POST',
@@ -120,10 +115,10 @@ export interface ApiKeyHandle {
 export const listApiKeys = (projectId: string) =>
   api<{ apiKeys: ApiKeyHandle[] }>(`/v1/projects/${projectId}/api-keys`);
 export const createApiKey = (projectId: string) =>
-  api<{ handle: ApiKeyHandle; plaintextKey: string }>(
-    `/v1/projects/${projectId}/api-keys`,
-    { method: 'POST', body: JSON.stringify({}) },
-  );
+  api<{ handle: ApiKeyHandle; plaintextKey: string }>(`/v1/projects/${projectId}/api-keys`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
 
 export interface SheetRecord {
   id: string;
@@ -146,47 +141,27 @@ export interface SchemaSnapshot {
 }
 export const listSheets = (projectId: string) =>
   api<{ sheets: SheetRecord[] }>(`/v1/projects/${projectId}/sheets`);
-export const connectSheet = (
-  projectId: string,
-  googleSheetId: string,
-  tabName: string,
-) =>
-  api<{ sheet: SheetRecord; schema: SchemaSnapshot }>(
-    `/v1/projects/${projectId}/sheets`,
-    {
-      method: 'POST',
-      body: JSON.stringify({ googleSheetId, tabName }),
-    },
-  );
+export const connectSheet = (projectId: string, googleSheetId: string, tabName: string) =>
+  api<{ sheet: SheetRecord; schema: SchemaSnapshot }>(`/v1/projects/${projectId}/sheets`, {
+    method: 'POST',
+    body: JSON.stringify({ googleSheetId, tabName }),
+  });
 export const getSchema = (projectId: string, sheetId: string) =>
-  api<{ schema: SchemaSnapshot }>(
-    `/v1/projects/${projectId}/sheets/${sheetId}/schema`,
-  );
+  api<{ schema: SchemaSnapshot }>(`/v1/projects/${projectId}/sheets/${sheetId}/schema`);
 export const refreshSchema = (projectId: string, sheetId: string) =>
-  api<{ schema: SchemaSnapshot }>(
-    `/v1/projects/${projectId}/sheets/${sheetId}/schema/refresh`,
-    { method: 'POST', body: JSON.stringify({}) },
-  );
+  api<{ schema: SchemaSnapshot }>(`/v1/projects/${projectId}/sheets/${sheetId}/schema/refresh`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
 
 export interface PreviewResult {
   rows: Array<Record<string, unknown>>;
   columns: SchemaSnapshot['columns'];
 }
-export const previewSheet = (
-  projectId: string,
-  sheetId: string,
-  limit = 10,
-) =>
-  api<PreviewResult>(
-    `/v1/projects/${projectId}/sheets/${sheetId}/preview?limit=${limit}`,
-  );
+export const previewSheet = (projectId: string, sheetId: string, limit = 10) =>
+  api<PreviewResult>(`/v1/projects/${projectId}/sheets/${sheetId}/preview?limit=${limit}`);
 
-export type WriteLedgerStatus =
-  | 'pending'
-  | 'processing'
-  | 'completed'
-  | 'failed'
-  | 'dead_lettered';
+export type WriteLedgerStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'dead_lettered';
 
 export interface LedgerRow {
   id: string;
@@ -204,9 +179,7 @@ export interface LedgerStats {
 }
 
 export const getLedgerStats = (projectId: string, sheetId: string) =>
-  api<LedgerStats>(
-    `/v1/projects/${projectId}/sheets/${sheetId}/ledger-stats`,
-  );
+  api<LedgerStats>(`/v1/projects/${projectId}/sheets/${sheetId}/ledger-stats`);
 
 export interface TestWriteResult {
   writeId: string;
@@ -216,10 +189,10 @@ export interface TestWriteResult {
 }
 
 export const testWrite = (projectId: string, sheetId: string) =>
-  api<TestWriteResult>(
-    `/v1/projects/${projectId}/sheets/${sheetId}/test-write`,
-    { method: 'POST', body: JSON.stringify({}) },
-  );
+  api<TestWriteResult>(`/v1/projects/${projectId}/sheets/${sheetId}/test-write`, {
+    method: 'POST',
+    body: JSON.stringify({}),
+  });
 
 // ---------------------------------------------------------------------------
 // Public hammer demo (anonymous, rate-limited)
@@ -237,12 +210,7 @@ export interface HammerWrite {
   idempotencyKey: string;
   enqueuedAt: string;
   completedAt: string | null;
-  status:
-    | 'pending'
-    | 'processing'
-    | 'completed'
-    | 'failed'
-    | 'dead_lettered';
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'dead_lettered';
 }
 
 export interface HammerStatus {
@@ -257,8 +225,7 @@ export const hammerRun = (n: number) =>
     body: JSON.stringify({ n }),
   });
 
-export const getHammerStatus = (runId: string) =>
-  api<HammerStatus>(`/v1/demo/hammer/${runId}`);
+export const getHammerStatus = (runId: string) => api<HammerStatus>(`/v1/demo/hammer/${runId}`);
 
 export const logout = () =>
   api<{ ok: true }>('/v1/auth/logout', {

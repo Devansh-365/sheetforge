@@ -1,6 +1,6 @@
-export * as schema from "./schema.js";
-export { createDb } from "./client.js";
-export type { Db } from "./client.js";
+export * as schema from './schema.js';
+export { createDb } from './client.js';
+export type { Db } from './client.js';
 export {
   UserSelect,
   UserInsert,
@@ -14,7 +14,7 @@ export {
   ApiKeyInsert,
   WriteLedgerSelect,
   WriteLedgerInsert,
-} from "./zod.js";
+} from './zod.js';
 export type {
   UserSelect as UserSelectType,
   UserInsert as UserInsertType,
@@ -28,4 +28,4 @@ export type {
   ApiKeyInsert as ApiKeyInsertType,
   WriteLedgerSelect as WriteLedgerSelectType,
   WriteLedgerInsert as WriteLedgerInsertType,
-} from "./zod.js";
+} from './zod.js';

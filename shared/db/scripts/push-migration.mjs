@@ -20,8 +20,9 @@ if (!url) {
 // Resolve the migration file — default to the newest 0000_*.sql in migrations/.
 const migrationsDir = 'shared/db/migrations';
 const explicit = process.argv[2];
-const migrationPath = explicit
-  ?? join(
+const migrationPath =
+  explicit ??
+  join(
     migrationsDir,
     readdirSync(migrationsDir)
       .filter((f) => f.endsWith('.sql'))

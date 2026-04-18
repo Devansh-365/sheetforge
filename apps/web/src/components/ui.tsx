@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
 // ---------------------------------------------------------------------------
 // Toast — minimal stack, no external deps. Import `useToast` at the page level
 // and call `push("message", "success" | "error" | "info")` from any handler.
 // ---------------------------------------------------------------------------
 
-type ToastKind = "success" | "error" | "info";
+type ToastKind = 'success' | 'error' | 'info';
 interface ToastEntry {
   id: number;
   kind: ToastKind;
@@ -22,7 +22,7 @@ function emit() {
   for (const fn of listeners) fn(current);
 }
 
-export function pushToast(message: string, kind: ToastKind = "info") {
+export function pushToast(message: string, kind: ToastKind = 'info') {
   const entry: ToastEntry = { id: nextId++, kind, message };
   current = [...current, entry];
   emit();
@@ -44,28 +44,20 @@ export function ToastHost() {
   }, []);
   if (items.length === 0) return null;
   return (
-    <div
-      className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm"
-      aria-live="polite"
-    >
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm" aria-live="polite">
       {items.map((t) => (
         <div
           key={t.id}
           className="border rounded px-4 py-3 text-sm"
           style={{
-            borderColor: "#3d3838",
-            backgroundColor: "#1b1818",
-            color:
-              t.kind === "error"
-                ? "#f2eded"
-                : t.kind === "success"
-                  ? "#f2eded"
-                  : "#b8b2b2",
+            borderColor: '#3d3838',
+            backgroundColor: '#1b1818',
+            color: t.kind === 'error' ? '#f2eded' : t.kind === 'success' ? '#f2eded' : '#b8b2b2',
           }}
         >
-          <span style={{ color: "#716b6a" }}>
-            {t.kind === "error" ? "[!]" : t.kind === "success" ? "[✓]" : "[*]"}
-          </span>{" "}
+          <span style={{ color: '#716b6a' }}>
+            {t.kind === 'error' ? '[!]' : t.kind === 'success' ? '[✓]' : '[*]'}
+          </span>{' '}
           {t.message}
         </div>
       ))}
@@ -80,7 +72,7 @@ export function ToastHost() {
 
 export function CopyButton({
   value,
-  label = "copy",
+  label = 'copy',
   className,
   style,
 }: {
@@ -94,10 +86,10 @@ export function CopyButton({
     try {
       await navigator.clipboard.writeText(value);
       setCopied(true);
-      pushToast("copied to clipboard", "success");
+      pushToast('copied to clipboard', 'success');
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      pushToast("clipboard blocked by browser", "error");
+      pushToast('clipboard blocked by browser', 'error');
     }
   }, [value]);
 
@@ -105,14 +97,14 @@ export function CopyButton({
     <button
       type="button"
       onClick={onCopy}
-      className={`rounded px-3 py-1 text-xs border transition-colors ${className ?? ""}`}
+      className={`rounded px-3 py-1 text-xs border transition-colors ${className ?? ''}`}
       style={{
-        borderColor: "#3d3838",
-        color: copied ? "#f2eded" : "#b8b2b2",
+        borderColor: '#3d3838',
+        color: copied ? '#f2eded' : '#b8b2b2',
         ...style,
       }}
     >
-      {copied ? "copied!" : label}
+      {copied ? 'copied!' : label}
     </button>
   );
 }
@@ -171,11 +163,11 @@ export function ConfirmHost() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: "rgba(0,0,0,0.65)" }}
+      style={{ backgroundColor: 'rgba(0,0,0,0.65)' }}
       onClick={() => resolve(false)}
       onKeyDown={(e) => {
-        if (e.key === "Escape") resolve(false);
-        if (e.key === "Enter") resolve(true);
+        if (e.key === 'Escape') resolve(false);
+        if (e.key === 'Enter') resolve(true);
       }}
       role="dialog"
       aria-modal="true"
@@ -185,16 +177,13 @@ export function ConfirmHost() {
         onKeyDown={(e) => e.stopPropagation()}
         role="document"
         className="border rounded p-6 max-w-md mx-4 w-full"
-        style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+        style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
       >
-        <h3
-          className="text-[18px] font-bold mb-2"
-          style={{ color: "#f2eded" }}
-        >
+        <h3 className="text-[18px] font-bold mb-2" style={{ color: '#f2eded' }}>
           {req.title}
         </h3>
         {req.body && (
-          <p style={{ color: "#b8b2b2" }} className="text-sm mb-6 leading-[20px]">
+          <p style={{ color: '#b8b2b2' }} className="text-sm mb-6 leading-[20px]">
             {req.body}
           </p>
         )}
@@ -203,23 +192,20 @@ export function ConfirmHost() {
             type="button"
             onClick={() => resolve(false)}
             className="rounded px-4 py-2 border text-sm transition-colors"
-            style={{ borderColor: "#3d3838", color: "#b8b2b2" }}
+            style={{ borderColor: '#3d3838', color: '#b8b2b2' }}
           >
             cancel
           </button>
           <button
             type="button"
             onClick={() => resolve(true)}
-            autoFocus
             className="rounded px-4 py-2 font-medium text-sm transition-opacity hover:opacity-90"
             style={{
-              backgroundColor: req.destructive
-                ? "oklch(0.577 0.245 27.325)"
-                : "#f2eded",
-              color: req.destructive ? "#f2eded" : "#131010",
+              backgroundColor: req.destructive ? 'oklch(0.577 0.245 27.325)' : '#f2eded',
+              color: req.destructive ? '#f2eded' : '#131010',
             }}
           >
-            {req.confirmLabel ?? (req.destructive ? "delete" : "confirm")}
+            {req.confirmLabel ?? (req.destructive ? 'delete' : 'confirm')}
           </button>
         </div>
       </div>
@@ -234,7 +220,7 @@ export function ConfirmHost() {
 
 export function DeleteIconButton({
   onClick,
-  label = "delete",
+  label = 'delete',
   title,
 }: {
   onClick: () => void;
@@ -251,7 +237,7 @@ export function DeleteIconButton({
         onClick();
       }}
       className="rounded px-3 py-1 text-xs border transition-colors"
-      style={{ borderColor: "#3d3838", color: "#7f7a7a" }}
+      style={{ borderColor: '#3d3838', color: '#7f7a7a' }}
     >
       × {label}
     </button>

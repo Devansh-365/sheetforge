@@ -1,6 +1,6 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-import * as schema from "./schema.js";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema.js';
 
 // No singleton: callers (apps/api, apps/worker, tests) own the lifecycle.
 // Pass a test-scoped connection string in integration tests so each test

@@ -43,8 +43,7 @@ export function loadEnv(): ApiEnv {
   const parsed = ApiEnvSchema.safeParse(process.env);
   if (!parsed.success) {
     console.error(
-      'Invalid environment — fix these:\n' +
-        JSON.stringify(parsed.error.flatten().fieldErrors, null, 2),
+      `Invalid environment — fix these:\n${JSON.stringify(parsed.error.flatten().fieldErrors, null, 2)}`,
     );
     process.exit(1);
   }

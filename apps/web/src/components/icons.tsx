@@ -121,7 +121,5 @@ export function MenuIcon({ className }: { className?: string }) {
 }
 
 export function BulletIcon({ className }: { className?: string }) {
-  return (
-    <span className={className}>[*]</span>
-  );
+  return <span className={className}>[*]</span>;
 }

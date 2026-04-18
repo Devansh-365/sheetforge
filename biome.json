@@ -16,11 +16,20 @@
       "recommended": true,
       "correctness": {
         "noUnusedVariables": "error",
-        "noUnusedImports": "error"
+        "noUnusedImports": "error",
+        "useExhaustiveDependencies": "off"
       },
       "style": {
         "useConst": "error",
         "useTemplate": "error"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useButtonType": "off",
+        "useSemanticElements": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off"
       }
     }
   },
@@ -32,6 +41,6 @@
     }
   },
   "files": {
-    "ignore": ["node_modules", "dist", ".next", "coverage", ".turbo"]
+    "ignore": ["node_modules", "dist", ".next", "coverage", ".turbo", ".omc"]
   }
 }

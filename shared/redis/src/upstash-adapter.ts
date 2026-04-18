@@ -101,14 +101,7 @@ export function createUpstashQueueClient({
     },
 
     async setNxPx(key, value, ttlMs) {
-      const result = await exec<'OK' | null>(
-        'SET',
-        key,
-        value,
-        'NX',
-        'PX',
-        ttlMs,
-      );
+      const result = await exec<'OK' | null>('SET', key, value, 'NX', 'PX', ttlMs);
       return result === 'OK';
     },
 

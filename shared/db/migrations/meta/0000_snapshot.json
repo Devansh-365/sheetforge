@@ -53,12 +53,8 @@
           "name": "api_keys_project_id_projects_id_fk",
           "tableFrom": "api_keys",
           "tableTo": "projects",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -68,9 +64,7 @@
         "api_keys_hashed_key_unique": {
           "name": "api_keys_hashed_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "hashed_key"
-          ]
+          "columns": ["hashed_key"]
         }
       },
       "policies": {},
@@ -114,12 +108,8 @@
           "name": "projects_user_id_users_id_fk",
           "tableFrom": "projects",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -173,12 +163,8 @@
           "name": "schemas_sheet_id_sheets_id_fk",
           "tableFrom": "schemas",
           "tableTo": "sheets",
-          "columnsFrom": [
-            "sheet_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sheet_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -254,12 +240,8 @@
           "name": "sheets_project_id_projects_id_fk",
           "tableFrom": "sheets",
           "tableTo": "projects",
-          "columnsFrom": [
-            "project_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["project_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -315,9 +297,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -381,12 +361,8 @@
           "name": "write_ledger_sheet_id_sheets_id_fk",
           "tableFrom": "write_ledger",
           "tableTo": "sheets",
-          "columnsFrom": [
-            "sheet_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sheet_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -402,13 +378,7 @@
     "public.write_ledger_status": {
       "name": "write_ledger_status",
       "schema": "public",
-      "values": [
-        "pending",
-        "processing",
-        "completed",
-        "failed",
-        "dead_lettered"
-      ]
+      "values": ["pending", "processing", "completed", "failed", "dead_lettered"]
     }
   },
   "schemas": {},

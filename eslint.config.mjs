@@ -1,6 +1,6 @@
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import boundaries from 'eslint-plugin-boundaries';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -11,12 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
   {
-    files: [
-      'apps/**/*.{ts,tsx}',
-      'slices/**/*.ts',
-      'packages/**/*.ts',
-      'shared/**/*.ts',
-    ],
+    files: ['apps/**/*.{ts,tsx}', 'slices/**/*.ts', 'packages/**/*.ts', 'shared/**/*.ts'],
     plugins: { boundaries },
     settings: {
       'boundaries/root-path': __dirname,

@@ -1,9 +1,9 @@
-import pino from "pino";
+import pino from 'pino';
 
 export type Logger = pino.Logger;
 
 export interface CreateLoggerOptions {
-  level?: "debug" | "info" | "warn" | "error";
+  level?: 'debug' | 'info' | 'warn' | 'error';
   service?: string;
   context?: Record<string, unknown>;
 }
@@ -14,32 +14,30 @@ export interface CreateLoggerOptions {
  * In production emits structured JSON.
  */
 export function createLogger(opts: CreateLoggerOptions = {}): Logger {
-  const level = opts.level ?? (process.env["LOG_LEVEL"] as CreateLoggerOptions["level"]) ?? "info";
-  const isDev = process.env["NODE_ENV"] !== "production";
+  const level = opts.level ?? (process.env.LOG_LEVEL as CreateLoggerOptions['level']) ?? 'info';
+  const isDev = process.env.NODE_ENV !== 'production';
 
   const transport = isDev
     ? {
-        target: "pino-pretty",
+        target: 'pino-pretty',
         options: {
           colorize: true,
-          translateTime: "SYS:standard",
-          ignore: "pid,hostname",
+          translateTime: 'SYS:standard',
+          ignore: 'pid,hostname',
         },
       }
     : undefined;
 
   const base: Record<string, unknown> = {};
   if (opts.service !== undefined) {
-    base["service"] = opts.service;
+    base.service = opts.service;
   }
 
-  const logger = pino(
-    {
-      level,
-      base,
-      transport,
-    },
-  );
+  const logger = pino({
+    level,
+    base,
+    transport,
+  });
 
   if (opts.context && Object.keys(opts.context).length > 0) {
     return logger.child(opts.context);

@@ -1,14 +1,6 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import {
-  CopyButton,
-  DeleteIconButton,
-  confirmAction,
-  pushToast,
-} from "@/components/ui";
+import { CopyButton, DeleteIconButton, confirmAction, pushToast } from '@/components/ui';
 import {
   type ApiKeyHandle,
   type SheetRecord,
@@ -18,7 +10,10 @@ import {
   listApiKeys,
   listSheets,
   revokeApiKey,
-} from "@/lib/api-client";
+} from '@/lib/api-client';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function ProjectDetailPage() {
   const params = useParams<{ projectId: string }>();
@@ -47,11 +42,11 @@ export default function ProjectDetailPage() {
       const { handle, plaintextKey } = await createApiKey(projectId);
       setRevealedKey(plaintextKey);
       setApiKeys((prev) => (prev ? [...prev, handle] : [handle]));
-      pushToast("api key created", "success");
+      pushToast('api key created', 'success');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "unknown error";
+      const msg = err instanceof Error ? err.message : 'unknown error';
       setError(msg);
-      pushToast(`create key failed: ${msg}`, "error");
+      pushToast(`create key failed: ${msg}`, 'error');
     } finally {
       setCreatingKey(false);
     }
@@ -59,71 +54,67 @@ export default function ProjectDetailPage() {
 
   async function onDeleteProject() {
     const ok = await confirmAction({
-      title: "Delete this project?",
-      body: "All of its API keys, connected sheets, and write-ledger history go with it. Your Google Sheets stay in your Drive. This cannot be undone.",
+      title: 'Delete this project?',
+      body: 'All of its API keys, connected sheets, and write-ledger history go with it. Your Google Sheets stay in your Drive. This cannot be undone.',
       destructive: true,
     });
     if (!ok) return;
     try {
       await deleteProject(projectId);
-      pushToast("project deleted", "success");
-      router.push("/app");
+      pushToast('project deleted', 'success');
+      router.push('/app');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "unknown error";
-      pushToast(`delete failed: ${msg}`, "error");
+      const msg = err instanceof Error ? err.message : 'unknown error';
+      pushToast(`delete failed: ${msg}`, 'error');
     }
   }
 
   async function onDisconnectSheet(s: SheetRecord) {
     const ok = await confirmAction({
       title: `Disconnect "${s.tabName}"?`,
-      body: "The sheet stays in your Google Drive. sheetforge will just stop tracking it — existing API keys scoped to this sheet will start 404-ing for it.",
+      body: 'The sheet stays in your Google Drive. sheetforge will just stop tracking it — existing API keys scoped to this sheet will start 404-ing for it.',
       destructive: true,
-      confirmLabel: "disconnect",
+      confirmLabel: 'disconnect',
     });
     if (!ok) return;
     try {
       await disconnectSheet(projectId, s.id);
       setSheets((prev) => (prev ? prev.filter((x) => x.id !== s.id) : prev));
-      pushToast("sheet disconnected", "success");
+      pushToast('sheet disconnected', 'success');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "unknown error";
-      pushToast(`disconnect failed: ${msg}`, "error");
+      const msg = err instanceof Error ? err.message : 'unknown error';
+      pushToast(`disconnect failed: ${msg}`, 'error');
     }
   }
 
   async function onRevokeKey(k: ApiKeyHandle) {
     const ok = await confirmAction({
       title: `Revoke key ${k.prefix}?`,
-      body: "Any client using this key will start getting 401s immediately. Generate a new key if you still need access.",
+      body: 'Any client using this key will start getting 401s immediately. Generate a new key if you still need access.',
       destructive: true,
-      confirmLabel: "revoke",
+      confirmLabel: 'revoke',
     });
     if (!ok) return;
     try {
       await revokeApiKey(projectId, k.id);
       setApiKeys((prev) => (prev ? prev.filter((x) => x.id !== k.id) : prev));
-      pushToast("key revoked", "success");
+      pushToast('key revoked', 'success');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "unknown error";
-      pushToast(`revoke failed: ${msg}`, "error");
+      const msg = err instanceof Error ? err.message : 'unknown error';
+      pushToast(`revoke failed: ${msg}`, 'error');
     }
   }
 
   return (
     <div className="space-y-12">
       <div>
-        <Link
-          href="/app"
-          className="text-sm mb-4 inline-block"
-          style={{ color: "#7f7a7a" }}
-        >
+        <Link href="/app" className="text-sm mb-4 inline-block" style={{ color: '#7f7a7a' }}>
           ← back to projects
         </Link>
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-[38px] font-bold leading-[57px]">Project</h1>
-            <p style={{ color: "#7f7a7a" }} className="text-sm mt-1">
+            <p style={{ color: '#7f7a7a' }} className="text-sm mt-1">
               id: {projectId}
             </p>
           </div>
@@ -135,11 +126,7 @@ export default function ProjectDetailPage() {
         </div>
       </div>
 
-      {error && (
-        <p style={{ color: "#b8b2b2" }}>
-          [!] {error}
-        </p>
-      )}
+      {error && <p style={{ color: '#b8b2b2' }}>[!] {error}</p>}
 
       {/* ── Sheets ─────────────────────────────────────────── */}
       <section>
@@ -148,17 +135,15 @@ export default function ProjectDetailPage() {
           <Link
             href={`/app/projects/${projectId}/sheets/new`}
             className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90"
-            style={{ backgroundColor: "#f2eded", color: "#131010" }}
+            style={{ backgroundColor: '#f2eded', color: '#131010' }}
           >
             + connect sheet
           </Link>
         </div>
 
-        {sheets === null && (
-          <p style={{ color: "#7f7a7a" }}>[*] loading sheets…</p>
-        )}
+        {sheets === null && <p style={{ color: '#7f7a7a' }}>[*] loading sheets…</p>}
         {sheets !== null && sheets.length === 0 && (
-          <p style={{ color: "#b8b2b2" }}>
+          <p style={{ color: '#b8b2b2' }}>
             No sheets connected yet. Connect one to auto-generate a typed SDK.
           </p>
         )}
@@ -168,20 +153,19 @@ export default function ProjectDetailPage() {
               <li
                 key={s.id}
                 className="flex items-center gap-2 border rounded px-6 py-4"
-                style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+                style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
               >
                 <Link
                   href={`/app/projects/${projectId}/sheets/${s.id}`}
                   className="flex-1 flex items-center justify-between"
                 >
                   <span>
-                    <span style={{ color: "#716b6a" }}>[*]</span>{" "}
-                    <strong>{s.tabName}</strong>{" "}
-                    <span style={{ color: "#7f7a7a" }} className="text-sm ml-2">
+                    <span style={{ color: '#716b6a' }}>[*]</span> <strong>{s.tabName}</strong>{' '}
+                    <span style={{ color: '#7f7a7a' }} className="text-sm ml-2">
                       {s.googleSheetId.slice(0, 12)}…
                     </span>
                   </span>
-                  <span style={{ color: "#7f7a7a" }} className="text-sm">
+                  <span style={{ color: '#7f7a7a' }} className="text-sm">
                     {new Date(s.createdAt).toLocaleDateString()}
                   </span>
                 </Link>
@@ -205,37 +189,32 @@ export default function ProjectDetailPage() {
             onClick={onCreateKey}
             disabled={creatingKey}
             className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: "#f2eded", color: "#131010" }}
+            style={{ backgroundColor: '#f2eded', color: '#131010' }}
           >
-            {creatingKey ? "Creating…" : "+ create key"}
+            {creatingKey ? 'Creating…' : '+ create key'}
           </button>
         </div>
 
         {revealedKey && (
           <div
             className="border rounded p-6 mb-4"
-            style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+            style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
           >
             <div className="flex items-center justify-between mb-3">
-              <p style={{ color: "#b8b2b2" }} className="text-sm">
+              <p style={{ color: '#b8b2b2' }} className="text-sm">
                 [!] copy this key now — it will not be shown again
               </p>
               <CopyButton value={revealedKey} label="copy key" />
             </div>
-            <code
-              className="block font-bold break-all"
-              style={{ color: "#f2eded" }}
-            >
+            <code className="block font-bold break-all" style={{ color: '#f2eded' }}>
               {revealedKey}
             </code>
           </div>
         )}
 
-        {apiKeys === null && (
-          <p style={{ color: "#7f7a7a" }}>[*] loading keys…</p>
-        )}
+        {apiKeys === null && <p style={{ color: '#7f7a7a' }}>[*] loading keys…</p>}
         {apiKeys !== null && apiKeys.length === 0 && (
-          <p style={{ color: "#b8b2b2" }}>No keys yet.</p>
+          <p style={{ color: '#b8b2b2' }}>No keys yet.</p>
         )}
         {apiKeys !== null && apiKeys.length > 0 && (
           <ul className="space-y-2">
@@ -243,17 +222,16 @@ export default function ProjectDetailPage() {
               <li
                 key={k.id}
                 className="flex items-center justify-between gap-2 border rounded px-6 py-4"
-                style={{ borderColor: "#3d3838", backgroundColor: "#1b1818" }}
+                style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
               >
                 <span>
-                  <span style={{ color: "#716b6a" }}>[*]</span>{" "}
-                  <code>{k.prefix}</code>
+                  <span style={{ color: '#716b6a' }}>[*]</span> <code>{k.prefix}</code>
                 </span>
                 <span className="flex items-center gap-3">
-                  <span style={{ color: "#7f7a7a" }} className="text-sm">
+                  <span style={{ color: '#7f7a7a' }} className="text-sm">
                     {k.lastUsedAt
                       ? `last used ${new Date(k.lastUsedAt).toLocaleDateString()}`
-                      : "never used"}
+                      : 'never used'}
                   </span>
                   <DeleteIconButton
                     onClick={() => onRevokeKey(k)}
