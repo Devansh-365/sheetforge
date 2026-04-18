@@ -17,7 +17,8 @@ export const errorHandler: ErrorHandler = (err, _c) => {
       },
       'request-failed',
     );
-    delete (body.error as { details?: unknown }).details;
+    // Assigning undefined keeps biome happy and JSON.stringify omits the key.
+    (body.error as { details?: unknown }).details = undefined;
   } else {
     log.debug(
       { err: err instanceof Error ? err.message : String(err), status },

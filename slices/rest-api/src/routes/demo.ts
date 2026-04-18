@@ -1,5 +1,5 @@
-import { getHammerStatus, hammerRun } from '@sheetforge/slice-demo';
 import { RateLimitedError } from '@sheetforge/shared-types';
+import { getHammerStatus, hammerRun } from '@sheetforge/slice-demo';
 import { Hono } from 'hono';
 import type { AppVariables, RouterDeps } from '../types.js';
 
@@ -8,8 +8,8 @@ const WINDOW_MS = 60 * 60 * 1000;
 const MAX_N = 50;
 
 function clientIp(headers: Headers): string {
-  const fwd = headers.get('x-forwarded-for');
-  if (fwd) return fwd.split(',')[0]!.trim();
+  const first = headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  if (first) return first;
   return headers.get('x-real-ip') ?? 'unknown';
 }
 
@@ -26,10 +26,7 @@ function rateLimit(ip: string): void {
   const cutoff = now - WINDOW_MS;
   const recent = (hits.get(ip) ?? []).filter((t) => t > cutoff);
   if (recent.length >= RUNS_PER_HOUR) {
-    throw new RateLimitedError(
-      `demo limit reached (${RUNS_PER_HOUR} runs/hour)`,
-      WINDOW_MS,
-    );
+    throw new RateLimitedError(`demo limit reached (${RUNS_PER_HOUR} runs/hour)`, WINDOW_MS);
   }
   recent.push(now);
   hits.set(ip, recent);

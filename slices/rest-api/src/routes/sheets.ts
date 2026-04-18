@@ -15,10 +15,7 @@ import { Hono } from 'hono';
 import { requireSession } from '../middleware.js';
 import type { AppVariables, RouterDeps } from '../types.js';
 
-function coerceCell(
-  raw: string,
-  type: 'string' | 'number' | 'boolean' | 'datetime',
-): unknown {
+function coerceCell(raw: string, type: 'string' | 'number' | 'boolean' | 'datetime'): unknown {
   if (raw === '') return null;
   if (type === 'number') {
     const n = Number(raw);
