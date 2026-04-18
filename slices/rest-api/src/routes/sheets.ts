@@ -1,5 +1,5 @@
 import { emitTypeScriptSdk } from '@sheetforge/codegen';
-import { createSheetsClient } from '@sheetforge/shared-google';
+import { a1Range, createSheetsClient } from '@sheetforge/shared-google';
 import { getAccessTokenForUser } from '@sheetforge/slice-auth';
 import { getProject } from '@sheetforge/slice-projects';
 import { getLatestSchema, inferSchema, saveSchemaSnapshot } from '@sheetforge/slice-schema';
@@ -191,7 +191,7 @@ export function createSheetRoutes(deps: RouterDeps): Hono<{ Variables: AppVariab
       userId: user.userId,
     });
     const sheetsClient = createSheetsClient({ accessToken });
-    const range = `${sheet.tabName}!A1:ZZ${limit + 1}`;
+    const range = a1Range(sheet.tabName, `A1:ZZ${limit + 1}`);
     const result = await sheetsClient.getValues({
       spreadsheetId: sheet.googleSheetId,
       range,

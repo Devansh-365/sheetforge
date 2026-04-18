@@ -45,6 +45,9 @@ const app = createRouter({
     SESSION_JWT_SECRET: env.SESSION_JWT_SECRET,
     PUBLIC_BASE_URL: env.PUBLIC_BASE_URL,
     WEB_BASE_URL: env.WEB_BASE_URL,
+    ...(env.ALLOWED_WEB_ORIGINS
+      ? { ALLOWED_WEB_ORIGINS: env.ALLOWED_WEB_ORIGINS }
+      : {}),
   },
 });
 
@@ -80,8 +83,12 @@ if (env.PROCESSOR_ENABLED) {
           { err: err instanceof Error ? err.message : String(err) },
           'demo-processor-tick-failed',
         );
+        // Backoff after errors so a transient Upstash 5xx or auth-failed
+        // response doesn't burn through our REST request budget at wire speed.
+        await new Promise((res) => setTimeout(res, 1000));
       }
-      // No sleep — processNext blocks on BLOCK 100ms when idle anyway.
+      // No explicit sleep on success — xreadgroupSingle paces the loop via
+      // its blockMs (or the Upstash adapter's setTimeout fallback).
     }
   })();
 }

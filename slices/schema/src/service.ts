@@ -1,5 +1,5 @@
 import type { Db } from '@sheetforge/shared-db';
-import type { SheetsClient } from '@sheetforge/shared-google';
+import { type SheetsClient, a1Range } from '@sheetforge/shared-google';
 import { NotFoundError, ValidationError } from '@sheetforge/shared-types';
 import { findLatestSchemaBySheetId, insertSchemaSnapshot } from './repo.js';
 import type { ColumnDescriptor, ColumnType, SchemaSnapshot } from './types.js';
@@ -20,7 +20,7 @@ export async function inferSchema({
   const size = sampleSize ?? DEFAULT_SAMPLE_SIZE;
   // Fetch header + N data rows in one call. ZZ is ~700 columns, more than any
   // sensible sheet in V0 scope.
-  const range = `${tabName}!A1:ZZ${size + 1}`;
+  const range = a1Range(tabName, `A1:ZZ${size + 1}`);
   const valueRange = await sheetsClient.getValues({ spreadsheetId, range });
   const rows = valueRange.values ?? [];
 

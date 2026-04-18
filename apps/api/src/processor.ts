@@ -1,6 +1,6 @@
 import type { QueueRedisClient } from '@sheetforge/queue';
 import type { Db } from '@sheetforge/shared-db';
-import { type AppendSafeRow, createSheetsClient } from '@sheetforge/shared-google';
+import { type AppendSafeRow, a1Tab, createSheetsClient } from '@sheetforge/shared-google';
 import { createLogger } from '@sheetforge/shared-logger';
 import { getAccessTokenForUser } from '@sheetforge/slice-auth';
 import { DEMO_SHEET_ID } from '@sheetforge/slice-demo';
@@ -96,7 +96,7 @@ async function processOneSheet({
       const tabSheetId = tab.properties.sheetId;
       const vals = await sheetsClient.getValues({
         spreadsheetId: sheet.googleSheetId,
-        range: sheet.tabName,
+        range: a1Tab(sheet.tabName),
       });
       const currentRowCount = vals.values?.length ?? 0;
       const cells: AppendSafeRow = snapshot.columns.map((col) => {

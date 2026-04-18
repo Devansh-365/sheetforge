@@ -33,6 +33,14 @@ function rateLimit(ip: string): void {
   }
   recent.push(now);
   hits.set(ip, recent);
+
+  // Cheap janitor — 1% of writes sweep the map. Without this an attacker
+  // rotating IPs grows the heap unbounded.
+  if (Math.random() < 0.01) {
+    for (const [k, arr] of hits) {
+      if (arr.every((t) => t <= cutoff)) hits.delete(k);
+    }
+  }
 }
 
 export function createDemoRoutes(deps: RouterDeps): Hono<{ Variables: AppVariables }> {

@@ -66,12 +66,36 @@ export async function submitWrite({
   }
 
   const writeId = randomUUID();
-  await insertLedger({
-    db,
-    sheetId,
-    idempotencyKey: idempotencyKey ?? null,
-    writeId,
-  });
+  try {
+    await insertLedger({
+      db,
+      sheetId,
+      idempotencyKey: idempotencyKey ?? null,
+      writeId,
+    });
+  } catch (err) {
+    // Concurrent submitWrite() raced us between the find above and the insert
+    // here. The partial unique index on (sheet_id, idempotency_key) catches
+    // it; treat as a replay so the caller still gets ONE writeId per key.
+    if (idempotencyKey !== undefined && isUniqueViolation(err)) {
+      const prior = await findLedgerByIdempotencyKey({
+        db,
+        sheetId,
+        idempotencyKey,
+      });
+      if (prior) {
+        log.debug(
+          { sheetId, idempotencyKey, writeId: prior.writeId, status: prior.status },
+          'idempotency-replay-after-race',
+        );
+        return { writeId: prior.writeId, status: 'replayed' };
+      }
+      // Race-loser found nothing — winner must have rolled back. Don't leak
+      // the raw constraint name to clients via the 500 message.
+      throw new InternalError('write submission failed; please retry');
+    }
+    throw err;
+  }
 
   const streamKey = streamKeyForSheet(sheetId);
   const { messageId } = await enqueue({
@@ -82,6 +106,19 @@ export async function submitWrite({
 
   log.debug({ sheetId, writeId, messageId }, 'enqueued');
   return { writeId, status: 'enqueued', messageId };
+}
+
+/**
+ * postgres-js surfaces unique-violation errors with code '23505'. Drizzle
+ * preserves that on the thrown error object.
+ */
+function isUniqueViolation(err: unknown): boolean {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    'code' in err &&
+    (err as { code: unknown }).code === '23505'
+  );
 }
 
 export type ProcessOutcome = 'processed' | 'no-work' | 'locked-elsewhere';

@@ -1,4 +1,5 @@
 export { createSheetsClient } from './client.js';
+export { a1Range, a1Tab } from './range.js';
 export type {
   CreateSheetsClientOptions,
   SheetsClient,

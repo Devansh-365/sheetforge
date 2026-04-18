@@ -1,4 +1,4 @@
-import { createSheetsClient } from '@sheetforge/shared-google';
+import { a1Range, createSheetsClient } from '@sheetforge/shared-google';
 import { ForbiddenError } from '@sheetforge/shared-types';
 import { getAccessTokenForUser } from '@sheetforge/slice-auth';
 import { getProjectUnscoped } from '@sheetforge/slice-projects';
@@ -56,7 +56,7 @@ export function createRowRoutes(deps: RouterDeps): Hono<{ Variables: AppVariable
     });
     const sheetsClient = createSheetsClient({ accessToken });
     const snapshot = await getLatestSchema({ db: deps.db, sheetId });
-    const range = `${sheet.tabName}!A1:ZZ`;
+    const range = a1Range(sheet.tabName, 'A1:ZZ');
     const valueRange = await sheetsClient.getValues({
       spreadsheetId: sheet.googleSheetId,
       range,

@@ -14,9 +14,10 @@ export interface UserRow {
 }
 
 /**
- * Find-or-insert on users.email. Deliberately not using ON CONFLICT DO UPDATE
- * because a unique constraint on `email` hasn't been declared in the schema
- * yet; a follow-up migration will add it and this can collapse to an upsert.
+ * Atomic upsert on users.email — relies on the unique constraint declared in
+ * the schema. The previous select-then-insert version would 500 on concurrent
+ * first-time logins for the same email (both txns saw no row, both INSERTed,
+ * the second hit a unique violation).
  */
 export async function upsertUserByEmail({
   db,
@@ -25,27 +26,13 @@ export async function upsertUserByEmail({
 }: UpsertUserArgs): Promise<UserRow> {
   const now = new Date();
 
-  const existing = await db
-    .select({
-      id: schema.users.id,
-      email: schema.users.email,
-      createdAt: schema.users.createdAt,
-    })
-    .from(schema.users)
-    .where(eq(schema.users.email, email))
-    .limit(1);
-
-  if (existing[0]) {
-    await db
-      .update(schema.users)
-      .set({ googleRefreshToken, updatedAt: now })
-      .where(eq(schema.users.id, existing[0].id));
-    return existing[0];
-  }
-
   const inserted = await db
     .insert(schema.users)
     .values({ email, googleRefreshToken, createdAt: now, updatedAt: now })
+    .onConflictDoUpdate({
+      target: schema.users.email,
+      set: { googleRefreshToken, updatedAt: now },
+    })
     .returning({
       id: schema.users.id,
       email: schema.users.email,
@@ -54,7 +41,7 @@ export async function upsertUserByEmail({
 
   const row = inserted[0];
   if (!row) {
-    throw new Error('insert into users did not return a row');
+    throw new Error('upsert into users did not return a row');
   }
   return row;
 }

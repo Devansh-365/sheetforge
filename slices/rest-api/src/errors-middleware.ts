@@ -7,14 +7,23 @@ const log = createLogger({ service: 'rest-api' });
 export const errorHandler: ErrorHandler = (err, _c) => {
   const { status, body } = toHttpResponse(err);
   if (status >= 500) {
-    log.error({ err: err instanceof Error ? err.message : String(err) }, 'request-failed');
+    // Log full details server-side, but strip them from the response so we
+    // never leak upstream API bodies (Google Sheets returns spreadsheet
+    // titles/IDs in error messages) to clients.
+    log.error(
+      {
+        err: err instanceof Error ? err.message : String(err),
+        details: body.error.details,
+      },
+      'request-failed',
+    );
+    delete (body.error as { details?: unknown }).details;
   } else {
     log.debug(
       { err: err instanceof Error ? err.message : String(err), status },
       'request-rejected',
     );
   }
-  // Bypass Hono's strict status-code typing by building the Response directly.
   return new Response(JSON.stringify(body), {
     status,
     headers: { 'Content-Type': 'application/json' },

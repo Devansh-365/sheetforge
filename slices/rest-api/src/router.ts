@@ -11,10 +11,26 @@ import type { AppVariables, RouterDeps } from './types.js';
 export function createRouter(deps: RouterDeps): Hono<{ Variables: AppVariables }> {
   const app = new Hono<{ Variables: AppVariables }>();
 
+  // Origin allowlist — WEB_BASE_URL plus any extra entries from the CSV.
+  // Trim trailing slashes so https://foo.com matches https://foo.com/.
+  const allowed = new Set(
+    [deps.env.WEB_BASE_URL, ...(deps.env.ALLOWED_WEB_ORIGINS?.split(',') ?? [])]
+      .map((o) => o.trim().replace(/\/+$/, ''))
+      .filter((o) => o.length > 0),
+  );
+
   app.use(
     '*',
     cors({
-      origin: deps.env.WEB_BASE_URL,
+      origin: (origin, c) => {
+        // Public demo endpoints are unauthenticated — echo any origin so the
+        // hammer demo works from anywhere (Vercel previews, the marketing
+        // site, embedded iframes). Browsers won't send credentials here.
+        if (c.req.path.startsWith('/v1/demo/')) return origin || '*';
+        if (!origin) return null;
+        const normalized = origin.replace(/\/+$/, '');
+        return allowed.has(normalized) ? origin : null;
+      },
       credentials: true,
     }),
   );

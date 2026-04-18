@@ -109,6 +109,11 @@ export const apiKeys = pgTable(
       .references(() => projects.id, { onDelete: "cascade" }),
     // bcrypt/argon2 hash of the raw key — never store plaintext
     hashedKey: text("hashed_key").notNull(),
+    // Display-only — first chars of the plaintext key the user copied. Used
+    // by the dashboard to identify which key is which without revealing the
+    // plaintext (which we never persist). Nullable for legacy rows created
+    // before this column existed.
+    prefix: text("prefix"),
     // nullable: null means key is scoped to all sheets in the project
     scopeSheetIds: jsonb("scope_sheet_ids").$type<string[]>(),
     lastUsedAt: timestamp("last_used_at", { withTimezone: true }),

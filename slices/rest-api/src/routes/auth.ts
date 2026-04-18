@@ -7,11 +7,16 @@ import type { RouterDeps } from '../types.js';
 export function createAuthRoutes(deps: RouterDeps): Hono {
   const app = new Hono();
 
+  // `secure` mirrors whether the API is HTTPS in this env. Local dev runs
+  // http://localhost so we can't blindly set it; production must.
+  const cookieSecure = deps.env.PUBLIC_BASE_URL.startsWith('https://');
+
   app.get('/oauth/login', (c) => {
     const state = randomUUID();
     setCookie(c, 'oauth_state', state, {
       httpOnly: true,
       sameSite: 'Lax',
+      secure: cookieSecure,
       path: '/',
       maxAge: 600,
     });
@@ -46,6 +51,7 @@ export function createAuthRoutes(deps: RouterDeps): Hono {
     setCookie(c, 'session', token, {
       httpOnly: true,
       sameSite: 'Lax',
+      secure: cookieSecure,
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
     });

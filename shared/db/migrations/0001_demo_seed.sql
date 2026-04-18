@@ -2,7 +2,7 @@
 -- something to reference via the write_ledger FK chain. Idempotent — safe to
 -- re-run in any environment.
 INSERT INTO "users" ("id", "email")
-VALUES ('00000000-0000-0000-0000-0000000d3001', 'demo@sheetforge.dev')
+VALUES ('00000000-0000-0000-0000-0000000d3001', '__demo-sentinel@sheetforge.invalid')
 ON CONFLICT ("id") DO NOTHING;
 --> statement-breakpoint
 INSERT INTO "projects" ("id", "user_id", "name")

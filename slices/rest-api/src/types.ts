@@ -8,8 +8,10 @@ export interface RouterEnv {
   SESSION_JWT_SECRET: string;
   /** API base — where the SDK generator points clients. */
   PUBLIC_BASE_URL: string;
-  /** Browser app origin — used for CORS and post-OAuth redirect. */
+  /** Browser app origin — used for the post-OAuth redirect target. */
   WEB_BASE_URL: string;
+  /** Optional CSV of additional origins permitted by the dashboard CORS check. */
+  ALLOWED_WEB_ORIGINS?: string;
 }
 
 export interface RouterDeps {

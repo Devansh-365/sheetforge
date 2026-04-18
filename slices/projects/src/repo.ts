@@ -78,6 +78,7 @@ export async function insertApiKey({
     .values({
       projectId,
       hashedKey,
+      prefix,
       scopeSheetIds,
     })
     .returning();
@@ -106,7 +107,10 @@ export async function findApiKeysByProjectId({
   return rows.map((r) => ({
     id: r.id,
     projectId: r.projectId,
-    prefix: 'sk_live_…' + r.hashedKey.slice(-4),
+    // Show the prefix the user actually copied (last 4 of the plaintext, set
+    // at create time). Legacy rows pre-dating the prefix column fall back to
+    // the hash-derived placeholder so the dashboard doesn't crash.
+    prefix: r.prefix ?? `sk_live_…${r.hashedKey.slice(-4)}`,
     scopeSheetIds: r.scopeSheetIds ?? null,
     lastUsedAt: r.lastUsedAt,
     createdAt: r.createdAt,

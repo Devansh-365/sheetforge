@@ -86,7 +86,10 @@ export function createUpstashQueueClient({
 
     async xgroupCreateMkstream(key, group) {
       try {
-        await exec('XGROUP', 'CREATE', key, group, '$', 'MKSTREAM');
+        // Start at '0' (not '$') so the group sees entries XADDed BEFORE the
+        // group existed. Producers don't (and shouldn't) ensure the group;
+        // without this, the first-ever message on a stream is silently lost.
+        await exec('XGROUP', 'CREATE', key, group, '0', 'MKSTREAM');
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         if (!/BUSYGROUP/.test(msg)) throw err;

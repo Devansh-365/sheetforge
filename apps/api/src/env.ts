@@ -14,7 +14,12 @@ export const ApiEnvSchema = z
     GOOGLE_OAUTH_REDIRECT_URL: z.string().url(),
     SESSION_JWT_SECRET: z.string().min(32),
     PUBLIC_BASE_URL: z.string().url().default('http://localhost:3001'),
+    // Single canonical URL for the OAuth post-login redirect.
     WEB_BASE_URL: z.string().url().default('http://localhost:3000'),
+    // Optional comma-separated list of additional origins allowed by CORS.
+    // Use this for Vercel preview deploys, www-vs-apex, etc. WEB_BASE_URL is
+    // always allowed automatically; this only adds extras.
+    ALLOWED_WEB_ORIGINS: z.string().optional(),
     PROCESSOR_ENABLED: z
       .union([z.literal('true'), z.literal('false')])
       .default('true')
