@@ -3,6 +3,7 @@ import { createDb } from '@sheetforge/shared-db';
 import { createLogger } from '@sheetforge/shared-logger';
 import { createIoredisQueueClient, createUpstashQueueClient } from '@sheetforge/shared-redis';
 import { createRouter } from '@sheetforge/slice-rest-api';
+import { drainOutboxTick } from '@sheetforge/slice-write-queue';
 import { demoProcessorTick } from './demo-processor.js';
 import { loadEnv } from './env.js';
 import { processorTick } from './processor.js';
@@ -87,6 +88,30 @@ if (env.PROCESSOR_ENABLED) {
       }
       // No explicit sleep on success — xreadgroupSingle paces the loop via
       // its blockMs (or the Upstash adapter's setTimeout fallback).
+    }
+  })();
+
+  // Outbox drain — catches envelopes whose inline XADD from submitWrite
+  // didn't land (process death between the ledger commit and Redis, or a
+  // transient Redis outage). Without this loop those rows would sit in
+  // Postgres forever and the corresponding writes would never reach the
+  // handler.
+  (async () => {
+    log.info({}, 'outbox-drain-starting');
+    while (true) {
+      try {
+        const outcome = await drainOutboxTick({ db, redis });
+        if (outcome.failed > 0) {
+          await new Promise((res) => setTimeout(res, 1000));
+        }
+      } catch (err) {
+        log.error(
+          { err: err instanceof Error ? err.message : String(err) },
+          'outbox-drain-tick-failed',
+        );
+        await new Promise((res) => setTimeout(res, 5000));
+      }
+      await new Promise((res) => setTimeout(res, 500));
     }
   })();
 }
