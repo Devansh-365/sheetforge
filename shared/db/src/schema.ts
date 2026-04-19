@@ -132,3 +132,29 @@ export const writeLedger = pgTable('write_ledger', {
   enqueuedAt: timestamp('enqueued_at', { withTimezone: true }).notNull().defaultNow(),
   completedAt: timestamp('completed_at', { withTimezone: true }),
 });
+
+// ---------------------------------------------------------------------------
+// write_outbox — transactional outbox closing the ledger+XADD partial-commit
+// window. submitWrite() inserts a ledger row + outbox envelope inside ONE DB
+// transaction; a background drain worker is the only path that XADDs to the
+// stream. Inline XADD in submitWrite is a best-effort latency optimization
+// that marks sent_at on success; the drain picks up anything left unsent.
+// ---------------------------------------------------------------------------
+
+export const writeOutbox = pgTable('write_outbox', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  // Matches write_ledger.writeId — same uuid flows through both rows so the
+  // drain worker can correlate without a JOIN.
+  writeId: uuid('write_id').notNull(),
+  sheetId: uuid('sheet_id')
+    .notNull()
+    .references(() => sheets.id, { onDelete: 'cascade' }),
+  // streamKey is derivable from sheetId via streamKeyForSheet() but stored
+  // explicitly so the drain worker stays self-contained.
+  streamKey: text('stream_key').notNull(),
+  // The full queue envelope — { writeId, payload, idempotencyKey? }
+  envelope: jsonb('envelope').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  sentAt: timestamp('sent_at', { withTimezone: true }),
+  attempts: integer('attempts').notNull().default(0),
+});

@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
-import { apiKeys, projects, schemas, sheets, users, writeLedger } from './schema.js';
+import { apiKeys, projects, schemas, sheets, users, writeLedger, writeOutbox } from './schema.js';
 
 // Direction: Drizzle table definitions → Zod schemas (mandated by v3 plan PV-4).
 // Never hand-write domain types here; derive them from the table definition.
@@ -57,3 +57,12 @@ export const WriteLedgerSelect = createSelectSchema(writeLedger);
 export const WriteLedgerInsert = createInsertSchema(writeLedger);
 export type WriteLedgerSelect = typeof WriteLedgerSelect._type;
 export type WriteLedgerInsert = typeof WriteLedgerInsert._type;
+
+// ---------------------------------------------------------------------------
+// writeOutbox
+// ---------------------------------------------------------------------------
+
+export const WriteOutboxSelect = createSelectSchema(writeOutbox);
+export const WriteOutboxInsert = createInsertSchema(writeOutbox);
+export type WriteOutboxSelect = typeof WriteOutboxSelect._type;
+export type WriteOutboxInsert = typeof WriteOutboxInsert._type;

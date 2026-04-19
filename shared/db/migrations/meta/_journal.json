@@ -22,6 +22,13 @@
       "when": 1776470000000,
       "tag": "0002_critical_fixes",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776729200000,
+      "tag": "0003_write_outbox",
+      "breakpoints": true
     }
   ]
 }
