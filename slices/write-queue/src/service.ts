@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import {
   type ClaimedMessage,
+  type EnqueueMessage,
   type QueueRedisClient,
   ackMessage,
   claimNext,
@@ -14,7 +15,10 @@ import {
   countLedgerByStatus,
   findLedgerByIdempotencyKey,
   findRecentLedger,
+  getLedgerStatus,
   insertLedger,
+  insertOutbox,
+  markOutboxSent,
   tryAdvisoryXactLock,
   updateLedgerStatus,
 } from './repo.js';
@@ -66,17 +70,41 @@ export async function submitWrite({
   }
 
   const writeId = randomUUID();
+  const streamKey = streamKeyForSheet(sheetId);
+  const envelope: EnqueueMessage<WritePayload> = { writeId, idempotencyKey, payload };
+
+  // Atomic commit of the ledger row + outbox envelope. The outbox closes
+  // the gap where a process death between the INSERT and the Redis XADD
+  // would leave a "pending" ledger row with no stream entry — permanently
+  // lost. By staging the envelope in Postgres within the same transaction,
+  // a background drain worker can later re-XADD anything the inline path
+  // didn't manage to deliver.
+  let outboxId: string;
   try {
-    await insertLedger({
-      db,
-      sheetId,
-      idempotencyKey: idempotencyKey ?? null,
-      writeId,
+    outboxId = await (
+      db as unknown as {
+        transaction: <T>(cb: (tx: Db) => Promise<T>) => Promise<T>;
+      }
+    ).transaction(async (tx) => {
+      await insertLedger({
+        db: tx,
+        sheetId,
+        idempotencyKey: idempotencyKey ?? null,
+        writeId,
+      });
+      return await insertOutbox({
+        db: tx,
+        writeId,
+        sheetId,
+        streamKey,
+        envelope,
+      });
     });
   } catch (err) {
-    // Concurrent submitWrite() raced us between the find above and the insert
-    // here. The partial unique index on (sheet_id, idempotency_key) catches
-    // it; treat as a replay so the caller still gets ONE writeId per key.
+    // Concurrent submitWrite() raced us between the find above and the
+    // transaction here. The partial unique index on
+    // (sheet_id, idempotency_key) catches it; treat as a replay so the
+    // caller still gets ONE writeId per key.
     if (idempotencyKey !== undefined && isUniqueViolation(err)) {
       const prior = await findLedgerByIdempotencyKey({
         db,
@@ -90,21 +118,46 @@ export async function submitWrite({
         );
         return { writeId: prior.writeId, status: 'replayed' };
       }
-      // Race-loser found nothing — winner must have rolled back. Don't leak
-      // the raw constraint name to clients via the 500 message.
+      // Race-loser found nothing — winner must have rolled back. Don't
+      // leak the raw constraint name to clients via the 500 message.
       throw new InternalError('write submission failed; please retry');
     }
     throw err;
   }
 
-  const streamKey = streamKeyForSheet(sheetId);
-  const { messageId } = await enqueue({
-    redis,
-    streamKey,
-    message: { writeId, idempotencyKey, payload },
-  });
+  // Best-effort inline XADD — keeps happy-path latency low. On success
+  // we mark the outbox row sent so the drain skips it. On failure the
+  // drain worker will pick it up within ~1s; the extra stream entry it
+  // might later produce is absorbed by processNext's skip-if-completed
+  // guard.
+  let messageId: string | undefined;
+  try {
+    const { messageId: mid } = await enqueue({ redis, streamKey, message: envelope });
+    messageId = mid;
+    try {
+      await markOutboxSent({ db, id: outboxId });
+    } catch (markErr) {
+      log.warn(
+        {
+          err: markErr instanceof Error ? markErr.message : String(markErr),
+          outboxId,
+          writeId,
+        },
+        'outbox-mark-sent-failed',
+      );
+    }
+  } catch (enqueueErr) {
+    log.warn(
+      {
+        err: enqueueErr instanceof Error ? enqueueErr.message : String(enqueueErr),
+        writeId,
+        outboxId,
+      },
+      'inline-xadd-failed-drain-will-retry',
+    );
+  }
 
-  log.debug({ sheetId, writeId, messageId }, 'enqueued');
+  log.debug({ sheetId, writeId, messageId, outboxId }, 'enqueued');
   return { writeId, status: 'enqueued', messageId };
 }
 
@@ -176,6 +229,17 @@ export async function processNext<P extends WritePayload>({
       if (!gotLock) {
         log.debug({ streamKey, writeId: msg.writeId }, 'lock-held-elsewhere');
         return; // transaction commits without touching the ledger
+      }
+
+      // Guard against duplicate stream delivery: Redis PEL redelivery or
+      // the outbox drain re-XADDing the same writeId can land a message
+      // for work already completed. Running the handler again would
+      // write the same row twice. Short-circuit to "safe to ack" instead.
+      const currentStatus = await getLedgerStatus({ db: tx, writeId: msg.writeId });
+      if (currentStatus === 'completed' || currentStatus === 'dead_lettered') {
+        log.debug({ streamKey, writeId: msg.writeId, currentStatus }, 'skip-already-terminal');
+        processedInsideTx = true;
+        return;
       }
 
       await updateLedgerStatus({

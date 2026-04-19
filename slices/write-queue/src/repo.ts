@@ -63,6 +63,72 @@ export async function updateLedgerStatus({
 }
 
 /**
+ * Read-only status lookup used by processNext to skip duplicate stream
+ * deliveries (PEL redelivery or outbox drain re-XADD). Returns null if the
+ * ledger row doesn't exist, which is itself a signal that the write was
+ * never accepted — caller should treat as "safe to ack and move on."
+ */
+export async function getLedgerStatus({
+  db,
+  writeId,
+}: {
+  db: Db;
+  writeId: string;
+}): Promise<WriteLedgerStatus | null> {
+  const rows = await db
+    .select({ status: schema.writeLedger.status })
+    .from(schema.writeLedger)
+    .where(eq(schema.writeLedger.writeId, writeId))
+    .limit(1);
+  return (rows[0]?.status ?? null) as WriteLedgerStatus | null;
+}
+
+/**
+ * Outbox insert — runs inside submitWrite's transaction so the ledger row
+ * and the queue envelope commit atomically. Returns the outbox row id so
+ * the caller can mark it sent after a successful inline XADD.
+ */
+export async function insertOutbox({
+  db,
+  writeId,
+  sheetId,
+  streamKey,
+  envelope,
+}: {
+  db: Db;
+  writeId: string;
+  sheetId: string;
+  streamKey: string;
+  envelope: unknown;
+}): Promise<string> {
+  const [row] = await db
+    .insert(schema.writeOutbox)
+    .values({ writeId, sheetId, streamKey, envelope })
+    .returning({ id: schema.writeOutbox.id });
+  if (!row) throw new Error('insert into write_outbox did not return a row');
+  return row.id;
+}
+
+/**
+ * Mark an outbox row as sent so the drain worker skips it. Called best-
+ * effort after an inline XADD succeeds; if this fails the drain worker
+ * may re-XADD, but processNext's skip-if-completed guard prevents the
+ * handler from running twice.
+ */
+export async function markOutboxSent({
+  db,
+  id,
+}: {
+  db: Db;
+  id: string;
+}): Promise<void> {
+  await db
+    .update(schema.writeOutbox)
+    .set({ sentAt: new Date() })
+    .where(eq(schema.writeOutbox.id, id));
+}
+
+/**
  * Postgres advisory lock scoped to a single transaction. Returns true if the
  * lock was acquired, false if another transaction currently holds it. Released
  * automatically when the transaction commits or rolls back — this is the
