@@ -10,23 +10,28 @@ Serialized writes. Idempotent retries. Typed TypeScript SDKs, generated live fro
 
 <br />
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Devansh-365/sheetforge/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI&labelColor=000000&color=f2eded)](https://github.com/Devansh-365/sheetforge/actions)
-[![Stars](https://img.shields.io/github/stars/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=000000&color=CFCECD)](https://github.com/Devansh-365/sheetforge/stargazers)
-[![Issues](https://img.shields.io/github/issues/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=000000&color=f2eded)](https://github.com/Devansh-365/sheetforge/issues)
-[![License](https://img.shields.io/badge/packages-MIT-000000?style=for-the-badge&labelColor=CFCECD)](#license)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-000000?style=for-the-badge&labelColor=f2eded)](#contributing)
+[![CI](https://img.shields.io/github/actions/workflow/status/Devansh-365/sheetforge/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/actions)
+[![Stars](https://img.shields.io/github/stars/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/stargazers)
+[![Issues](https://img.shields.io/github/issues/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/issues)
+[![License](https://img.shields.io/badge/packages-MIT-0c0c0e?style=for-the-badge&labelColor=22c55e)](#license)
+[![Self-host](https://img.shields.io/badge/status-self--host%20only-22c55e?style=for-the-badge&labelColor=0c0c0e)](#status-self-host-only-for-now)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-0c0c0e?style=for-the-badge&labelColor=22c55e)](#contributing)
 
 <br />
 
-[![Get started](https://img.shields.io/badge/Get%20started%20→-000000?style=for-the-badge&labelColor=f2eded)](#quickstart)
+[![Self-host in 60s](https://img.shields.io/badge/Self--host%20in%2060s%20→-0c0c0e?style=for-the-badge&labelColor=22c55e)](#quickstart)
 &nbsp;
-[![Try the hammer demo](https://img.shields.io/badge/Try%20the%20hammer%20demo%20→-f2eded?style=for-the-badge&labelColor=000000)](#the-hammer-demo)
+[![Try the hammer demo](https://img.shields.io/badge/Try%20the%20hammer%20demo%20→-22c55e?style=for-the-badge&labelColor=0c0c0e)](#the-hammer-demo)
 &nbsp;
-[![How it works](https://img.shields.io/badge/How%20it%20works%20→-CFCECD?style=for-the-badge&labelColor=000000)](#how-the-queue-actually-works)
+[![How it works](https://img.shields.io/badge/How%20it%20works%20→-bbf7d0?style=for-the-badge&labelColor=0c0c0e)](#how-the-queue-actually-works)
 
 <br />
 
 </div>
+
+> ### 🟢 Status: self-host only for now
+>
+> The landing site at **[sheetforge.dev](https://sheetforge.dev)** is live, but the backend is **not yet hosted**. To use sheetforge today, clone the repo and run the full stack locally — `pnpm dev` boots the Next.js dashboard, Hono API, and the queue worker on your own machine. A managed/hosted SaaS is on the roadmap; the MIT-licensed OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) will stay free forever. See the [self-host quickstart](#quickstart) below.
 
 > **TL;DR.** The Google Sheets API drops rows under concurrent writes. Every "Sheets as a backend" wrapper you have tried (SheetDB, Sheety, NoCodeAPI) forwards your POST straight to `values.append` and inherits the bug. **sheetforge** wraps every write in a per-sheet queue fenced by a Postgres advisory lock. 50 parallel POSTs → 50 ordered rows, retry-safe by key. And because the sheet's header row is the schema, it generates a typed TypeScript SDK you commit to your repo.
 
@@ -73,21 +78,36 @@ await Promise.all([
 
 `values.append` isn't serializable. Two concurrent appends can resolve to the same target row and one silently overwrites the other. It's a documented Google bug whose upstream workaround boils down to "don't write concurrently." Fine for a demo. Not fine when your signup form catches an HN spike.
 
+## Status: self-host only for now
+
+| Surface | Status |
+| :-- | :-- |
+| Landing site (marketing only) | ✅ live at [sheetforge.dev](https://sheetforge.dev) |
+| Dashboard + API (write-queue, SDK codegen, hammer demo) | 🟢 runs locally via `pnpm dev` |
+| Hosted SaaS (sign up, skip local infra) | ⏳ planned after V1 stabilizes |
+| OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) | ✅ MIT, free forever |
+
+**What this means for you.** If you land on the marketing site today and hit "Sign in", that flow only works against an API *you* run — the hosted endpoint isn't up yet. To try the product, clone this repo, follow the [quickstart](#quickstart), and the dashboard at `http://localhost:3000` gives you the whole experience (OAuth, sheet connect, typed SDK download, hammer demo).
+
+I'll update this section the moment the hosted API is live. Star the repo to get notified.
+
 ## The hammer demo
 
-There's a button on the landing page labeled **Slam 50 parallel writes**. It fires 50 concurrent POSTs at a shared demo sheet, polls the status endpoint, and paints a 50-tile grid as writes land. Try breaking it.
+There's a button on the landing page labeled **fire 50 parallel writes**. Once you have the stack running locally, it fires 50 concurrent POSTs at a synthetic sheet, polls the status endpoint, and paints a 50-tile grid as writes land. Try breaking it.
 
 ```
   $ pnpm dev
   ▸ web  http://localhost:3000
   ▸ api  http://localhost:3001
 
-  slam 50 parallel writes
+  fire 50 parallel writes
   ██████████████████████████████████████████  50 / 50
   ordered · idempotent · 1.2s end-to-end
 ```
 
 Zero dropped rows. Zero duplicates on replay. Grid order matches enqueue order because the advisory lock serializes the tail. The same hammer hits a raw Sheets API sample and reliably drops 3 to 8 rows per run.
+
+> The demo button on the **hosted** landing page intentionally points at `localhost:3001` — it's here to show the pipeline, not to be a SaaS. When the hosted API ships, it'll be swapped to the public endpoint.
 
 ## Quickstart
 
@@ -219,7 +239,7 @@ Handler runs inside a Postgres transaction. `XACK` happens post-commit. Mid-flig
 <td width="33%" valign="top">
 
 ### Self-host in 60 seconds
-No Docker required for local dev. One Postgres URL, one Redis URL (or Upstash REST). Next.js and Hono, both in one `pnpm dev`.
+The only way to run it today. No Docker required for local dev — one Postgres URL, one Redis URL (or Upstash REST). Next.js and Hono, both in one `pnpm dev`.
 
 </td>
 </tr>

@@ -14,7 +14,7 @@ export function OpenCodeLogo({ className }: { className?: string }) {
         fontFamily="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
         fontSize="20"
         fontWeight="700"
-        fill="#CFCECD"
+        fill="#22c55e"
       >
         [
       </text>
@@ -34,7 +34,7 @@ export function OpenCodeLogo({ className }: { className?: string }) {
         fontFamily="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
         fontSize="20"
         fontWeight="700"
-        fill="#CFCECD"
+        fill="#22c55e"
       >
         ]
       </text>

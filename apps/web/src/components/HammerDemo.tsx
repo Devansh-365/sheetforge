@@ -90,10 +90,29 @@ export function HammerDemo() {
       <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">
         See it for yourself — hammer the queue
       </h3>
-      <p className="text-[#b8b2b2] mb-6 leading-[24px]">
-        <span className="text-[#716b6a]">[*]</span> Click the button. We fire {TOTAL} parallel
-        writes at a synthetic sheet through the real pipeline — same advisory lock, same Redis
-        stream, same ledger. Watch them land in order.
+      <p className="text-[#b8b2b2] mb-4 leading-[24px]">
+        <span style={{ color: '#22c55e' }}>[*]</span> Click the button. It fires{' '}
+        {TOTAL} parallel writes at a synthetic sheet through the real pipeline —
+        same advisory lock, same Redis stream, same ledger. Watch them land in
+        order.
+      </p>
+      <p
+        className="mb-6 text-sm leading-[20px] border rounded px-3 py-2 inline-flex items-center gap-2"
+        style={{
+          color: '#86efac',
+          borderColor: '#14532d',
+          backgroundColor: '#0f1a12',
+        }}
+      >
+        <span
+          className="inline-block w-1.5 h-1.5 rounded-full"
+          style={{ backgroundColor: '#22c55e' }}
+          aria-hidden="true"
+        />
+        Self-host note: the demo talks to your local API on{' '}
+        <code style={{ color: '#bbf7d0' }}>:3001</code>. Run{' '}
+        <code style={{ color: '#bbf7d0' }}>pnpm dev</code> first — a hosted demo
+        is on the way.
       </p>
 
       <div className="flex items-center gap-3 mb-4">
@@ -101,8 +120,8 @@ export function HammerDemo() {
           type="button"
           onClick={start}
           disabled={phase === 'dispatching' || phase === 'watching'}
-          className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-          style={{ backgroundColor: '#f2eded', color: '#131010' }}
+          className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50 cursor-pointer"
+          style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
         >
           {phase === 'dispatching'
             ? 'dispatching…'
@@ -133,11 +152,11 @@ export function HammerDemo() {
           {tiles.map((tile, i) => (
             <div
               key={i}
-              className="aspect-square border rounded flex items-center justify-center text-[10px] font-mono"
+              className="aspect-square border rounded flex items-center justify-center text-[10px] font-mono transition-colors"
               style={{
-                borderColor: tile.kind === 'filled' ? '#3d3838' : '#2a2626',
-                backgroundColor: tile.kind === 'filled' ? '#1b1818' : '#131010',
-                color: tile.kind === 'filled' ? '#f2eded' : '#4a4545',
+                borderColor: tile.kind === 'filled' ? '#22c55e' : '#2a2626',
+                backgroundColor: tile.kind === 'filled' ? '#14532d' : '#131010',
+                color: tile.kind === 'filled' ? '#bbf7d0' : '#4a4545',
               }}
               title={
                 tile.kind === 'filled'

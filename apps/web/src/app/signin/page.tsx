@@ -70,20 +70,49 @@ export default function SignInPage() {
                 {reconnect ? 'Re-authorize Google' : 'Sign in to sheetforge'}
               </h1>
               {reconnect ? (
-                <p style={{ color: '#b8b2b2' }} className="text-sm mb-8 leading-[20px]">
+                <p style={{ color: '#b8b2b2' }} className="text-sm mb-6 leading-[20px]">
                   [!] Your Google connection expired or was revoked. Re-authorize below to get your
                   projects back online — nothing in your sheetforge account is lost.
                 </p>
               ) : (
-                <p style={{ color: '#b8b2b2' }} className="text-sm mb-8 leading-[20px]">
+                <p style={{ color: '#b8b2b2' }} className="text-sm mb-6 leading-[20px]">
                   Connect your Google account to turn any Sheet into a race-condition-safe API.
                 </p>
               )}
 
+              <div
+                className="mb-6 rounded border px-3 py-2 text-xs leading-[18px] flex items-start gap-2"
+                style={{
+                  borderColor: '#14532d',
+                  backgroundColor: '#0f1a12',
+                  color: '#86efac',
+                }}
+              >
+                <span
+                  className="inline-block w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
+                  style={{ backgroundColor: '#22c55e' }}
+                  aria-hidden="true"
+                />
+                <span>
+                  Heads up — sheetforge is self-host only right now. This sign-in
+                  assumes the API is running on your own machine (hosted SaaS
+                  coming soon).{' '}
+                  <a
+                    href="https://github.com/Devansh-365/sheetforge#quickstart"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                    style={{ color: '#bbf7d0' }}
+                  >
+                    Self-host guide →
+                  </a>
+                </span>
+              </div>
+
               <a
                 href={loginUrl()}
-                className="flex items-center justify-center gap-3 w-full rounded px-6 py-3 font-medium transition-opacity hover:opacity-90"
-                style={{ backgroundColor: '#f2eded', color: '#131010' }}
+                className="flex items-center justify-center gap-3 w-full rounded px-6 py-3 font-medium transition-opacity hover:opacity-90 cursor-pointer"
+                style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
               >
                 <GoogleGlyph />
                 {checking
@@ -150,7 +179,7 @@ function GoogleGlyph() {
       aria-hidden="true"
     >
       <path
-        fill="#131010"
+        fill="#0c0c0e"
         d="M12 11v2h5.5c-.2 1.3-1.6 3.8-5.5 3.8a5.8 5.8 0 1 1 0-11.6c1.8 0 3 .8 3.7 1.4l2.5-2.4A9.3 9.3 0 0 0 12 2a10 10 0 1 0 0 20c5.8 0 9.6-4 9.6-9.8 0-.6-.1-1.1-.2-1.6H12z"
       />
     </svg>

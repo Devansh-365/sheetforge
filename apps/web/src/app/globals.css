@@ -47,7 +47,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* OpenCode dark theme - single theme, no light mode */
+/* OpenCode dark theme with green primary - single theme, no light mode */
 :root {
   --background: #0c0c0e;
   --foreground: #f2eded;
@@ -55,14 +55,17 @@
   --card-foreground: #f2eded;
   --popover: #1b1818;
   --popover-foreground: #f2eded;
-  --primary: #f2eded;
-  --primary-foreground: #131010;
+  --primary: #22c55e;
+  --primary-foreground: #0c0c0e;
+  --primary-hover: #16a34a;
+  --primary-soft: #4ade80;
+  --primary-dim: #14532d;
   --secondary: #1b1818;
   --secondary-foreground: #f2eded;
   --muted: #131010;
   --muted-foreground: #7f7a7a;
-  --accent: #1b1818;
-  --accent-foreground: #f2eded;
+  --accent: #22c55e;
+  --accent-foreground: #0c0c0e;
   --destructive: oklch(0.577 0.245 27.325);
   --border: #3d3838;
   --input: #3d3838;
@@ -75,12 +78,12 @@
   --radius: 0.25rem;
   --sidebar: #131010;
   --sidebar-foreground: #f2eded;
-  --sidebar-primary: #f2eded;
-  --sidebar-primary-foreground: #131010;
+  --sidebar-primary: #22c55e;
+  --sidebar-primary-foreground: #0c0c0e;
   --sidebar-accent: #1b1818;
   --sidebar-accent-foreground: #f2eded;
   --sidebar-border: #3d3838;
-  --sidebar-ring: #7f7a7a;
+  --sidebar-ring: #22c55e;
 }
 
 @layer base {
