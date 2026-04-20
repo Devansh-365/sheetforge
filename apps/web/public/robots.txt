@@ -1,0 +1,52 @@
+# sheetforge — robots.txt
+# AI search bots and classic crawlers are both welcome.
+
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /signin
+
+# Google AI Overviews / Gemini
+User-agent: Google-Extended
+Allow: /
+
+# OpenAI — ChatGPT search + training crawler
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Microsoft Copilot / Bing
+User-agent: Bingbot
+Allow: /
+
+# Common Crawl (feeds many LLM training datasets)
+User-agent: CCBot
+Allow: /
+
+# Apple intelligence
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://sheetforge.dev/sitemap.xml

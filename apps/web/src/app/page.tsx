@@ -300,7 +300,7 @@ function FeaturesSection() {
       className="px-[80px] py-[64px] border-b"
       style={{ borderColor: '#3d3838' }}
     >
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         What is sheetforge?
       </h3>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
@@ -332,7 +332,7 @@ function StatsSection() {
       className="px-[80px] py-[64px] border-b"
       style={{ borderColor: '#3d3838' }}
     >
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Built on numbers that matter
       </h3>
       <p className="text-[#b8b2b2] leading-[32px] mb-8">
@@ -391,7 +391,7 @@ function PrivacySection() {
       className="px-[80px] py-[64px] border-b"
       style={{ borderColor: '#3d3838' }}
     >
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Your data never leaves your infrastructure
       </h3>
       <p className="text-[#b8b2b2] leading-[24px]">
@@ -413,7 +413,7 @@ function FAQSection() {
       className="px-[80px] py-[64px] border-b"
       style={{ borderColor: '#3d3838' }}
     >
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-8">FAQ</h3>
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-8">FAQ</h2>
       <div className="space-y-0">
         {faqItems.map((item, i) => (
           <div
@@ -450,7 +450,7 @@ function ZenSection() {
       className="px-[80px] py-[64px] border-b"
       style={{ borderColor: '#3d3838' }}
     >
-      <h3 className="text-[16px] font-bold text-[#f2eded] mb-3">
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Self-host today. Hosted SaaS on the way.
       </h3>
       <p className="text-[#b8b2b2] leading-[32px] mb-6">
