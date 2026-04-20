@@ -1,6 +1,5 @@
 'use client';
 
-import { HammerDemo } from '@/components/HammerDemo';
 import { ChevronDownIcon, CopyIcon, OpenCodeLogo } from '@/components/icons';
 import { useState } from 'react';
 
@@ -342,10 +341,48 @@ function StatsSection() {
       </p>
       <div className="grid grid-cols-3 gap-6">
         <div
-          className="border rounded p-6"
+          className="border rounded p-6 flex flex-col gap-3"
           style={{ borderColor: '#3d3838' }}
         >
-          <p className="text-[#7f7a7a] text-sm mb-2">Fig 1.</p>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            aria-hidden="true"
+          >
+            <title>Parallel writes converging into an ordered stream</title>
+            <path
+              d="M4 10 L18 10 L24 20"
+              stroke="#22c55e"
+              strokeOpacity="0.45"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4 20 L18 20 L24 20"
+              stroke="#22c55e"
+              strokeOpacity="0.7"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M4 30 L18 30 L24 20"
+              stroke="#22c55e"
+              strokeOpacity="0.45"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M24 20 L36 20"
+              stroke="#22c55e"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          </svg>
           <p
             className="text-2xl font-bold"
             style={{ color: '#22c55e' }}
@@ -355,10 +392,33 @@ function StatsSection() {
           <p className="text-[#b8b2b2] text-sm">Concurrent writes, in order</p>
         </div>
         <div
-          className="border rounded p-6"
+          className="border rounded p-6 flex flex-col gap-3"
           style={{ borderColor: '#3d3838' }}
         >
-          <p className="text-[#7f7a7a] text-sm mb-2">Fig 2.</p>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            aria-hidden="true"
+          >
+            <title>Shielded queue — no race conditions</title>
+            <path
+              d="M20 4 L6 9 V20 C6 28 12 34 20 37 C28 34 34 28 34 20 V9 Z"
+              stroke="#22c55e"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              fill="#22c55e"
+              fillOpacity="0.08"
+            />
+            <path
+              d="M14 20 L18 24 L26 15"
+              stroke="#22c55e"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
           <p
             className="text-2xl font-bold"
             style={{ color: '#22c55e' }}
@@ -368,10 +428,26 @@ function StatsSection() {
           <p className="text-[#b8b2b2] text-sm">Race conditions</p>
         </div>
         <div
-          className="border rounded p-6"
+          className="border rounded p-6 flex flex-col gap-3"
           style={{ borderColor: '#3d3838' }}
         >
-          <p className="text-[#7f7a7a] text-sm mb-2">Fig 3.</p>
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            aria-hidden="true"
+          >
+            <title>Edge-cached read — sub-100ms latency bolt</title>
+            <path
+              d="M22 3 L8 22 H18 L16 37 L32 16 H22 L24 3 Z"
+              stroke="#22c55e"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              fill="#22c55e"
+              fillOpacity="0.15"
+            />
+          </svg>
           <p
             className="text-2xl font-bold"
             style={{ color: '#22c55e' }}
@@ -513,7 +589,6 @@ export default function Home() {
         <Header />
         <SelfHostBanner />
         <HeroSection />
-        <HammerDemo />
         <FeaturesSection />
         <StatsSection />
         <PrivacySection />

@@ -2,6 +2,8 @@
 
 <br />
 
+<img src="apps/web/public/logo.svg" alt="sheetforge" width="120" height="120" />
+
 # sheetforge
 
 ### Google Sheets as a backend that actually behaves like one.
@@ -20,8 +22,6 @@ Serialized writes. Idempotent retries. Typed TypeScript SDKs, generated live fro
 <br />
 
 [![Self-host in 60s](https://img.shields.io/badge/Self--host%20in%2060s%20→-0c0c0e?style=for-the-badge&labelColor=22c55e)](#quickstart)
-&nbsp;
-[![Try the hammer demo](https://img.shields.io/badge/Try%20the%20hammer%20demo%20→-22c55e?style=for-the-badge&labelColor=0c0c0e)](#the-hammer-demo)
 &nbsp;
 [![How it works](https://img.shields.io/badge/How%20it%20works%20→-bbf7d0?style=for-the-badge&labelColor=0c0c0e)](#how-the-queue-actually-works)
 
@@ -83,31 +83,13 @@ await Promise.all([
 | Surface | Status |
 | :-- | :-- |
 | Landing site (marketing only) | ✅ live at [sheetforge.dev](https://sheetforge.dev) |
-| Dashboard + API (write-queue, SDK codegen, hammer demo) | 🟢 runs locally via `pnpm dev` |
+| Dashboard + API (write-queue, SDK codegen) | 🟢 runs locally via `pnpm dev` |
 | Hosted SaaS (sign up, skip local infra) | ⏳ planned after V1 stabilizes |
 | OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) | ✅ MIT, free forever |
 
-**What this means for you.** If you land on the marketing site today and hit "Sign in", that flow only works against an API *you* run — the hosted endpoint isn't up yet. To try the product, clone this repo, follow the [quickstart](#quickstart), and the dashboard at `http://localhost:3000` gives you the whole experience (OAuth, sheet connect, typed SDK download, hammer demo).
+**What this means for you.** If you land on the marketing site today and hit "Sign in", that flow only works against an API *you* run — the hosted endpoint isn't up yet. To try the product, clone this repo, follow the [quickstart](#quickstart), and the dashboard at `http://localhost:3000` gives you the whole experience (OAuth, sheet connect, typed SDK download).
 
 I'll update this section the moment the hosted API is live. Star the repo to get notified.
-
-## The hammer demo
-
-There's a button on the landing page labeled **fire 50 parallel writes**. Once you have the stack running locally, it fires 50 concurrent POSTs at a synthetic sheet, polls the status endpoint, and paints a 50-tile grid as writes land. Try breaking it.
-
-```
-  $ pnpm dev
-  ▸ web  http://localhost:3000
-  ▸ api  http://localhost:3001
-
-  fire 50 parallel writes
-  ██████████████████████████████████████████  50 / 50
-  ordered · idempotent · 1.2s end-to-end
-```
-
-Zero dropped rows. Zero duplicates on replay. Grid order matches enqueue order because the advisory lock serializes the tail. The same hammer hits a raw Sheets API sample and reliably drops 3 to 8 rows per run.
-
-> The demo button on the **hosted** landing page intentionally points at `localhost:3001` — it's here to show the pipeline, not to be a SaaS. When the hosted API ships, it'll be swapped to the public endpoint.
 
 ## Quickstart
 
@@ -309,7 +291,7 @@ slices/             feature slices. barrel is the only public API
   write-queue/      submitWrite, processNext, advisory-lock fencing
   rest-api/         Hono routes, CORS, idempotency, error boundary
   sdk-codegen/      schema to TypeScript client
-  demo/             the hammer demo (public, rate-limited)
+  demo/             local-only hammer demo (hidden until hosted API ships)
 
 packages/           MIT, npm-publishable, no shared/ imports
   queue/            generic Redis-Streams consumer
@@ -335,9 +317,9 @@ Slice internals stay private. Cross-slice imports fail CI. `packages/*` stays OS
 - [x] Idempotency by key, partial unique index
 - [x] Upstash REST adapter (Workers-ready)
 - [x] TypeScript SDK download
-- [x] Hammer demo on the landing page
 
 **V1**
+- [ ] Hammer demo on the hosted landing page (requires hosted API)
 - [ ] Dedicated worker process (currently inline with API)
 - [ ] Python SDK generator
 - [ ] Write-status webhooks

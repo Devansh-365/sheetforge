@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" role="img" aria-label="sheetforge logo">
+  <rect width="320" height="320" rx="48" fill="#0c0c0e"/>
+  <rect x="90"  y="90"  width="140" height="22" rx="6" fill="#22c55e" opacity="0.35"/>
+  <rect x="90"  y="124" width="140" height="22" rx="6" fill="#22c55e" opacity="0.6"/>
+  <rect x="90"  y="158" width="140" height="22" rx="6" fill="#22c55e" opacity="0.85"/>
+  <rect x="70"  y="210" width="180" height="30" rx="10" fill="#22c55e"/>
+</svg>
