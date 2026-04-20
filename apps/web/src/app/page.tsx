@@ -302,7 +302,7 @@ function FeaturesSection() {
     >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         What is sheetforge?
-      </h3>
+      </h2>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
         A race-condition-safe REST API layer for Google Sheets with
         auto-generated TypeScript and Python SDKs — the backend your indie
@@ -334,7 +334,7 @@ function StatsSection() {
     >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Built on numbers that matter
-      </h3>
+      </h2>
       <p className="text-[#b8b2b2] leading-[32px] mb-8">
         <span style={{ color: '#22c55e' }}>[*]</span> The write queue handles
         1000 concurrent POSTs to the same sheet and produces exactly 1000 rows,
@@ -393,7 +393,7 @@ function PrivacySection() {
     >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Your data never leaves your infrastructure
-      </h3>
+      </h2>
       <p className="text-[#b8b2b2] leading-[24px]">
         <span style={{ color: '#22c55e' }}>[*]</span> Your spreadsheet data
         stays in Google Sheets. Because you self-host, even the OAuth tokens
@@ -452,7 +452,7 @@ function ZenSection() {
     >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Self-host today. Hosted SaaS on the way.
-      </h3>
+      </h2>
       <p className="text-[#b8b2b2] leading-[32px] mb-6">
         Right now, sheetforge runs on your own machine — one{' '}
         <code
