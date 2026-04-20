@@ -8,7 +8,13 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ['400', '500', '700'],
 });
 
-const SITE_URL = 'https://sheetforge.dev';
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'https://sheetforge.dev');
 const title = 'sheetforge — Google Sheets as a backend that actually behaves like one';
 const description =
   'Open-source, race-condition-safe Google Sheets backend. 1000 concurrent writes, 1000 ordered rows. Typed TypeScript & Python SDKs generated from your sheet headers. Self-host today — hosted SaaS coming soon.';
