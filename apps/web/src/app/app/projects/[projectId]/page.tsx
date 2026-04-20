@@ -135,7 +135,7 @@ export default function ProjectDetailPage() {
           <Link
             href={`/app/projects/${projectId}/sheets/new`}
             className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             + connect sheet
           </Link>
@@ -189,7 +189,7 @@ export default function ProjectDetailPage() {
             onClick={onCreateKey}
             disabled={creatingKey}
             className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             {creatingKey ? 'Creating…' : '+ create key'}
           </button>

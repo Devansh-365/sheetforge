@@ -218,7 +218,7 @@ export default function SheetDetailPage() {
             onClick={onTestWrite}
             disabled={submitting || schema === null}
             className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             {submitting ? 'Submitting…' : '+ submit demo row'}
           </button>
@@ -429,7 +429,7 @@ export default function SheetDetailPage() {
             href={downloadUrl}
             download="client.ts"
             className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             ↓ download client.ts
           </a>

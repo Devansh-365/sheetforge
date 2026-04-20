@@ -84,7 +84,7 @@ export default function NewSheetPage() {
             type="submit"
             disabled={submitting}
             className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90 disabled:opacity-50"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             {submitting ? 'Connecting…' : 'Connect sheet'}
           </button>

@@ -39,7 +39,7 @@ export default function ProjectsPage() {
         <Link
           href="/app/projects/new"
           className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90"
-          style={{ backgroundColor: '#f2eded', color: '#131010' }}
+          style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
         >
           + new project
         </Link>
@@ -61,7 +61,7 @@ export default function ProjectsPage() {
           <Link
             href="/app/projects/new"
             className="rounded px-4 py-2 font-medium inline-block"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             Create your first project
           </Link>

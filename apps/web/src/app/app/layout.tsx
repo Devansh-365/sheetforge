@@ -61,9 +61,36 @@ export default function DashboardLayout({
           style={{ maxWidth: '1080px', borderColor: '#3d3838' }}
         >
           <h1 className="text-[38px] font-bold leading-[57px] mb-4">API unreachable</h1>
+          <div
+            className="mb-6 rounded border px-3 py-2 text-sm leading-[20px] flex items-start gap-2"
+            style={{
+              borderColor: '#14532d',
+              backgroundColor: '#0f1a12',
+              color: '#86efac',
+            }}
+          >
+            <span
+              className="inline-block w-1.5 h-1.5 rounded-full mt-2 shrink-0"
+              style={{ backgroundColor: '#22c55e' }}
+              aria-hidden="true"
+            />
+            <span>
+              sheetforge is self-host only for now — the dashboard talks to your
+              own API. Hosted SaaS is on the way.{' '}
+              <a
+                href="https://github.com/Devansh-365/sheetforge#quickstart"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+                style={{ color: '#bbf7d0' }}
+              >
+                Self-host guide →
+              </a>
+            </span>
+          </div>
           <p style={{ color: '#b8b2b2' }} className="mb-2">
             [!] The dashboard couldn&apos;t reach the sheetforge API at{' '}
-            <code style={{ color: '#f2eded' }}>{API_URL}</code>.
+            <code style={{ color: '#4ade80' }}>{API_URL}</code>.
           </p>
           {error && (
             <p style={{ color: '#7f7a7a' }} className="text-sm mb-6">
@@ -77,13 +104,13 @@ export default function DashboardLayout({
             <p style={{ color: '#b8b2b2' }} className="text-sm mb-3">
               Start the API in another terminal:
             </p>
-            <code style={{ color: '#f2eded' }}>pnpm --filter @sheetforge/api dev</code>
+            <code style={{ color: '#4ade80' }}>pnpm --filter @sheetforge/api dev</code>
           </div>
           <button
             type="button"
             onClick={() => window.location.reload()}
             className="rounded px-6 py-2 font-medium"
-            style={{ backgroundColor: '#f2eded', color: '#131010' }}
+            style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
           >
             Retry
           </button>
@@ -103,7 +130,9 @@ export default function DashboardLayout({
           style={{ backgroundColor: '#131010', borderColor: '#3d3838' }}
         >
           <Link href="/app" style={{ color: '#f2eded', fontWeight: 700 }}>
-            [sheetforge] <span style={{ color: '#7f7a7a' }}>dashboard</span>
+            <span style={{ color: '#22c55e' }}>[</span>sheetforge
+            <span style={{ color: '#22c55e' }}>]</span>{' '}
+            <span style={{ color: '#7f7a7a' }}>dashboard</span>
           </Link>
           <nav className="flex items-center gap-8 text-sm">
             <Link href="/app" className="transition-colors" style={{ color: '#b8b2b2' }}>
