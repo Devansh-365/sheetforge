@@ -8,10 +8,27 @@ const ibmPlexMono = IBM_Plex_Mono({
   weight: ['400', '500', '700'],
 });
 
+const title =
+  'sheetforge — Google Sheets as a backend that actually behaves like one';
+const description =
+  'Open-source, race-condition-safe Google Sheets backend with typed TypeScript/Python SDKs. Self-host today with one `pnpm dev` — hosted SaaS coming soon.';
+
 export const metadata: Metadata = {
-  title: 'sheetforge | Google Sheets that behaves like a real database',
-  description:
-    'Race-condition-safe writes, typed SDKs, no polling. The Sheets backend your designer can set up and your CTO can trust.',
+  title,
+  description,
+  themeColor: '#22c55e',
+  openGraph: {
+    title,
+    description,
+    url: 'https://sheetforge.dev',
+    siteName: 'sheetforge',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({
