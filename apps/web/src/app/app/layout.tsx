@@ -57,10 +57,12 @@ export default function DashboardLayout({
     return (
       <main>
         <div
-          className="mx-auto border-l border-r min-h-screen px-[80px] py-[64px]"
+          className="mx-auto border-l border-r min-h-screen px-5 md:px-[80px] py-10 md:py-[64px]"
           style={{ maxWidth: '1080px', borderColor: '#3d3838' }}
         >
-          <h1 className="text-[38px] font-bold leading-[57px] mb-4">API unreachable</h1>
+          <h1 className="text-[28px] md:text-[38px] font-bold leading-[36px] md:leading-[57px] mb-4">
+            API unreachable
+          </h1>
           <div
             className="mb-6 rounded border px-3 py-2 text-sm leading-[20px] flex items-start gap-2"
             style={{
@@ -126,7 +128,7 @@ export default function DashboardLayout({
         style={{ maxWidth: '1080px', borderColor: '#3d3838' }}
       >
         <header
-          className="sticky top-0 z-10 flex items-center justify-between min-h-[80px] px-[80px] border-b"
+          className="sticky top-0 z-10 flex items-center justify-between gap-3 min-h-[64px] md:min-h-[80px] px-4 md:px-[80px] border-b"
           style={{ backgroundColor: '#131010', borderColor: '#3d3838' }}
         >
           <Link href="/app" style={{ color: '#f2eded', fontWeight: 700 }}>
@@ -134,14 +136,20 @@ export default function DashboardLayout({
             <span style={{ color: '#22c55e' }}>]</span>{' '}
             <span style={{ color: '#7f7a7a' }}>dashboard</span>
           </Link>
-          <nav className="flex items-center gap-8 text-sm">
-            <Link href="/app" className="transition-colors" style={{ color: '#b8b2b2' }}>
+          <nav className="flex items-center gap-3 md:gap-8 text-xs md:text-sm">
+            <Link
+              href="/app"
+              className="hidden sm:inline transition-colors"
+              style={{ color: '#b8b2b2' }}
+            >
               Projects
             </Link>
             <Link href="/" className="transition-colors" style={{ color: '#b8b2b2' }}>
               ← Home
             </Link>
-            <span style={{ color: '#7f7a7a' }}>{user.email}</span>
+            <span className="hidden md:inline truncate max-w-[160px]" style={{ color: '#7f7a7a' }}>
+              {user.email}
+            </span>
             <button
               type="button"
               onClick={async () => {
@@ -160,7 +168,7 @@ export default function DashboardLayout({
             </button>
           </nav>
         </header>
-        <div className="px-[80px] py-[48px]">{children}</div>
+        <div className="px-5 md:px-[80px] py-8 md:py-[48px]">{children}</div>
       </div>
       <ToastHost />
       <ConfirmHost />

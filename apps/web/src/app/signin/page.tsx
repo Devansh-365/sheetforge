@@ -45,7 +45,7 @@ export default function SignInPage() {
       >
         {/* Header */}
         <header
-          className="flex items-center justify-between min-h-[80px] px-[80px] border-b"
+          className="flex items-center justify-between min-h-[64px] md:min-h-[80px] px-4 md:px-[80px] border-b"
           style={{ backgroundColor: '#131010', borderColor: '#3d3838' }}
         >
           <Link href="/" aria-label="sheetforge home">
@@ -57,7 +57,7 @@ export default function SignInPage() {
         </header>
 
         {/* Card */}
-        <div className="flex-1 flex items-center justify-center px-[80px] py-[64px]">
+        <div className="flex-1 flex items-center justify-center px-5 md:px-[80px] py-10 md:py-[64px]">
           <div className="w-full max-w-md">
             <div
               className="border rounded p-8"

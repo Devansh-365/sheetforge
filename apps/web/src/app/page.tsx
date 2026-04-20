@@ -104,13 +104,13 @@ const faqItems = [
 function Header() {
   return (
     <header
-      className="sticky top-0 z-10 flex items-center justify-between min-h-[80px] px-[80px] border-b"
+      className="sticky top-0 z-10 flex items-center justify-between min-h-[64px] md:min-h-[80px] px-4 md:px-[80px] border-b"
       style={{ backgroundColor: '#131010' }}
     >
       <a href="/" aria-label="sheetforge home">
         <OpenCodeLogo />
       </a>
-      <nav className="flex items-center gap-8">
+      <nav className="flex items-center gap-3 md:gap-8 text-sm md:text-base">
         <a
           href="https://github.com/Devansh-365/sheetforge"
           className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors"
@@ -119,17 +119,21 @@ function Header() {
         >
           GitHub <span className="text-[#22c55e]">[★]</span>
         </a>
-        <a href="#faq" className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors">
+        <a
+          href="#faq"
+          className="hidden sm:inline text-[#b8b2b2] hover:text-[#f2eded] transition-colors"
+        >
           FAQ
         </a>
         <a
           href="https://github.com/Devansh-365/sheetforge#quickstart"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded px-4 py-2 font-medium transition-opacity hover:opacity-90 cursor-pointer"
+          className="rounded px-3 md:px-4 py-1.5 md:py-2 font-medium transition-opacity hover:opacity-90 cursor-pointer whitespace-nowrap"
           style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
         >
-          Self-host it →
+          <span className="hidden sm:inline">Self-host it →</span>
+          <span className="sm:hidden">Self-host →</span>
         </a>
       </nav>
     </header>
@@ -139,7 +143,7 @@ function Header() {
 function SelfHostBanner() {
   return (
     <div
-      className="px-[80px] py-3 border-b flex items-center justify-center gap-2 text-sm"
+      className="px-4 md:px-[80px] py-3 border-b flex items-start md:items-center justify-center gap-2 text-[13px] md:text-sm text-center md:text-left"
       style={{
         backgroundColor: '#0f1a12',
         borderColor: '#14532d',
@@ -177,7 +181,10 @@ function HeroSection() {
   };
 
   return (
-    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+    <section
+      className="px-5 md:px-[80px] py-10 md:py-[64px] border-b"
+      style={{ borderColor: '#3d3838' }}
+    >
       <div className="flex items-center gap-3 mb-8">
         <span
           className="border px-2 py-0.5 text-sm font-medium"
@@ -199,7 +206,7 @@ function HeroSection() {
         </p>
       </div>
 
-      <h1 className="text-[38px] font-bold leading-[57px] text-[#f2eded] mb-4">
+      <h1 className="text-[28px] md:text-[38px] font-bold leading-[34px] md:leading-[57px] text-[#f2eded] mb-4">
         The Google Sheets backend that behaves like a real database
       </h1>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
@@ -283,7 +290,10 @@ function HeroSection() {
 
 function FeaturesSection() {
   return (
-    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+    <section
+      className="px-5 md:px-[80px] py-10 md:py-[64px] border-b"
+      style={{ borderColor: '#3d3838' }}
+    >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">What is sheetforge?</h2>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
         A race-condition-safe REST API layer for Google Sheets with auto-generated TypeScript and
@@ -306,14 +316,17 @@ function FeaturesSection() {
 
 function StatsSection() {
   return (
-    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+    <section
+      className="px-5 md:px-[80px] py-10 md:py-[64px] border-b"
+      style={{ borderColor: '#3d3838' }}
+    >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">Built on numbers that matter</h2>
       <p className="text-[#b8b2b2] leading-[32px] mb-8">
         <span style={{ color: '#22c55e' }}>[*]</span> The write queue handles 1000 concurrent POSTs
         to the same sheet and produces exactly 1000 rows, in order — zero race conditions, sub-100ms
         cached reads globally.
       </p>
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         <div className="border rounded p-6 flex flex-col gap-3" style={{ borderColor: '#3d3838' }}>
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <title>Parallel writes converging into an ordered stream</title>
@@ -396,7 +409,10 @@ function StatsSection() {
 
 function PrivacySection() {
   return (
-    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+    <section
+      className="px-5 md:px-[80px] py-10 md:py-[64px] border-b"
+      style={{ borderColor: '#3d3838' }}
+    >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Your data never leaves your infrastructure
       </h2>
@@ -413,7 +429,11 @@ function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+    <section
+      id="faq"
+      className="px-5 md:px-[80px] py-10 md:py-[64px] border-b"
+      style={{ borderColor: '#3d3838' }}
+    >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-8">FAQ</h2>
       <div className="space-y-0">
         {faqItems.map((item, i) => (
@@ -439,7 +459,10 @@ function FAQSection() {
 
 function ZenSection() {
   return (
-    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+    <section
+      className="px-5 md:px-[80px] py-10 md:py-[64px] border-b"
+      style={{ borderColor: '#3d3838' }}
+    >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Self-host today. Hosted SaaS on the way.
       </h2>
@@ -470,9 +493,9 @@ function ZenSection() {
 
 function Footer() {
   return (
-    <footer className="px-[80px] py-4 flex items-center justify-between text-sm text-[#4a4545]">
+    <footer className="px-5 md:px-[80px] py-4 flex flex-col sm:flex-row gap-2 sm:gap-0 items-start sm:items-center justify-between text-sm text-[#4a4545]">
       <span>&copy;2026 sheetforge · MIT OSS · self-hosted</span>
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4 md:gap-6">
         <a href="#faq" className="hover:text-[#4ade80] transition-colors">
           FAQ
         </a>
