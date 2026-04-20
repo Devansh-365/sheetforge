@@ -94,9 +94,8 @@ export default function SignInPage() {
                   aria-hidden="true"
                 />
                 <span>
-                  Heads up — sheetforge is self-host only right now. This sign-in
-                  assumes the API is running on your own machine (hosted SaaS
-                  coming soon).{' '}
+                  Heads up — sheetforge is self-host only right now. This sign-in assumes the API is
+                  running on your own machine (hosted SaaS coming soon).{' '}
                   <a
                     href="https://github.com/Devansh-365/sheetforge#quickstart"
                     target="_blank"

@@ -4,8 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'sheetforge',
     short_name: 'sheetforge',
-    description:
-      'Race-condition-safe Google Sheets backend with typed TypeScript/Python SDKs.',
+    description: 'Race-condition-safe Google Sheets backend with typed TypeScript/Python SDKs.',
     start_url: '/',
     display: 'standalone',
     background_color: '#0c0c0e',

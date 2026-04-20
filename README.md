@@ -15,7 +15,7 @@ Serialized writes. Idempotent retries. Typed TypeScript SDKs, generated live fro
 [![CI](https://img.shields.io/github/actions/workflow/status/Devansh-365/sheetforge/ci.yml?branch=main&style=for-the-badge&logo=githubactions&logoColor=white&label=CI&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/actions)
 [![Stars](https://img.shields.io/github/stars/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/stargazers)
 [![Issues](https://img.shields.io/github/issues/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/issues)
-[![License](https://img.shields.io/badge/packages-MIT-0c0c0e?style=for-the-badge&labelColor=22c55e)](#license)
+[![License](https://img.shields.io/badge/license-MIT-0c0c0e?style=for-the-badge&labelColor=22c55e)](./LICENSE)
 [![Self-host](https://img.shields.io/badge/status-self--host%20only-22c55e?style=for-the-badge&labelColor=0c0c0e)](#status-self-host-only-for-now)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-0c0c0e?style=for-the-badge&labelColor=22c55e)](#contributing)
 
@@ -33,7 +33,7 @@ Serialized writes. Idempotent retries. Typed TypeScript SDKs, generated live fro
 >
 > The landing site at **[sheetforge.dev](https://sheetforge.dev)** is live, but the backend is **not yet hosted**. To use sheetforge today, clone the repo and run the full stack locally — `pnpm dev` boots the Next.js dashboard, Hono API, and the queue worker on your own machine. A managed/hosted SaaS is on the roadmap; the MIT-licensed OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) will stay free forever. See the [self-host quickstart](#quickstart) below.
 
-> **TL;DR.** The Google Sheets API drops rows under concurrent writes. Every "Sheets as a backend" wrapper you have tried (SheetDB, Sheety, NoCodeAPI) forwards your POST straight to `values.append` and inherits the bug. **sheetforge** wraps every write in a per-sheet queue fenced by a Postgres advisory lock. 50 parallel POSTs → 50 ordered rows, retry-safe by key. And because the sheet's header row is the schema, it generates a typed TypeScript SDK you commit to your repo.
+> **TL;DR.** The Google Sheets API drops rows under concurrent writes. Every "Sheets as a backend" wrapper (SheetDB, Sheety, NoCodeAPI) forwards your POST straight to `values.append` and inherits the bug. **sheetforge** wraps every write in a per-sheet queue fenced by a Postgres advisory lock: 50 parallel writes, 50 ordered rows, retry-safe by key. And because your header row is the schema, you get a typed TypeScript SDK you can commit alongside the call sites.
 
 ## The problem
 
@@ -87,9 +87,9 @@ await Promise.all([
 | Hosted SaaS (sign up, skip local infra) | ⏳ planned after V1 stabilizes |
 | OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) | ✅ MIT, free forever |
 
-**What this means for you.** If you land on the marketing site today and hit "Sign in", that flow only works against an API *you* run — the hosted endpoint isn't up yet. To try the product, clone this repo, follow the [quickstart](#quickstart), and the dashboard at `http://localhost:3000` gives you the whole experience (OAuth, sheet connect, typed SDK download).
+**What this means for you.** The "Sign in" button on [sheetforge.dev](https://sheetforge.dev) points at an API *you* run — there's no hosted endpoint yet. Clone the repo, follow the [quickstart](#quickstart), and `http://localhost:3000` gives you the full flow: OAuth, sheet connect, typed SDK download.
 
-I'll update this section the moment the hosted API is live. Star the repo to get notified.
+I'll flip this section the moment the hosted API is live. Star the repo if you want the ping.
 
 ## Quickstart
 
@@ -337,7 +337,7 @@ See the `good-first-queue-hack` and `sdk-codegen` labels if you want to help pul
 
 ## Why star this
 
-Most "Sheets as a backend" tools wrap a broken primitive. sheetforge fixes the primitive and hands you a typed client on the way out. If you have ever shipped a form on Sheets and watched rows go missing during a launch, starring this is the cheapest vote for correctness I can ask for.
+Most "Sheets as a backend" tools wrap a broken primitive. sheetforge fixes the primitive, then hands you a typed client on the way out. If you've ever shipped a form on Sheets and watched rows vanish mid-launch, a star is the cheapest vote for correctness you can cast.
 
 ## Contributing
 
@@ -361,7 +361,7 @@ Issues and discussions are open. I answer them.
 
 ## License
 
-`packages/queue`, `packages/codegen`, and `packages/sdk-ts` are **MIT** once the V0 concurrency acceptance demo passes. The apps and slices are **source-available** (all-rights-reserved pre-launch, source-available after). See [`LICENSE`](./LICENSE) once it lands.
+[MIT](./LICENSE). Clone, fork, self-host, ship — no strings. When the hosted SaaS lands it'll run on the same MIT core; the managed service is the product, the code stays free.
 
 <br />
 

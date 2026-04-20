@@ -1,8 +1,7 @@
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt =
-  'sheetforge — Google Sheets as a backend that actually behaves like one';
+export const alt = 'sheetforge — Google Sheets as a backend that actually behaves like one';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
@@ -110,9 +109,7 @@ export default function OgImage() {
             1000 concurrent writes · 1000 ordered rows · 0 collisions
           </span>
         </span>
-        <span style={{ color: '#4ade80' }}>
-          github.com/Devansh-365/sheetforge
-        </span>
+        <span style={{ color: '#4ade80' }}>github.com/Devansh-365/sheetforge</span>
       </div>
     </div>,
     {

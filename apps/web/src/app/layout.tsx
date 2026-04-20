@@ -9,8 +9,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 const SITE_URL = 'https://sheetforge.dev';
-const title =
-  'sheetforge — Google Sheets as a backend that actually behaves like one';
+const title = 'sheetforge — Google Sheets as a backend that actually behaves like one';
 const description =
   'Open-source, race-condition-safe Google Sheets backend. 1000 concurrent writes, 1000 ordered rows. Typed TypeScript & Python SDKs generated from your sheet headers. Self-host today — hosted SaaS coming soon.';
 
@@ -125,10 +124,7 @@ const jsonLd = {
       name: 'sheetforge',
       url: SITE_URL,
       logo: `${SITE_URL}/icon`,
-      sameAs: [
-        'https://github.com/Devansh-365/sheetforge',
-        'https://github.com/Devansh-365',
-      ],
+      sameAs: ['https://github.com/Devansh-365/sheetforge', 'https://github.com/Devansh-365'],
     },
     {
       '@type': 'WebSite',
@@ -214,6 +210,7 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is a static object we control, and `<` is escaped to `\u003c` so no tag can close the <script> early.
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c'),
           }}

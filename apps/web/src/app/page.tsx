@@ -97,7 +97,7 @@ const faqItems = [
   },
   {
     q: 'How much does it cost?',
-    a: "Free. The entire project is open source — clone it, run it, use it. When the hosted SaaS launches it will have a free tier too. Self-hosting is always free under the MIT license on the OSS packages.",
+    a: 'Free. The entire project is open source — clone it, run it, use it. When the hosted SaaS launches it will have a free tier too. Self-hosting is always free under the MIT license on the OSS packages.',
   },
 ];
 
@@ -119,10 +119,7 @@ function Header() {
         >
           GitHub <span className="text-[#22c55e]">[★]</span>
         </a>
-        <a
-          href="#faq"
-          className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors"
-        >
+        <a href="#faq" className="text-[#b8b2b2] hover:text-[#f2eded] transition-colors">
           FAQ
         </a>
         <a
@@ -155,8 +152,7 @@ function SelfHostBanner() {
         aria-hidden="true"
       />
       <span>
-        Self-host only for now — hosted SaaS coming soon. Backend runs locally
-        with one{' '}
+        Self-host only for now — hosted SaaS coming soon. Backend runs locally with one{' '}
         <code
           className="px-1.5 py-0.5 rounded"
           style={{ backgroundColor: '#14532d', color: '#bbf7d0' }}
@@ -171,8 +167,7 @@ function SelfHostBanner() {
 
 function HeroSection() {
   const tabs = Object.keys(usageSnippets) as Array<keyof typeof usageSnippets>;
-  const [activeTab, setActiveTab] =
-    useState<keyof typeof usageSnippets>('typescript');
+  const [activeTab, setActiveTab] = useState<keyof typeof usageSnippets>('typescript');
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -182,10 +177,7 @@ function HeroSection() {
   };
 
   return (
-    <section
-      className="px-[80px] py-[64px] border-b"
-      style={{ borderColor: '#3d3838' }}
-    >
+    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
       <div className="flex items-center gap-3 mb-8">
         <span
           className="border px-2 py-0.5 text-sm font-medium"
@@ -194,8 +186,8 @@ function HeroSection() {
           OSS
         </span>
         <p className="text-[#b8b2b2]">
-          TypeScript SDKs generated live from your sheet headers — clone &
-          self-host in under a minute.{' '}
+          TypeScript SDKs generated live from your sheet headers — clone & self-host in under a
+          minute.{' '}
           <a
             href="https://github.com/Devansh-365/sheetforge#quickstart"
             target="_blank"
@@ -213,8 +205,8 @@ function HeroSection() {
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
         Race-condition-safe writes, typed SDKs, no polling.
         <br />
-        Built for indie devs shipping MVPs — fully open source, self-hosted
-        today, managed hosting on the way.
+        Built for indie devs shipping MVPs — fully open source, self-hosted today, managed hosting
+        on the way.
       </p>
 
       <div className="flex items-center gap-3 mb-8 flex-wrap">
@@ -275,11 +267,7 @@ function HeroSection() {
             className="text-[#7f7a7a] hover:text-[#4ade80] transition-colors px-6 text-xs cursor-pointer"
             title="Copy to clipboard"
           >
-            {copied ? (
-              <span style={{ color: '#22c55e' }}>Copied!</span>
-            ) : (
-              <CopyIcon />
-            )}
+            {copied ? <span style={{ color: '#22c55e' }}>Copied!</span> : <CopyIcon />}
           </button>
         </div>
         <pre
@@ -295,24 +283,15 @@ function HeroSection() {
 
 function FeaturesSection() {
   return (
-    <section
-      className="px-[80px] py-[64px] border-b"
-      style={{ borderColor: '#3d3838' }}
-    >
-      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
-        What is sheetforge?
-      </h2>
+    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">What is sheetforge?</h2>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
-        A race-condition-safe REST API layer for Google Sheets with
-        auto-generated TypeScript and Python SDKs — the backend your indie
-        project can actually trust in production.
+        A race-condition-safe REST API layer for Google Sheets with auto-generated TypeScript and
+        Python SDKs — the backend your indie project can actually trust in production.
       </p>
       <ul className="space-y-3">
         {features.map((f) => (
-          <li
-            key={f.title}
-            className="flex items-start gap-2 text-[16px] leading-[24px]"
-          >
+          <li key={f.title} className="flex items-start gap-2 text-[16px] leading-[24px]">
             <span style={{ color: '#22c55e' }}>[*]</span>
             <span>
               <strong className="text-[#f2eded] font-medium">{f.title}</strong>{' '}
@@ -327,30 +306,16 @@ function FeaturesSection() {
 
 function StatsSection() {
   return (
-    <section
-      className="px-[80px] py-[64px] border-b"
-      style={{ borderColor: '#3d3838' }}
-    >
-      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
-        Built on numbers that matter
-      </h2>
+    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
+      <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">Built on numbers that matter</h2>
       <p className="text-[#b8b2b2] leading-[32px] mb-8">
-        <span style={{ color: '#22c55e' }}>[*]</span> The write queue handles
-        1000 concurrent POSTs to the same sheet and produces exactly 1000 rows,
-        in order — zero race conditions, sub-100ms cached reads globally.
+        <span style={{ color: '#22c55e' }}>[*]</span> The write queue handles 1000 concurrent POSTs
+        to the same sheet and produces exactly 1000 rows, in order — zero race conditions, sub-100ms
+        cached reads globally.
       </p>
       <div className="grid grid-cols-3 gap-6">
-        <div
-          className="border rounded p-6 flex flex-col gap-3"
-          style={{ borderColor: '#3d3838' }}
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            aria-hidden="true"
-          >
+        <div className="border rounded p-6 flex flex-col gap-3" style={{ borderColor: '#3d3838' }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <title>Parallel writes converging into an ordered stream</title>
             <path
               d="M4 10 L18 10 L24 20"
@@ -376,32 +341,15 @@ function StatsSection() {
               strokeLinecap="round"
               strokeLinejoin="round"
             />
-            <path
-              d="M24 20 L36 20"
-              stroke="#22c55e"
-              strokeWidth="3"
-              strokeLinecap="round"
-            />
+            <path d="M24 20 L36 20" stroke="#22c55e" strokeWidth="3" strokeLinecap="round" />
           </svg>
-          <p
-            className="text-2xl font-bold"
-            style={{ color: '#22c55e' }}
-          >
+          <p className="text-2xl font-bold" style={{ color: '#22c55e' }}>
             1000
           </p>
           <p className="text-[#b8b2b2] text-sm">Concurrent writes, in order</p>
         </div>
-        <div
-          className="border rounded p-6 flex flex-col gap-3"
-          style={{ borderColor: '#3d3838' }}
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            aria-hidden="true"
-          >
+        <div className="border rounded p-6 flex flex-col gap-3" style={{ borderColor: '#3d3838' }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <title>Shielded queue — no race conditions</title>
             <path
               d="M20 4 L6 9 V20 C6 28 12 34 20 37 C28 34 34 28 34 20 V9 Z"
@@ -419,25 +367,13 @@ function StatsSection() {
               strokeLinejoin="round"
             />
           </svg>
-          <p
-            className="text-2xl font-bold"
-            style={{ color: '#22c55e' }}
-          >
+          <p className="text-2xl font-bold" style={{ color: '#22c55e' }}>
             0
           </p>
           <p className="text-[#b8b2b2] text-sm">Race conditions</p>
         </div>
-        <div
-          className="border rounded p-6 flex flex-col gap-3"
-          style={{ borderColor: '#3d3838' }}
-        >
-          <svg
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            aria-hidden="true"
-          >
+        <div className="border rounded p-6 flex flex-col gap-3" style={{ borderColor: '#3d3838' }}>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
             <title>Edge-cached read — sub-100ms latency bolt</title>
             <path
               d="M22 3 L8 22 H18 L16 37 L32 16 H22 L24 3 Z"
@@ -448,10 +384,7 @@ function StatsSection() {
               fillOpacity="0.15"
             />
           </svg>
-          <p
-            className="text-2xl font-bold"
-            style={{ color: '#22c55e' }}
-          >
+          <p className="text-2xl font-bold" style={{ color: '#22c55e' }}>
             &lt;100ms
           </p>
           <p className="text-[#b8b2b2] text-sm">p50 read latency</p>
@@ -463,18 +396,14 @@ function StatsSection() {
 
 function PrivacySection() {
   return (
-    <section
-      className="px-[80px] py-[64px] border-b"
-      style={{ borderColor: '#3d3838' }}
-    >
+    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Your data never leaves your infrastructure
       </h2>
       <p className="text-[#b8b2b2] leading-[24px]">
-        <span style={{ color: '#22c55e' }}>[*]</span> Your spreadsheet data
-        stays in Google Sheets. Because you self-host, even the OAuth tokens
-        and tenant metadata live in your own Postgres — nothing ever hits a
-        third-party server.
+        <span style={{ color: '#22c55e' }}>[*]</span> Your spreadsheet data stays in Google Sheets.
+        Because you self-host, even the OAuth tokens and tenant metadata live in your own Postgres —
+        nothing ever hits a third-party server.
       </p>
     </section>
   );
@@ -484,19 +413,11 @@ function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section
-      id="faq"
-      className="px-[80px] py-[64px] border-b"
-      style={{ borderColor: '#3d3838' }}
-    >
+    <section id="faq" className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-8">FAQ</h2>
       <div className="space-y-0">
         {faqItems.map((item, i) => (
-          <div
-            key={i}
-            className="border-b"
-            style={{ borderColor: '#3d3838' }}
-          >
+          <div key={i} className="border-b" style={{ borderColor: '#3d3838' }}>
             <button
               onClick={() => setOpenIndex(openIndex === i ? null : i)}
               className="w-full flex items-center justify-between py-4 text-left text-[#f2eded] hover:text-[#4ade80] transition-colors cursor-pointer"
@@ -508,11 +429,7 @@ function FAQSection() {
                 }`}
               />
             </button>
-            {openIndex === i && (
-              <div className="pb-4 text-[#b8b2b2] leading-[24px]">
-                {item.a}
-              </div>
-            )}
+            {openIndex === i && <div className="pb-4 text-[#b8b2b2] leading-[24px]">{item.a}</div>}
           </div>
         ))}
       </div>
@@ -522,10 +439,7 @@ function FAQSection() {
 
 function ZenSection() {
   return (
-    <section
-      className="px-[80px] py-[64px] border-b"
-      style={{ borderColor: '#3d3838' }}
-    >
+    <section className="px-[80px] py-[64px] border-b" style={{ borderColor: '#3d3838' }}>
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
         Self-host today. Hosted SaaS on the way.
       </h2>
@@ -537,9 +451,9 @@ function ZenSection() {
         >
           pnpm dev
         </code>{' '}
-        boots the Next.js dashboard, Hono API and queue worker. The OSS core
-        (MIT queue engine and SDK codegen) is on GitHub. A hosted SaaS is
-        planned once V1 stabilizes; until then, you own the stack.
+        boots the Next.js dashboard, Hono API and queue worker. The OSS core (MIT queue engine and
+        SDK codegen) is on GitHub. A hosted SaaS is planned once V1 stabilizes; until then, you own
+        the stack.
       </p>
       <a
         href="https://github.com/Devansh-365/sheetforge#quickstart"
@@ -559,10 +473,7 @@ function Footer() {
     <footer className="px-[80px] py-4 flex items-center justify-between text-sm text-[#4a4545]">
       <span>&copy;2026 sheetforge · MIT OSS · self-hosted</span>
       <div className="flex items-center gap-6">
-        <a
-          href="#faq"
-          className="hover:text-[#4ade80] transition-colors"
-        >
+        <a href="#faq" className="hover:text-[#4ade80] transition-colors">
           FAQ
         </a>
         <a

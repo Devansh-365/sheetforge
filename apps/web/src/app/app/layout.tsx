@@ -75,8 +75,8 @@ export default function DashboardLayout({
               aria-hidden="true"
             />
             <span>
-              sheetforge is self-host only for now — the dashboard talks to your
-              own API. Hosted SaaS is on the way.{' '}
+              sheetforge is self-host only for now — the dashboard talks to your own API. Hosted
+              SaaS is on the way.{' '}
               <a
                 href="https://github.com/Devansh-365/sheetforge#quickstart"
                 target="_blank"
