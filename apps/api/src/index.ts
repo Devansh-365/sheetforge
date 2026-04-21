@@ -50,7 +50,13 @@ const app = createRouter({
   },
 });
 
-serve({ fetch: app.fetch, port: env.PORT }, (info) => {
+// Platform healthcheck (Railway). Cheap, synchronous — does not touch DB/Redis
+// so it stays green during transient backend blips and only reports that the
+// HTTP server itself is up.
+app.get('/health', (c) => c.json({ ok: true }));
+
+// Bind to 0.0.0.0 so the container is reachable on Railway's private network.
+serve({ fetch: app.fetch, port: env.PORT, hostname: '0.0.0.0' }, (info) => {
   log.info({ port: info.port, url: `http://localhost:${info.port}` }, 'api-listening');
 });
 
