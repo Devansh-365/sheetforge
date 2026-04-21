@@ -79,16 +79,16 @@ export default function DashboardLayout({
                 aria-hidden="true"
               />
               <span>
-                sheetforge is self-host only for now — the dashboard talks to your own API. Hosted
-                SaaS is on the way.{' '}
+                Self-host mode — the dashboard is talking to your own API at{' '}
+                <code style={{ color: '#4ade80' }}>{API_URL}</code>. Prefer the managed option?{' '}
                 <a
-                  href="https://github.com/Devansh-365/sheetforge#quickstart"
+                  href="https://getsheetforge.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="underline"
                   style={{ color: '#bbf7d0' }}
                 >
-                  Self-host guide →
+                  Hosted SaaS →
                 </a>
               </span>
             </div>
