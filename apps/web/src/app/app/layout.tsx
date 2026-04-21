@@ -11,6 +11,7 @@ interface User {
 }
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
+const isSelfHost = process.env.NEXT_PUBLIC_SELF_HOST === '1';
 
 export default function DashboardLayout({
   children,
@@ -63,33 +64,35 @@ export default function DashboardLayout({
           <h1 className="text-[28px] md:text-[38px] font-bold leading-[36px] md:leading-[57px] mb-4">
             API unreachable
           </h1>
-          <div
-            className="mb-6 rounded border px-3 py-2 text-sm leading-[20px] flex items-start gap-2"
-            style={{
-              borderColor: '#14532d',
-              backgroundColor: '#0f1a12',
-              color: '#86efac',
-            }}
-          >
-            <span
-              className="inline-block w-1.5 h-1.5 rounded-full mt-2 shrink-0"
-              style={{ backgroundColor: '#22c55e' }}
-              aria-hidden="true"
-            />
-            <span>
-              sheetforge is self-host only for now — the dashboard talks to your own API. Hosted
-              SaaS is on the way.{' '}
-              <a
-                href="https://github.com/Devansh-365/sheetforge#quickstart"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline"
-                style={{ color: '#bbf7d0' }}
-              >
-                Self-host guide →
-              </a>
-            </span>
-          </div>
+          {isSelfHost && (
+            <div
+              className="mb-6 rounded border px-3 py-2 text-sm leading-[20px] flex items-start gap-2"
+              style={{
+                borderColor: '#14532d',
+                backgroundColor: '#0f1a12',
+                color: '#86efac',
+              }}
+            >
+              <span
+                className="inline-block w-1.5 h-1.5 rounded-full mt-2 shrink-0"
+                style={{ backgroundColor: '#22c55e' }}
+                aria-hidden="true"
+              />
+              <span>
+                sheetforge is self-host only for now — the dashboard talks to your own API. Hosted
+                SaaS is on the way.{' '}
+                <a
+                  href="https://github.com/Devansh-365/sheetforge#quickstart"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: '#bbf7d0' }}
+                >
+                  Self-host guide →
+                </a>
+              </span>
+            </div>
+          )}
           <p style={{ color: '#b8b2b2' }} className="mb-2">
             [!] The dashboard couldn&apos;t reach the sheetforge API at{' '}
             <code style={{ color: '#4ade80' }}>{API_URL}</code>.
@@ -99,15 +102,36 @@ export default function DashboardLayout({
               {error}
             </p>
           )}
-          <div
-            className="border rounded p-6 mb-6"
-            style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
-          >
-            <p style={{ color: '#b8b2b2' }} className="text-sm mb-3">
-              Start the API in another terminal:
-            </p>
-            <code style={{ color: '#4ade80' }}>pnpm --filter @sheetforge/api dev</code>
-          </div>
+          {isSelfHost ? (
+            <div
+              className="border rounded p-6 mb-6"
+              style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
+            >
+              <p style={{ color: '#b8b2b2' }} className="text-sm mb-3">
+                Start the API in another terminal:
+              </p>
+              <code style={{ color: '#4ade80' }}>pnpm --filter @sheetforge/api dev</code>
+            </div>
+          ) : (
+            <div
+              className="border rounded p-6 mb-6"
+              style={{ borderColor: '#3d3838', backgroundColor: '#1b1818' }}
+            >
+              <p style={{ color: '#b8b2b2' }} className="text-sm">
+                This is usually temporary. Retry in a moment — if it keeps failing, ping me on{' '}
+                <a
+                  href="https://github.com/Devansh-365/sheetforge/issues"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                  style={{ color: '#4ade80' }}
+                >
+                  GitHub
+                </a>
+                .
+              </p>
+            </div>
+          )}
           <button
             type="button"
             onClick={() => window.location.reload()}

@@ -80,34 +80,6 @@ export default function SignInPage() {
                 </p>
               )}
 
-              <div
-                className="mb-6 rounded border px-3 py-2 text-xs leading-[18px] flex items-start gap-2"
-                style={{
-                  borderColor: '#14532d',
-                  backgroundColor: '#0f1a12',
-                  color: '#86efac',
-                }}
-              >
-                <span
-                  className="inline-block w-1.5 h-1.5 rounded-full mt-1.5 shrink-0"
-                  style={{ backgroundColor: '#22c55e' }}
-                  aria-hidden="true"
-                />
-                <span>
-                  Heads up — sheetforge is self-host only right now. This sign-in assumes the API is
-                  running on your own machine (hosted SaaS coming soon).{' '}
-                  <a
-                    href="https://github.com/Devansh-365/sheetforge#quickstart"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline"
-                    style={{ color: '#bbf7d0' }}
-                  >
-                    Self-host guide →
-                  </a>
-                </span>
-              </div>
-
               <a
                 href={loginUrl()}
                 className="flex items-center justify-center gap-3 w-full rounded px-6 py-3 font-medium transition-opacity hover:opacity-90 cursor-pointer"
@@ -145,6 +117,23 @@ export default function SignInPage() {
                     </span>
                   </li>
                 </ul>
+
+                <p
+                  className="mt-6 pt-6 border-t text-xs leading-[18px]"
+                  style={{ borderColor: '#3d3838', color: '#7f7a7a' }}
+                >
+                  Prefer self-hosting? The full stack is MIT-licensed on{' '}
+                  <a
+                    href="https://github.com/Devansh-365/sheetforge"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline"
+                    style={{ color: '#b8b2b2' }}
+                  >
+                    GitHub
+                  </a>
+                  .
+                </p>
               </div>
             </div>
 

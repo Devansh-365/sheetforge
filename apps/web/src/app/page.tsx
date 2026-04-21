@@ -16,7 +16,7 @@ await waitlist.create(
   { idempotencyKey: crypto.randomUUID() },
 );
 // → { writeId, status: 'enqueued' | 'replayed' }`,
-  python: `# pip install sheetforge  (generated client — coming soon)
+  python: `# pip install sheetforge  (generated client)
 from sheetforge import WaitlistClient
 from uuid import uuid4
 
@@ -27,8 +27,8 @@ waitlist.create(
     idempotency_key=str(uuid4()),
 )
 # → { writeId, status: 'enqueued' | 'replayed' }`,
-  curl: `# self-hosted — point at your own API host
-curl -X POST http://localhost:3001/v1/sheets/<sheetId>/rows \\
+  curl: `# point at the hosted API or your own self-hosted instance
+curl -X POST https://api.sheetforge.dev/v1/sheets/<sheetId>/rows \\
   -H 'Authorization: Bearer sk_live_…' \\
   -H 'Idempotency-Key: abc-123' \\
   -d '{"email":"hi@example.com","source":"hn"}'
@@ -69,7 +69,7 @@ const features = [
 const faqItems = [
   {
     q: 'Is sheetforge hosted? Can I sign up right now?',
-    a: 'Not yet. Right now sheetforge is self-host only — the full stack (Next.js dashboard, Hono API, write-queue worker) runs locally with one `pnpm dev`. The hosted SaaS at sheetforge.dev is on the roadmap once V1 stabilizes. For now: clone, set env vars, go. The self-host guide on GitHub walks through it end-to-end.',
+    a: 'Yes. Hosted SaaS is live — sign in with Google to connect a Sheet in under a minute. Prefer self-hosting? MIT-licensed and one `pnpm dev` away on GitHub.',
   },
   {
     q: 'What is sheetforge?',
@@ -81,7 +81,7 @@ const faqItems = [
   },
   {
     q: 'Do I have to give you OAuth access to my whole Drive?',
-    a: 'No — and because you self-host, the OAuth app is your own Google Cloud project. You authorize only the specific spreadsheets you connect. We request the narrowest OAuth scopes Google allows (spreadsheets.readonly for reads, spreadsheets for writes on connected sheets). You can revoke access at any time from your Google account.',
+    a: 'No. You authorize only the specific spreadsheets you connect. sheetforge requests the narrowest OAuth scopes Google allows (spreadsheets.readonly for reads, spreadsheets for writes on connected sheets). You can revoke access at any time from your Google account. Self-hosters use their own Google Cloud project and OAuth app.',
   },
   {
     q: "What happens when I hit Google's rate limits?",
@@ -93,11 +93,11 @@ const faqItems = [
   },
   {
     q: 'Is my data safe — where do you store it?',
-    a: "Your spreadsheet data never leaves Google's infrastructure. Because sheetforge is self-hosted for now, even the OAuth tokens and tenant metadata (project names, API key hashes, schema snapshots) sit in your own Postgres — nothing is sent to a third party. Write payloads pass through your Redis queue transiently and are deleted after acknowledgment.",
+    a: "Your spreadsheet data never leaves Google's infrastructure. OAuth tokens and tenant metadata (project names, API key hashes, schema snapshots) sit in our managed Postgres — or your own if you self-host. Write payloads pass through the Redis queue transiently and are deleted after acknowledgment.",
   },
   {
     q: 'How much does it cost?',
-    a: 'Free. The entire project is open source — clone it, run it, use it. When the hosted SaaS launches it will have a free tier too. Self-hosting is always free under the MIT license on the OSS packages.',
+    a: 'The hosted SaaS has a free tier — sign in to get started. The OSS core is MIT-licensed on GitHub; self-hosting is always free.',
   },
 ];
 
@@ -126,14 +126,12 @@ function Header() {
           FAQ
         </a>
         <a
-          href="https://github.com/Devansh-365/sheetforge#quickstart"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/signin"
           className="rounded px-3 md:px-4 py-1.5 md:py-2 font-medium transition-opacity hover:opacity-90 cursor-pointer whitespace-nowrap"
           style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
         >
-          <span className="hidden sm:inline">Self-host it →</span>
-          <span className="sm:hidden">Self-host →</span>
+          <span className="hidden sm:inline">Sign in with Google →</span>
+          <span className="sm:hidden">Sign in →</span>
         </a>
       </nav>
     </header>
@@ -155,16 +153,7 @@ function SelfHostBanner() {
         style={{ backgroundColor: '#22c55e' }}
         aria-hidden="true"
       />
-      <span>
-        Self-host only for now — hosted SaaS coming soon. Backend runs locally with one{' '}
-        <code
-          className="px-1.5 py-0.5 rounded"
-          style={{ backgroundColor: '#14532d', color: '#bbf7d0' }}
-        >
-          pnpm dev
-        </code>
-        .
-      </span>
+      <span>Hosted SaaS live. Self-host MIT-licensed.</span>
     </div>
   );
 }
@@ -193,7 +182,7 @@ function HeroSection() {
           OSS
         </span>
         <p className="text-[#b8b2b2]">
-          TypeScript SDKs generated live from your sheet headers — clone & self-host in under a
+          TypeScript SDKs generated live from your sheet headers — connect a Sheet in under a
           minute.{' '}
           <a
             href="https://github.com/Devansh-365/sheetforge#quickstart"
@@ -210,30 +199,24 @@ function HeroSection() {
         The Google Sheets backend that behaves like a real database
       </h1>
       <p className="text-[#b8b2b2] mb-8 leading-[24px]">
-        Race-condition-safe writes, typed SDKs, no polling.
-        <br />
-        Built for indie devs shipping MVPs — fully open source, self-hosted today, managed hosting
-        on the way.
+        1000 concurrent writes land as 1000 ordered rows. No duplicates. No lost writes.
       </p>
 
       <div className="flex items-center gap-3 mb-8 flex-wrap">
         <a
-          href="https://github.com/Devansh-365/sheetforge"
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/signin"
           className="rounded px-6 py-2 font-medium transition-opacity hover:opacity-90 cursor-pointer"
           style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
         >
-          Star on GitHub ★
+          Sign in with Google →
         </a>
         <a
-          href="https://github.com/Devansh-365/sheetforge#quickstart"
+          href="https://github.com/Devansh-365/sheetforge"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded px-6 py-2 border transition-colors cursor-pointer hover:text-[#f2eded]"
-          style={{ borderColor: '#22c55e', color: '#4ade80' }}
+          className="text-[#4ade80] hover:text-[#86efac] transition-colors underline text-sm"
         >
-          Self-host quickstart →
+          Self-host on GitHub →
         </a>
       </div>
 
@@ -418,8 +401,9 @@ function PrivacySection() {
       </h2>
       <p className="text-[#b8b2b2] leading-[24px]">
         <span style={{ color: '#22c55e' }}>[*]</span> Your spreadsheet data stays in Google Sheets.
-        Because you self-host, even the OAuth tokens and tenant metadata live in your own Postgres —
-        nothing ever hits a third-party server.
+        OAuth tokens and tenant metadata live in our managed Postgres (or your own, if you
+        self-host) — write payloads pass through the queue transiently and are deleted after
+        acknowledgment.
       </p>
     </section>
   );
@@ -464,10 +448,11 @@ function ZenSection() {
       style={{ borderColor: '#3d3838' }}
     >
       <h2 className="text-[16px] font-bold text-[#f2eded] mb-3">
-        Self-host today. Hosted SaaS on the way.
+        Hosted SaaS live. Self-host optional.
       </h2>
       <p className="text-[#b8b2b2] leading-[32px] mb-6">
-        Right now, sheetforge runs on your own machine — one{' '}
+        Sign in with Google and connect your first Sheet in under a minute — no setup required. Or
+        self-host: one{' '}
         <code
           className="px-1.5 py-0.5 rounded text-sm"
           style={{ backgroundColor: '#14532d', color: '#bbf7d0' }}
@@ -475,18 +460,26 @@ function ZenSection() {
           pnpm dev
         </code>{' '}
         boots the Next.js dashboard, Hono API and queue worker. The OSS core (MIT queue engine and
-        SDK codegen) is on GitHub. A hosted SaaS is planned once V1 stabilizes; until then, you own
-        the stack.
+        SDK codegen) is on GitHub — audit it, fork it, own the stack.
       </p>
-      <a
-        href="https://github.com/Devansh-365/sheetforge#quickstart"
-        className="inline-block font-medium transition-colors"
-        style={{ color: '#4ade80' }}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Read the self-host guide →
-      </a>
+      <div className="flex items-center gap-6 flex-wrap">
+        <a
+          href="/signin"
+          className="inline-block font-medium transition-opacity hover:opacity-90 rounded px-5 py-2"
+          style={{ backgroundColor: '#22c55e', color: '#0c0c0e' }}
+        >
+          Sign in with Google →
+        </a>
+        <a
+          href="https://github.com/Devansh-365/sheetforge#quickstart"
+          className="inline-block font-medium transition-colors underline"
+          style={{ color: '#4ade80' }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Self-host on GitHub →
+        </a>
+      </div>
     </section>
   );
 }
@@ -494,7 +487,7 @@ function ZenSection() {
 function Footer() {
   return (
     <footer className="px-5 md:px-[80px] py-4 flex flex-col sm:flex-row gap-2 sm:gap-0 items-start sm:items-center justify-between text-sm text-[#4a4545]">
-      <span>&copy;2026 sheetforge · MIT OSS · self-hosted</span>
+      <span>&copy;2026 sheetforge · MIT OSS · hosted &amp; self-hostable</span>
       <div className="flex items-center gap-4 md:gap-6">
         <a href="#faq" className="hover:text-[#4ade80] transition-colors">
           FAQ

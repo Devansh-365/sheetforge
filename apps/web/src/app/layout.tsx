@@ -17,7 +17,7 @@ const SITE_URL =
       : 'https://sheetforge.dev');
 const title = 'sheetforge — Google Sheets as a backend that actually behaves like one';
 const description =
-  'Open-source, race-condition-safe Google Sheets backend. 1000 concurrent writes, 1000 ordered rows. Typed TypeScript & Python SDKs generated from your sheet headers. Self-host today — hosted SaaS coming soon.';
+  'Open-source, race-condition-safe Google Sheets backend. 1000 concurrent writes, 1000 ordered rows. Typed TypeScript & Python SDKs generated from your sheet headers. Hosted SaaS live — or self-host, MIT-licensed.';
 
 export const viewport: Viewport = {
   themeColor: '#22c55e',
@@ -150,7 +150,7 @@ const jsonLd = {
           name: 'Is sheetforge hosted? Can I sign up right now?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Not yet. sheetforge is self-host only right now — the full stack (Next.js dashboard, Hono API, write-queue worker) runs locally with one pnpm dev. The hosted SaaS is on the roadmap once V1 stabilizes.',
+            text: 'Yes. Hosted SaaS is live — sign in with Google and connect a Sheet in under a minute. Prefer self-hosting? The full stack (Next.js dashboard, Hono API, write-queue worker) is MIT-licensed and runs locally with one pnpm dev.',
           },
         },
         {
@@ -174,7 +174,7 @@ const jsonLd = {
           name: 'Can I self-host sheetforge?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Yes — self-hosting is the only way to run it today. The queue engine and SDK codegen are MIT-licensed on GitHub. You can run the stack on any Node.js host with a Postgres database and Redis (or Upstash REST).',
+            text: 'Yes. The entire stack — queue engine, SDK codegen, dashboard, API — is MIT-licensed on GitHub. Run it on any Node.js host with Postgres and Redis (or Upstash REST). Hosted SaaS is live if you prefer the managed option.',
           },
         },
         {
@@ -190,7 +190,7 @@ const jsonLd = {
           name: 'Is my Google Sheets data safe with sheetforge?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Your spreadsheet data never leaves Google. Because sheetforge is self-hosted, OAuth tokens and tenant metadata live in your own Postgres — nothing is sent to a third party. Write payloads pass through your Redis queue transiently.',
+            text: 'Your spreadsheet data never leaves Google. On the hosted SaaS, OAuth tokens and tenant metadata live in our managed Postgres, encrypted at rest; write payloads pass through the Redis queue transiently. Prefer to keep everything on your infrastructure? Self-host and nothing touches a third-party server.',
           },
         },
         {
@@ -198,7 +198,7 @@ const jsonLd = {
           name: 'How much does sheetforge cost?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Free. The entire project is open source — clone, run, use. When the hosted SaaS launches it will have a free tier too. Self-hosting stays free under the MIT license on the OSS packages.',
+            text: 'Free to start. The hosted SaaS has a free tier — sign in with Google and start connecting Sheets without a card. Self-hosting stays free forever under the MIT license on the OSS packages.',
           },
         },
       ],

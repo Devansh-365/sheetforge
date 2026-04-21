@@ -16,12 +16,12 @@ Serialized writes. Idempotent retries. Typed TypeScript SDKs, generated live fro
 [![Stars](https://img.shields.io/github/stars/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/stargazers)
 [![Issues](https://img.shields.io/github/issues/Devansh-365/sheetforge?style=for-the-badge&logo=github&logoColor=white&labelColor=0c0c0e&color=22c55e)](https://github.com/Devansh-365/sheetforge/issues)
 [![License](https://img.shields.io/badge/license-MIT-0c0c0e?style=for-the-badge&labelColor=22c55e)](./LICENSE)
-[![Self-host](https://img.shields.io/badge/status-self--host%20only-22c55e?style=for-the-badge&labelColor=0c0c0e)](#status-self-host-only-for-now)
+[![Hosted SaaS](https://img.shields.io/badge/status-hosted%20live-22c55e?style=for-the-badge&labelColor=0c0c0e)](https://getsheetforge.vercel.app/)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-0c0c0e?style=for-the-badge&labelColor=22c55e)](#contributing)
 
 <br />
 
-[![Self-host in 60s](https://img.shields.io/badge/Self--host%20in%2060s%20→-0c0c0e?style=for-the-badge&labelColor=22c55e)](#quickstart)
+[![Get started free](https://img.shields.io/badge/Get%20started%20free%20→-0c0c0e?style=for-the-badge&labelColor=22c55e)](https://getsheetforge.vercel.app/)
 &nbsp;
 [![How it works](https://img.shields.io/badge/How%20it%20works%20→-bbf7d0?style=for-the-badge&labelColor=0c0c0e)](#how-the-queue-actually-works)
 
@@ -29,9 +29,9 @@ Serialized writes. Idempotent retries. Typed TypeScript SDKs, generated live fro
 
 </div>
 
-> ### 🟢 Status: self-host only for now
+> ### 🟢 Hosted SaaS is live
 >
-> The landing site at **[sheetforge.dev](https://sheetforge.dev)** is live, but the backend is **not yet hosted**. To use sheetforge today, clone the repo and run the full stack locally — `pnpm dev` boots the Next.js dashboard, Hono API, and the queue worker on your own machine. A managed/hosted SaaS is on the roadmap; the MIT-licensed OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) will stay free forever. See the [self-host quickstart](#quickstart) below.
+> **[getsheetforge.vercel.app](https://getsheetforge.vercel.app/)** — one-click Google sign-in, no infra required. The MIT-licensed OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) stays free forever, and self-hosting is fully supported if you'd rather run your own stack. See [Quickstart](#quickstart) below for both paths.
 
 > **TL;DR.** The Google Sheets API drops rows under concurrent writes. Every "Sheets as a backend" wrapper (SheetDB, Sheety, NoCodeAPI) forwards your POST straight to `values.append` and inherits the bug. **sheetforge** wraps every write in a per-sheet queue fenced by a Postgres advisory lock: 50 parallel writes, 50 ordered rows, retry-safe by key. And because your header row is the schema, you get a typed TypeScript SDK you can commit alongside the call sites.
 
@@ -78,20 +78,23 @@ await Promise.all([
 
 `values.append` isn't serializable. Two concurrent appends can resolve to the same target row and one silently overwrites the other. It's a documented Google bug whose upstream workaround boils down to "don't write concurrently." Fine for a demo. Not fine when your signup form catches an HN spike.
 
-## Status: self-host only for now
+## Status
 
 | Surface | Status |
 | :-- | :-- |
-| Landing site (marketing only) | ✅ live at [sheetforge.dev](https://sheetforge.dev) |
-| Dashboard + API (write-queue, SDK codegen) | 🟢 runs locally via `pnpm dev` |
-| Hosted SaaS (sign up, skip local infra) | ⏳ planned after V1 stabilizes |
+| Hosted SaaS (sign up, skip local infra) | ✅ live at [getsheetforge.vercel.app](https://getsheetforge.vercel.app/) |
+| Dashboard + API (write-queue, SDK codegen) | ✅ live (also runs locally via `pnpm dev`) |
+| Self-host | ✅ supported — see [quickstart](#quickstart) |
 | OSS core (`packages/queue`, `packages/codegen`, `packages/sdk-ts`) | ✅ MIT, free forever |
 
-**What this means for you.** The "Sign in" button on [sheetforge.dev](https://sheetforge.dev) points at an API *you* run — there's no hosted endpoint yet. Clone the repo, follow the [quickstart](#quickstart), and `http://localhost:3000` gives you the full flow: OAuth, sheet connect, typed SDK download.
-
-I'll flip this section the moment the hosted API is live. Star the repo if you want the ping.
-
 ## Quickstart
+
+### Hosted (30 seconds)
+1. Go to [getsheetforge.vercel.app](https://getsheetforge.vercel.app/)
+2. Sign in with Google
+3. Connect a Sheet
+
+### Self-host
 
 ```bash
 git clone https://github.com/Devansh-365/sheetforge.git
@@ -221,7 +224,7 @@ Handler runs inside a Postgres transaction. `XACK` happens post-commit. Mid-flig
 <td width="33%" valign="top">
 
 ### Self-host in 60 seconds
-The only way to run it today. No Docker required for local dev — one Postgres URL, one Redis URL (or Upstash REST). Next.js and Hono, both in one `pnpm dev`.
+No Docker required for local dev — one Postgres URL, one Redis URL (or Upstash REST). Next.js and Hono, both in one `pnpm dev`. Or skip all of it and use the [hosted version](https://getsheetforge.vercel.app/).
 
 </td>
 </tr>
@@ -291,7 +294,7 @@ slices/             feature slices. barrel is the only public API
   write-queue/      submitWrite, processNext, advisory-lock fencing
   rest-api/         Hono routes, CORS, idempotency, error boundary
   sdk-codegen/      schema to TypeScript client
-  demo/             local-only hammer demo (hidden until hosted API ships)
+  demo/             local-only hammer demo
 
 packages/           MIT, npm-publishable, no shared/ imports
   queue/            generic Redis-Streams consumer
@@ -319,7 +322,7 @@ Slice internals stay private. Cross-slice imports fail CI. `packages/*` stays OS
 - [x] TypeScript SDK download
 
 **V1**
-- [ ] Hammer demo on the hosted landing page (requires hosted API)
+- [ ] Hammer demo on the hosted landing page
 - [ ] Dedicated worker process (currently inline with API)
 - [ ] Python SDK generator
 - [ ] Write-status webhooks
@@ -361,7 +364,7 @@ Issues and discussions are open. I answer them.
 
 ## License
 
-[MIT](./LICENSE). Clone, fork, self-host, ship — no strings. When the hosted SaaS lands it'll run on the same MIT core; the managed service is the product, the code stays free.
+[MIT](./LICENSE). Clone, fork, self-host, ship — no strings. The hosted SaaS runs on the same MIT core; the managed service is the product, the code stays free.
 
 <br />
 

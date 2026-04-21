@@ -46,7 +46,7 @@ export default function OgImage() {
             borderRadius: '4px',
           }}
         >
-          OSS · self-host
+          OSS · Hosted · Self-host
         </span>
       </div>
 
