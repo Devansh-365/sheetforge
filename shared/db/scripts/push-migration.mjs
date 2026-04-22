@@ -17,17 +17,18 @@ if (!url) {
   process.exit(1);
 }
 
-// Resolve the migration file — default to the newest 0000_*.sql in migrations/.
+// Resolve the migration file — default to the newest NNNN_*.sql in migrations/.
 const migrationsDir = 'shared/db/migrations';
 const explicit = process.argv[2];
-const migrationPath =
-  explicit ??
-  join(
-    migrationsDir,
-    readdirSync(migrationsDir)
-      .filter((f) => f.endsWith('.sql'))
-      .sort()[0],
-  );
+const latest = readdirSync(migrationsDir)
+  .filter((f) => /^\d{4}_.*\.sql$/.test(f))
+  .sort()
+  .at(-1);
+if (!explicit && !latest) {
+  console.error(`no migration files found in ${migrationsDir}`);
+  process.exit(1);
+}
+const migrationPath = explicit ?? join(migrationsDir, latest);
 
 console.log(`→ applying ${migrationPath}`);
 const raw = readFileSync(migrationPath, 'utf-8');
