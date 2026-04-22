@@ -251,6 +251,25 @@ importers:
         specifier: ^22.10.2
         version: 22.19.17
 
+  slices/billing:
+    dependencies:
+      '@sheetforge/shared-db':
+        specifier: workspace:^
+        version: link:../../shared/db
+      '@sheetforge/shared-types':
+        specifier: workspace:^
+        version: link:../../shared/types
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
+      zod:
+        specifier: ^3.24.2
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.17
+
   slices/demo:
     dependencies:
       '@sheetforge/queue':
@@ -287,6 +306,9 @@ importers:
       '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
+      '@sheetforge/slice-billing':
+        specifier: workspace:^
+        version: link:../billing
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)
@@ -321,6 +343,9 @@ importers:
       '@sheetforge/slice-auth':
         specifier: workspace:^
         version: link:../auth
+      '@sheetforge/slice-billing':
+        specifier: workspace:^
+        version: link:../billing
       '@sheetforge/slice-demo':
         specifier: workspace:^
         version: link:../demo
@@ -382,6 +407,9 @@ importers:
       '@sheetforge/shared-types':
         specifier: workspace:^
         version: link:../../shared/types
+      '@sheetforge/slice-billing':
+        specifier: workspace:^
+        version: link:../billing
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.1(@types/pg@8.20.0)(gel@2.2.0)(postgres@3.4.9)

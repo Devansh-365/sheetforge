@@ -1,5 +1,5 @@
 {
-  "name": "@sheetforge/slice-sheets",
+  "name": "@sheetforge/slice-billing",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -18,9 +18,7 @@
     "drizzle-orm": "^0.40.0",
     "zod": "^3.24.2",
     "@sheetforge/shared-db": "workspace:^",
-    "@sheetforge/shared-google": "workspace:^",
-    "@sheetforge/shared-types": "workspace:^",
-    "@sheetforge/slice-billing": "workspace:^"
+    "@sheetforge/shared-types": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.10.2"

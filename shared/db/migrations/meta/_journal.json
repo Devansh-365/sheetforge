@@ -29,6 +29,13 @@
       "when": 1776729200000,
       "tag": "0003_write_outbox",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777100000000,
+      "tag": "0004_user_plan",
+      "breakpoints": true
     }
   ]
 }

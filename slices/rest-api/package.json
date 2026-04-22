@@ -24,6 +24,7 @@
     "@sheetforge/shared-logger": "workspace:^",
     "@sheetforge/shared-types": "workspace:^",
     "@sheetforge/slice-auth": "workspace:^",
+    "@sheetforge/slice-billing": "workspace:^",
     "@sheetforge/slice-demo": "workspace:^",
     "@sheetforge/slice-projects": "workspace:^",
     "@sheetforge/slice-schema": "workspace:^",

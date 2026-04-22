@@ -25,6 +25,7 @@
       "@sheetforge/shared-types": ["./shared/types/src/index.ts"],
       "@sheetforge/shared-logger": ["./shared/logger/src/index.ts"],
       "@sheetforge/slice-auth": ["./slices/auth/src/index.ts"],
+      "@sheetforge/slice-billing": ["./slices/billing/src/index.ts"],
       "@sheetforge/slice-demo": ["./slices/demo/src/index.ts"],
       "@sheetforge/slice-projects": ["./slices/projects/src/index.ts"],
       "@sheetforge/slice-sheets": ["./slices/sheets/src/index.ts"],

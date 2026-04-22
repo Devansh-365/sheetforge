@@ -1,3 +1,4 @@
+import { getUsage } from '@sheetforge/slice-billing';
 import {
   createApiKey,
   createProject,
@@ -17,6 +18,12 @@ export function createProjectRoutes(deps: RouterDeps): Hono<{ Variables: AppVari
   app.get('/me', (c) => {
     const user = c.get('user');
     return c.json({ user });
+  });
+
+  app.get('/me/usage', async (c) => {
+    const user = c.get('user');
+    const usage = await getUsage({ db: deps.db, userId: user.userId });
+    return c.json(usage);
   });
 
   app.get('/projects', async (c) => {

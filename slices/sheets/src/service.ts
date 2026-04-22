@@ -1,6 +1,7 @@
 import type { Db } from '@sheetforge/shared-db';
 import type { SheetsClient } from '@sheetforge/shared-google';
 import { ForbiddenError, NotFoundError } from '@sheetforge/shared-types';
+import { assertSheetQuota } from '@sheetforge/slice-billing';
 import {
   deleteSheetById,
   findAllSheets,
@@ -24,6 +25,9 @@ export async function connectSheet({
   googleSheetId: string;
   tabName: string;
 }): Promise<SheetRecord> {
+  // Check quota before we spend a Google Sheets API call on a user who's
+  // already at their sheet cap.
+  await assertSheetQuota({ db, projectId });
   // Validate upstream: the spreadsheet exists and the tab is present.
   // Any Google error (401/403/404/429) surfaces as a typed DomainError.
   const metadata = await sheetsClient.getSpreadsheet({

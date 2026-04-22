@@ -18,7 +18,8 @@
     "drizzle-orm": "^0.40.0",
     "zod": "^3.24.2",
     "@sheetforge/shared-db": "workspace:^",
-    "@sheetforge/shared-types": "workspace:^"
+    "@sheetforge/shared-types": "workspace:^",
+    "@sheetforge/slice-billing": "workspace:^"
   },
   "devDependencies": {
     "@types/node": "^22.10.2"

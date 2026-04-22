@@ -30,6 +30,13 @@ export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
   email: text('email').notNull().unique(),
   googleRefreshToken: text('google_refresh_token'),
+  // Billing / quota tier — resolved against slices/billing's PLANS registry.
+  planCode: text('plan_code').notNull().default('free'),
+  // Per-user overrides on top of the resolved plan's limits. Shape is
+  // Partial<PlanLimits>; null means "use plan defaults". Lets us bump
+  // individual users (design partners, comp accounts) without spawning a
+  // new plan tier.
+  planOverrides: jsonb('plan_overrides'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

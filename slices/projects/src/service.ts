@@ -1,5 +1,6 @@
 import type { Db } from '@sheetforge/shared-db';
 import { ForbiddenError, NotFoundError, UnauthorizedError } from '@sheetforge/shared-types';
+import { assertApiKeyQuota, assertProjectQuota } from '@sheetforge/slice-billing';
 import {
   apiKeyLooksValid,
   deleteApiKeyById,
@@ -25,6 +26,7 @@ export async function createProject({
   userId: string;
   name: string;
 }): Promise<Project> {
+  await assertProjectQuota({ db, userId });
   return insertProject({ db, userId, name });
 }
 
@@ -98,6 +100,7 @@ export async function createApiKey({
   scopeSheetIds?: string[] | null;
 }): Promise<NewApiKeyResult> {
   await getProject({ db, projectId, userId });
+  await assertApiKeyQuota({ db, projectId });
   const { plaintextKey, prefix } = generateApiKey();
   const hashedKey = hashApiKey(plaintextKey);
   const handle = await insertApiKey({
