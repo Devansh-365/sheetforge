@@ -10,12 +10,17 @@ export function createAuthRoutes(deps: RouterDeps): Hono {
   // `secure` mirrors whether the API is HTTPS in this env. Local dev runs
   // http://localhost so we can't blindly set it; production must.
   const cookieSecure = deps.env.PUBLIC_BASE_URL.startsWith('https://');
+  // In prod, web (Vercel) and API (Railway) live on different registrable
+  // domains — browsers refuse to attach SameSite=Lax cookies to cross-site
+  // fetch() calls, so the session cookie must be None+Secure. Locally we keep
+  // Lax because None without Secure is rejected.
+  const cookieSameSite: 'None' | 'Lax' = cookieSecure ? 'None' : 'Lax';
 
   app.get('/oauth/login', (c) => {
     const state = randomUUID();
     setCookie(c, 'oauth_state', state, {
       httpOnly: true,
-      sameSite: 'Lax',
+      sameSite: cookieSameSite,
       secure: cookieSecure,
       path: '/',
       maxAge: 600,
@@ -50,7 +55,7 @@ export function createAuthRoutes(deps: RouterDeps): Hono {
     });
     setCookie(c, 'session', token, {
       httpOnly: true,
-      sameSite: 'Lax',
+      sameSite: cookieSameSite,
       secure: cookieSecure,
       path: '/',
       maxAge: 60 * 60 * 24 * 7,
